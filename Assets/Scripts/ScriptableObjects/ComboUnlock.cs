@@ -1,10 +1,10 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ComboUnlock", menuName = "playerCombos/ComboUnlock")]
-public class ComboUnlock : ComboData
+public class ComboUnlock : UpgradeData
 {
     public string comboID;
-    public override void UnlockCombo(GameObject Player)
+    public override void ApplyUpgrade(GameObject Player)
     {
         Player playerScript = Player.GetComponent<Player>();
         if (playerScript != null)
