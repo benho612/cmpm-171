@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
     {
         
     }
-//this function will make the upgrade menu appear
+
     public void OpenUpgradeMenu()
     {
         Time.timeScale = 0f;

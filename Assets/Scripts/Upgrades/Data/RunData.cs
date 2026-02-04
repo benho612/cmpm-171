@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "runData", menuName = "PlayerRunData/runData")]
+[CreateAssetMenu(fileName = "RunData", menuName = "PlayerRunData/runData")]
 public class RunData : ScriptableObject
 {
     [Header("Combat Data")]
