@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "runData", menuName = "PlayerRunData/runData")]
-public class runData : ScriptableObject
+public class RunData : ScriptableObject
 {
     [Header("Combat Data")]
     public float damage;
@@ -13,7 +13,7 @@ public class runData : ScriptableObject
     public float maxHealth;
     public float healthRegenRate;
 
-    public void resetStats()
+    public void ResetStats()
     {
         damage = 10f;
         attackSpeed = 1f;

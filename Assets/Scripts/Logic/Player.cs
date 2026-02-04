@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public runData playerRunData;
+    public RunData playerRunData;
     public CombatHandler combatHandler;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

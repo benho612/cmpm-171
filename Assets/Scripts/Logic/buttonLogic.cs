@@ -1,18 +1,18 @@
 using UnityEngine;
 using TMPro;
 
-public class buttonLogic : MonoBehaviour
+public class ButtonLogic : MonoBehaviour
 {
     private UpgradeData assignedData;
     public Player playerInstance;
     [SerializeField] private TextMeshProUGUI buttonText;
 
-    public void setUpButton(UpgradeData data)
+    public void SetUpButton(UpgradeData data)
     {
         assignedData = data;
         buttonText.text = assignedData.upgradeName;
     }
-    public void onClick()
+    public void OnClick()
     {
         Debug.Log("Button clicked for upgrade: " + assignedData.upgradeName);
         assignedData.ApplyUpgrade(playerInstance.gameObject);

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "statUpgrade", menuName = "CombatUpgrades/statUpgrade")]
-public class statUpgrade : UpgradeData
+public class CombatStatUpgrade : UpgradeData
 {
     public float damageIncrease;
     public float attackSpeedIncrease;
