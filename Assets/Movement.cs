@@ -6,7 +6,6 @@ public class Movement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
-    public float sprintSpeed = 9f;
     public float dashSpeed = 15f;
     public float dashDuration = 0.2f;
     public float rotationSpeed = 15f; // High value for snappy "Sifu" turns
@@ -21,7 +20,6 @@ public class Movement : MonoBehaviour
     private Transform _cameraTransform;
     private Vector3 _velocity;
     private Vector2 _moveInput;
-    private float _smoothSpeed;
     
     // Dash Logic
     private bool _isDashing;
@@ -77,13 +75,11 @@ public class Movement : MonoBehaviour
 
     private void HandleMovement()
     {
-        //  If no input, stop moving
+        // 1. If no input, stop moving
         if (_moveInput.magnitude < 0.1f) return;
 
-        // Check if dash button is held for Sprint
-        float currentSpeed = _input.Gameplay.Dash.IsPressed() ? sprintSpeed : walkSpeed;
-
-        //  Calculate direction relative to Camer
+        // 2. Calculate direction relative to Camera
+        // We project the camera vectors onto the flat ground (y=0) so looking up/down doesn't slow us
         Vector3 camForward = _cameraTransform.forward;
         Vector3 camRight = _cameraTransform.right;
         camForward.y = 0;
@@ -93,14 +89,12 @@ public class Movement : MonoBehaviour
 
         Vector3 moveDir = (camForward * _moveInput.y + camRight * _moveInput.x).normalized;
 
-        //  Rotate Character (Sifu Style: Snappy turns)
+        // 3. Rotate Character (Sifu Style: Snappy turns)
         Quaternion targetRotation = Quaternion.LookRotation(moveDir);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-        //  Move Character
-        float targetSpeed = _input.Gameplay.Dash.IsPressed() ? sprintSpeed : walkSpeed;
-        _smoothSpeed = Mathf.Lerp(_smoothSpeed, targetSpeed, 10f * Time.deltaTime);
-        _controller.Move(moveDir * _smoothSpeed * Time.deltaTime);
+        // 4. Move Character
+        _controller.Move(moveDir * walkSpeed * Time.deltaTime);
     }
 
     private void AttemptDash()
