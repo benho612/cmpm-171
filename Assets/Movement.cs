@@ -71,21 +71,21 @@ public class Movement : MonoBehaviour
             }
         }
         
-        // 1. If Dashing, override everything
+        // If Dashing, override everything
         if (_isDashing)
         {
             HandleDash();
             return;
         }
 
-        // 2. If Attacking, stop movement logic so Combat.cs controls rotation
+        // If Attacking, stop movement logic so Combat.cs controls rotation
         if (_combat != null && _combat.IsAttacking)
         {
             _smoothSpeed = 0; // Rapidly decelerate
             return;
         }
 
-        // 3. Otherwise, handle standard movement
+        // Otherwise, handle standard movement
         HandleMovement();
     }
 
@@ -95,7 +95,7 @@ public class Movement : MonoBehaviour
 
         bool isSprinting = _input.Gameplay.Dash.IsPressed();
 
-        // --- Calculate World Direction relative to Camera ---
+        //Calculate World Direction relative to Camera
         Vector3 camForward = _cameraTransform.forward;
         Vector3 camRight = _cameraTransform.right;
         camForward.y = 0;
@@ -105,17 +105,15 @@ public class Movement : MonoBehaviour
 
         Vector3 moveDir = (camForward * _moveInput.y + camRight * _moveInput.x).normalized;
 
-        // --- Rotation Logic Changes ---
         if (isSprinting)
         {
-            // Sprinting: Face the direction we are moving (Classic logic)
+            // Sprinting: Face the direction we are moving
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
         else
         {
-            // Walking: Strafe (Face the Camera's forward)
-            // This allows "Backstepping" when pressing Down
+            // Walking: Strafe
             if (camForward != Vector3.zero)
             {
                 Quaternion strafeRotation = Quaternion.LookRotation(camForward);
@@ -123,7 +121,6 @@ public class Movement : MonoBehaviour
             }
         }
 
-        // --- Movement Application ---
         float targetSpeed = isSprinting ? sprintSpeed : walkSpeed;
         _smoothSpeed = Mathf.Lerp(_smoothSpeed, targetSpeed, 10f * Time.deltaTime);
         
@@ -133,7 +130,7 @@ public class Movement : MonoBehaviour
     private void AttemptDash()
     {
         if (_isDashing) return;
-        if (_combat != null && _combat.IsAttacking) return; // Can't dash mid-attack (optional)
+        if (_combat != null && _combat.IsAttacking) return; // Can't dash mid-attack
 
         _isDashing = true;
         _dashTimer = dashDuration;
