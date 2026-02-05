@@ -67,5 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "cmpm-171.slnx"
+    "dotnet.defaultSolution": "cmpm-171.slnx",
+    "dotnet.autoInsert.enableAutoInsert": false
 }
