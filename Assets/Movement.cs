@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
-public class SifuMovement : MonoBehaviour
+public class Movement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
@@ -49,6 +49,21 @@ public class SifuMovement : MonoBehaviour
     private void Update()
     {
         ApplyGravity();
+
+        // Toggle Mouse Lock
+        if (Keyboard.current.leftAltKey.wasPressedThisFrame)
+        {
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
         
         if (_isDashing)
         {
