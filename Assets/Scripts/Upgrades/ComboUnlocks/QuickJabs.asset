@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80bdc5a4f42ac78479546d5e968b0d26, type: 3}
   m_Name: QuickJabs
   m_EditorClassIdentifier: Assembly-CSharp::ComboUnlock
-  upgradeName: 
+  upgradeName: Quick Jabs
   icon: {fileID: 0}
-  comboID: 
+  ComboID: 
+  RunTimeElement: None
