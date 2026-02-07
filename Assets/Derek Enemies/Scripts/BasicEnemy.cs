@@ -6,6 +6,7 @@ public class BasicEnemy : BaseEnemy
     [SerializeField] private float attackDistance = 2.5f;
     [SerializeField] private float chargeDistance = 8f;
     [SerializeField][Range(0f, 1f)] private float blockChance = 0.25f;
+    [SerializeField][Range(0f, 1f)] private float heavyAttackChance = 0.3f;
     [SerializeField][Range(0f, 1f)] private float chargeChance = 0.35f;
 
     private float aiDecisionTimer;
@@ -33,12 +34,8 @@ public class BasicEnemy : BaseEnemy
             MakeDecision();
         }
 
-        // Default behavior: chase & face unless doing something else
-        if (!isAttacking && !isBlocking && !isCharging)
-        {
-            ChasePlayer();
-            FacePlayer();
-        }
+        // Removed: ChasePlayer() and FacePlayer() calls
+        // These are now handled by ContinueCombat() in BaseEnemy
     }
 
     private void MakeDecision()
@@ -58,13 +55,14 @@ public class BasicEnemy : BaseEnemy
                 float blockTime = Random.Range(0.6f, 1.8f);
                 Invoke(nameof(StopBlock), blockTime);
             }
-            else if (roll < 0.55f)
+            else if (roll < blockChance + heavyAttackChance)
             {
-                SimplePunch();
+                HeavyAttack();
             }
             else
             {
-                Shove();
+                // Normal attack pattern - light attack with random animation
+                LightAttack();
             }
         }
         // Medium distance → chance to charge

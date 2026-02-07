@@ -62,11 +62,11 @@ public class EliteEnemy : BaseEnemy
             }
             else if (roll < 0.35f)
             {
-                SimplePunch();
+                //SimplePunch();
             }
             else if (roll < 0.5f)
             {
-                Shove();
+                //Shove();
             }
             else if (roll < 0.7f)
             {

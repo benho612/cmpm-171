@@ -15,6 +15,11 @@ public class SifuMovement : MonoBehaviour
     public float gravity = -9.81f;
     public float gravityMultiplier = 2.0f; // Games often need higher gravity to feel grounded
 
+    [Header("Combat (Barebones)")]
+    public float attackDamage = 20f;
+    public float attackRange = 2f;
+    public float attackAngle = 120f; // Degrees in front of player
+
     // Internal Variables
     private CharacterController _controller;
     private PlayerControls _input;
@@ -22,7 +27,7 @@ public class SifuMovement : MonoBehaviour
     private Vector3 _velocity;
     private Vector2 _moveInput;
     private float _smoothSpeed;
-    
+
     // Dash Logic
     private bool _isDashing;
     private float _dashTimer;
@@ -32,15 +37,18 @@ public class SifuMovement : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _cameraTransform = Camera.main.transform;
-        
+
         // Initialize Input System
         _input = new PlayerControls();
-        
+
         // Subscribe to input events
         _input.Gameplay.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
         _input.Gameplay.Move.canceled += ctx => _moveInput = Vector2.zero;
-        
+
         _input.Gameplay.Dash.performed += ctx => AttemptDash();
+
+        // Subscribe to attack input (left click)
+        _input.Gameplay.Attack.performed += ctx => PerformAttack();
     }
 
     private void OnEnable() => _input.Enable();
@@ -49,7 +57,7 @@ public class SifuMovement : MonoBehaviour
     private void Update()
     {
         ApplyGravity();
-        
+
         if (_isDashing)
         {
             HandleDash();
@@ -57,6 +65,30 @@ public class SifuMovement : MonoBehaviour
         else
         {
             HandleMovement();
+        }
+    }
+
+    private void PerformAttack()
+    {
+        Debug.Log("Player Attacked!");
+        // Find all colliders in attack range
+        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+
+        foreach (var hit in hits)
+        {
+            // Check if it's an enemy
+            BaseEnemy enemy = hit.GetComponent<BaseEnemy>();
+            if (enemy == null || enemy.IsDead()) continue;
+
+            // Check if enemy is within attack angle (in front of player)
+            Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
+            float angle = Vector3.Angle(transform.forward, dirToEnemy);
+
+            if (angle > attackAngle / 2f) continue;
+
+            // Damage the enemy
+            enemy.TakeDamage(attackDamage);
+            Debug.Log($"Hit {enemy.name} for {attackDamage} damage!");
         }
     }
 
@@ -100,7 +132,7 @@ public class SifuMovement : MonoBehaviour
         {
             Vector3 camForward = _cameraTransform.forward;
             Vector3 camRight = _cameraTransform.right;
-            camForward.y = 0; 
+            camForward.y = 0;
             camRight.y = 0;
             _dashDirection = (camForward * _moveInput.y + camRight * _moveInput.x).normalized;
         }
@@ -114,7 +146,7 @@ public class SifuMovement : MonoBehaviour
     {
         // Move rapidly in the dash direction
         _controller.Move(_dashDirection * dashSpeed * Time.deltaTime);
-        
+
         // Keep character facing the dash direction
         transform.rotation = Quaternion.LookRotation(_dashDirection);
 
@@ -122,7 +154,6 @@ public class SifuMovement : MonoBehaviour
         if (_dashTimer <= 0)
         {
             _isDashing = false;
-            // Optional: slight cooldown could go here
         }
     }
 
@@ -136,5 +167,21 @@ public class SifuMovement : MonoBehaviour
 
         _velocity.y += gravity * gravityMultiplier * Time.deltaTime;
         _controller.Move(_velocity * Time.deltaTime);
+    }
+
+    // Visualize attack range in editor
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        // Draw attack angle
+        Vector3 forward = Application.isPlaying ? transform.forward : Vector3.forward;
+        Vector3 leftDir = Quaternion.Euler(0, -attackAngle / 2f, 0) * forward;
+        Vector3 rightDir = Quaternion.Euler(0, attackAngle / 2f, 0) * forward;
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(transform.position, leftDir * attackRange);
+        Gizmos.DrawRay(transform.position, rightDir * attackRange);
     }
 }

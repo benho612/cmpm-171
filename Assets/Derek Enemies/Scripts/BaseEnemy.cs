@@ -11,18 +11,19 @@ public abstract class BaseEnemy : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] protected float chaseSpeed = 4f;
+    [SerializeField] protected float circleSpeed = 2f;
     [SerializeField] protected float attackRange = 2f;
-    [SerializeField] protected float chargeSpeed = 2.5f;
-    [SerializeField] protected float chargeStopDistance = 2f; // Distance to stop before attacking
+    [SerializeField] protected float chargeSpeed = 5f;
+    [SerializeField] protected float chargeStopDistance = 2f;
 
     [Header("Awareness & Engagement")]
     [SerializeField] protected float awarenessRange = 25f;
     [SerializeField] protected float engagementRange = 15f;
 
     [Header("Attack Damage")]
-    [SerializeField] protected float punchDamage = 10f;
-    [SerializeField] protected float chargeDamage = 25f;
-    [SerializeField] protected float shoveDamage = 5f;
+    [SerializeField] protected float lightAttackDamage = 10f;
+    [SerializeField] protected float heavyAttackDamage = 25f;
+    [SerializeField] protected float chargeAttackDamage = 20f;
 
     [Header("Timing")]
     [SerializeField] protected float stunDuration = 2f;
@@ -31,6 +32,15 @@ public abstract class BaseEnemy : MonoBehaviour
     [Header("References")]
     [SerializeField] protected Transform player;
     [SerializeField] protected Animator animator;
+
+    [Header("Stun Meter")]
+    [SerializeField] protected float maxStunMeter = 100f;
+    [SerializeField] protected float stunDecayRate = 10f;
+    protected float currentStunMeter;
+
+    [Header("Recovery")]
+    [SerializeField] protected float hitRecoveryTime = 0.5f;
+    protected bool isRecovering;
 
     // Components
     protected NavMeshAgent navAgent;
@@ -46,27 +56,25 @@ public abstract class BaseEnemy : MonoBehaviour
     protected float attackCooldownTimer;
 
     // Animation parameter hashes
-    protected static readonly int AnimQuadPunch = Animator.StringToHash("QuadPunch");
-    protected static readonly int AnimPunchCombo = Animator.StringToHash("PunchCombo");
-    protected static readonly int AnimBlock = Animator.StringToHash("Blocking");
-    protected static readonly int AnimShove = Animator.StringToHash("Shove");
+    protected static readonly int AnimLightAttack = Animator.StringToHash("LightAttack");
+    protected static readonly int AnimHeavyAttack = Animator.StringToHash("HeavyAttack");
+    protected static readonly int AnimChargeAttack = Animator.StringToHash("ChargeAttack");
+    protected static readonly int AnimLightRandom = Animator.StringToHash("LightRandom");
+    protected static readonly int AnimBlock = Animator.StringToHash("Block");
     protected static readonly int AnimHit = Animator.StringToHash("Hit");
     protected static readonly int AnimDie = Animator.StringToHash("Die");
     protected static readonly int AnimSpeed = Animator.StringToHash("Speed");
+    protected static readonly int AnimBlockHit = Animator.StringToHash("BlockHit");
+    protected static readonly int AnimStunned = Animator.StringToHash("Stunned");
 
     protected virtual void Awake()
     {
         navAgent = GetComponent<NavMeshAgent>();
-
-        animator = GetComponentInChildren<Animator>(true);
+        animator = GetComponent<Animator>();
 
         if (animator == null)
         {
-            Debug.LogError($"{gameObject.name}: No Animator found in children! Check hierarchy.", this);
-        }
-        else
-        {
-            Debug.Log($"{gameObject.name}: Animator found on {animator.gameObject.name}", animator.gameObject);
+            Debug.LogError($"{gameObject.name}: No Animator found! Check that Animator is on this GameObject.", this);
         }
 
         if (player == null)
@@ -84,6 +92,27 @@ public abstract class BaseEnemy : MonoBehaviour
         isAware = false;
         isEngaged = false;
         hasOpenedWithCharge = false;
+
+        // Ensure NavMeshAgent controls movement by default, not root motion
+        if (animator != null)
+        {
+            animator.applyRootMotion = false;
+        }
+
+        // Register with combat manager
+        if (EnemyCombatManager.Instance != null)
+        {
+            EnemyCombatManager.Instance.RegisterEnemy(this);
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        // Unregister from combat manager
+        if (EnemyCombatManager.Instance != null)
+        {
+            EnemyCombatManager.Instance.UnregisterEnemy(this);
+        }
     }
 
     protected virtual void Update()
@@ -101,28 +130,128 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             CheckEngagement();
         }
+        else
+        {
+            // Check if we should wait or attack
+            if (ShouldWaitForTurn())
+            {
+                CircleAroundPlayer();
+            }
+            else
+            {
+                ContinueCombat();
+            }
+        }
 
         if (isCharging)
         {
             UpdateChargeAttack();
         }
 
-        if (animator != null)
+        // Always face the player when aware and not stunned
+        if (isAware && !isStunned)
         {
-            Vector3 worldVelocity = navAgent.velocity;
-            float rawSpeed = worldVelocity.magnitude;
+            FacePlayer();
+        }
 
-            float normSpeed = rawSpeed / chaseSpeed;
+        UpdateAnimatorParameters();
+    }
 
-            Vector3 localVelocityDir = transform.InverseTransformDirection(worldVelocity.normalized);
+    /// <summary>
+    /// Check if this enemy should wait for their turn to attack
+    /// </summary>
+    protected bool ShouldWaitForTurn()
+    {
+        if (EnemyCombatManager.Instance == null) return false;
+        return EnemyCombatManager.Instance.ShouldWait(this);
+    }
 
-            animator.SetFloat(AnimSpeed, normSpeed);
-            animator.SetFloat("VelocityX", localVelocityDir.x);
-            animator.SetFloat("VelocityZ", localVelocityDir.z);
+    /// <summary>
+    /// Circle around the player while waiting
+    /// </summary>
+    protected virtual void CircleAroundPlayer()
+    {
+        if (isAttacking || isBlocking || isStunned || isCharging) return;
+        if (EnemyCombatManager.Instance == null) return;
+
+        Vector3 targetPos = EnemyCombatManager.Instance.GetCirclePosition(this);
+
+        navAgent.speed = circleSpeed;
+        navAgent.isStopped = false;
+        navAgent.SetDestination(targetPos);
+    }
+
+    /// <summary>
+    /// Check if this enemy is blocking or stunned (used by combat manager)
+    /// </summary>
+    public bool IsBlockingOrStunned()
+    {
+        return isBlocking || isStunned;
+    }
+
+    protected void UpdateAnimatorParameters()
+    {
+        if (animator == null)
+        {
+            Debug.LogWarning($"{gameObject.name}: Animator is null in Update!");
+            return;
+        }
+
+        Vector3 worldVelocity = navAgent.velocity;
+        float rawSpeed = worldVelocity.magnitude;
+
+        Vector3 localVelocityDir = transform.InverseTransformDirection(worldVelocity.normalized);
+
+        animator.SetFloat(AnimSpeed, rawSpeed);
+        animator.SetFloat("VelocityX", localVelocityDir.x);
+        animator.SetFloat("VelocityZ", localVelocityDir.z);
+    }
+
+    /// <summary>
+    /// Handles root motion - applies animation movement to the GameObject during attacks.
+    /// Only applies position, not rotation, so enemy always faces player.
+    /// </summary>
+    private void OnAnimatorMove()
+    {
+        if (animator == null) return;
+
+        if (isAttacking)
+        {
+            navAgent.updatePosition = false;
+            transform.position += animator.deltaPosition;
+            navAgent.nextPosition = transform.position;
         }
         else
         {
-            Debug.LogWarning($"{gameObject.name}: Animator is null in Update!");
+            navAgent.updatePosition = true;
+        }
+    }
+
+    /// <summary>
+    /// Handles ongoing combat behavior after the enemy is engaged.
+    /// Override in subclasses for custom attack patterns.
+    /// </summary>
+    protected virtual void ContinueCombat()
+    {
+        // Skip if busy with an action
+        if (isAttacking || isBlocking || isCharging || isStunned) return;
+
+        float distance = GetDistanceToPlayer();
+
+        if (distance <= attackRange)
+        {
+            // Request permission to attack
+            if (EnemyCombatManager.Instance == null ||
+                EnemyCombatManager.Instance.RequestAttackPermission(this))
+            {
+                FacePlayer();
+                LightAttack();
+            }
+        }
+        else
+        {
+            ChasePlayer();
+            FacePlayer();
         }
     }
 
@@ -136,7 +265,6 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             isAware = true;
             navAgent.isStopped = false;
-            Debug.Log($"{gameObject.name}: Player detected! Starting pursuit.");
         }
     }
 
@@ -150,10 +278,20 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             isEngaged = true;
 
+            // Only do opening charge if we have attack permission
             if (CanPerformAction())
             {
-                ChargeAttack();
-                hasOpenedWithCharge = true;
+                if (EnemyCombatManager.Instance == null ||
+                    EnemyCombatManager.Instance.RequestAttackPermission(this))
+                {
+                    ChargeAttack();
+                    hasOpenedWithCharge = true;
+                }
+                else
+                {
+                    // Can't attack, just mark opener as done and circle
+                    hasOpenedWithCharge = true;
+                }
             }
         }
         else if (isAware && !isAttacking && !isBlocking && !isCharging)
@@ -205,22 +343,36 @@ public abstract class BaseEnemy : MonoBehaviour
 
     #region Combat Actions
 
-    public virtual void SimplePunch()
+    /// <summary>
+    /// Performs a light attack with random animation selection (0, 1, or 2)
+    /// </summary>
+    public virtual void LightAttack()
     {
         if (!CanPerformAction()) return;
 
         isAttacking = true;
         attackCooldownTimer = attackCooldown;
         navAgent.isStopped = true;
+        navAgent.velocity = Vector3.zero;
 
-        if (Random.value < 0.5f)
-        {
-            animator?.SetTrigger(AnimQuadPunch);
-        }
-        else
-        {
-            animator?.SetTrigger(AnimPunchCombo);
-        }
+        int randomIndex = Random.Range(0, 3);
+        animator?.SetFloat(AnimLightRandom, randomIndex);
+        animator?.SetTrigger(AnimLightAttack);
+    }
+
+    /// <summary>
+    /// Performs a heavy attack
+    /// </summary>
+    public virtual void HeavyAttack()
+    {
+        if (!CanPerformAction()) return;
+
+        isAttacking = true;
+        attackCooldownTimer = attackCooldown * 1.5f;
+        navAgent.isStopped = true;
+        navAgent.velocity = Vector3.zero;
+
+        animator?.SetTrigger(AnimHeavyAttack);
     }
 
     public virtual void StartBlock()
@@ -238,6 +390,9 @@ public abstract class BaseEnemy : MonoBehaviour
         animator?.SetBool(AnimBlock, false);
     }
 
+    /// <summary>
+    /// Initiates a charge toward the player, triggers ChargeAttack when in range
+    /// </summary>
     public virtual void ChargeAttack()
     {
         if (!CanPerformAction() || player == null) return;
@@ -246,6 +401,7 @@ public abstract class BaseEnemy : MonoBehaviour
         attackCooldownTimer = attackCooldown * 1.8f;
 
         navAgent.isStopped = false;
+        navAgent.updatePosition = true;
         navAgent.speed = chargeSpeed;
         navAgent.SetDestination(player.position);
     }
@@ -260,10 +416,8 @@ public abstract class BaseEnemy : MonoBehaviour
 
         float distanceToPlayer = GetDistanceToPlayer();
 
-        // Check if we've reached stop distance
         if (distanceToPlayer <= chargeStopDistance)
         {
-            // Completely stop movement
             navAgent.isStopped = true;
             navAgent.velocity = Vector3.zero;
             navAgent.ResetPath();
@@ -271,22 +425,17 @@ public abstract class BaseEnemy : MonoBehaviour
             isCharging = false;
             isAttacking = true;
 
-            // Face player before attacking
             FacePlayerImmediate();
-
-            // Perform the attack
-            animator?.SetTrigger(AnimQuadPunch);
+            animator?.SetTrigger(AnimChargeAttack);
         }
         else
         {
-            // Keep updating destination as player moves
+            navAgent.speed = chargeSpeed;
+            navAgent.isStopped = false;
             navAgent.SetDestination(player.position);
         }
     }
 
-    /// <summary>
-    /// Immediately faces the player without interpolation
-    /// </summary>
     protected void FacePlayerImmediate()
     {
         if (player == null) return;
@@ -307,17 +456,6 @@ public abstract class BaseEnemy : MonoBehaviour
         navAgent.speed = chaseSpeed;
     }
 
-    public virtual void Shove()
-    {
-        if (!CanPerformAction()) return;
-
-        isAttacking = true;
-        attackCooldownTimer = attackCooldown;
-        navAgent.isStopped = true;
-
-        animator?.SetTrigger(AnimShove);
-    }
-
     protected virtual bool CanPerformAction()
     {
         return !isAttacking && !isBlocking && !isStunned && !isCharging && attackCooldownTimer <= 0;
@@ -325,31 +463,94 @@ public abstract class BaseEnemy : MonoBehaviour
     #endregion
 
     #region Damage & Health
+
+
+    /// <summary>
+    /// Called when player attacks this enemy. Handles blocking, stun buildup, and damage.
+    /// </summary>
     public virtual void TakeDamage(float damage)
     {
-        if (isBlocking)
-        {
-            return;
-        }
+        if (IsDead()) return;
 
-        currentHealth -= damage;
-        animator?.SetTrigger(AnimHit);
-
+        // Become aware and engaged when attacked
         if (!isAware)
         {
             isAware = true;
             navAgent.isStopped = false;
         }
-
         if (!isEngaged)
         {
             isEngaged = true;
             hasOpenedWithCharge = true;
         }
 
+        // Check if blocking
+        if (isBlocking)
+        {
+            // Add stun damage when blocking
+            currentStunMeter += damage * 0.5f;
+
+            // Check if guard is broken
+            if (currentStunMeter >= maxStunMeter)
+            {
+                BreakGuard();
+                return;
+            }
+
+            // Play block hit reaction
+            animator?.SetTrigger(AnimBlockHit);
+            Debug.Log($"{gameObject.name} blocked! Stun meter: {currentStunMeter}/{maxStunMeter}");
+            return;
+        }
+
+        // Not blocking - take full damage
+        currentHealth -= damage;
+
+        // Interrupt current actions
+        isAttacking = false;
+        isCharging = false;
+        navAgent.isStopped = true;
+        navAgent.velocity = Vector3.zero;
+
+        // Release attack permission
+        if (EnemyCombatManager.Instance != null)
+        {
+            EnemyCombatManager.Instance.ReleaseAttackPermission(this);
+        }
+
         if (currentHealth <= 0)
         {
             Die();
+            return;
+        }
+
+        // Play hit animation and start recovery
+        animator?.SetTrigger(AnimHit);
+        StartCoroutine(HitRecoveryRoutine());
+    }
+
+    /// <summary>
+    /// Break enemy's guard and stun them
+    /// </summary>
+    protected virtual void BreakGuard()
+    {
+        isBlocking = false;
+        animator?.SetBool(AnimBlock, false);
+        currentStunMeter = 0f;
+
+        Debug.Log($"{gameObject.name}'s guard was broken!");
+        ApplyStun(stunDuration);
+    }
+
+    private IEnumerator HitRecoveryRoutine()
+    {
+        isRecovering = true;
+        yield return new WaitForSeconds(hitRecoveryTime);
+        isRecovering = false;
+
+        if (!isStunned && navAgent.isOnNavMesh)
+        {
+            navAgent.isStopped = false;
         }
     }
 
@@ -358,9 +559,15 @@ public abstract class BaseEnemy : MonoBehaviour
         isAttacking = false;
         isBlocking = false;
         isCharging = false;
+        isRecovering = false;
         navAgent.isStopped = true;
         navAgent.velocity = Vector3.zero;
         navAgent.enabled = false;
+
+        if (EnemyCombatManager.Instance != null)
+        {
+            EnemyCombatManager.Instance.ReleaseAttackPermission(this);
+        }
 
         animator?.SetTrigger(AnimDie);
 
@@ -372,6 +579,8 @@ public abstract class BaseEnemy : MonoBehaviour
 
     public bool IsDead() => currentHealth <= 0;
     public float GetHealthPercentage() => currentHealth / maxHealth;
+    public float GetStunPercentage() => currentStunMeter / maxStunMeter;
+    public bool IsRecovering() => isRecovering;
     #endregion
 
     #region Animation Events (call from animation clips)
@@ -380,27 +589,37 @@ public abstract class BaseEnemy : MonoBehaviour
         isAttacking = false;
         isCharging = false;
 
-        if (!isStunned && navAgent.isOnNavMesh)
-            navAgent.speed = chaseSpeed;
-    }
+        navAgent.updatePosition = true;
+        navAgent.nextPosition = transform.position;
 
-    public void OnPunchHit()
-    {
-        TryDamagePlayer(punchDamage, attackRange);
-    }
-
-    public void OnChargeHit()
-    {
-        TryDamagePlayer(chargeDamage, attackRange * 1.5f);
-        isCharging = false;
-    }
-
-    public void OnShoveHit()
-    {
-        if (TryDamagePlayer(shoveDamage, attackRange))
+        // Release attack permission when done attacking
+        if (EnemyCombatManager.Instance != null)
         {
-            Debug.Log("Player shoved & stunned!");
+            EnemyCombatManager.Instance.ReleaseAttackPermission(this);
         }
+
+        FacePlayerImmediate();
+
+        if (!isStunned && navAgent.isOnNavMesh)
+        {
+            navAgent.speed = chaseSpeed;
+            navAgent.isStopped = false;
+        }
+    }
+
+    public void OnLightAttackHit()
+    {
+        TryDamagePlayer(lightAttackDamage, attackRange);
+    }
+
+    public void OnHeavyAttackHit()
+    {
+        TryDamagePlayer(heavyAttackDamage, attackRange * 1.2f);
+    }
+
+    public void OnChargeAttackHit()
+    {
+        TryDamagePlayer(chargeAttackDamage, attackRange * 1.5f);
     }
 
     protected bool TryDamagePlayer(float damage, float effectiveRange)
