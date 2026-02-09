@@ -1,14 +1,19 @@
 using UnityEngine;
 
 public abstract class MetaUnlock : ScriptableObject{
-    public string upgradeName;
-    public string description;
-    public float cost;
-    public bool isUnlocked = false;
+    [Header("Meta Base Info")]
+    public string UpgradeName;
+    public string Description;
+    public float Cost;
+    public bool IsUnlocked = false;
+    public Sprite Icon;
+    public string ElementCategory; //Fire, Ice, Earth
     
-    public MetaUnlock prerequisiteUnlock;
+    public MetaUnlock PrerequisiteUnlock;
+
     public bool CanUnlock(){
-        return prerequisiteUnlock == null || prerequisiteUnlock.isUnlocked;
+        return PrerequisiteUnlock == null || PrerequisiteUnlock.IsUnlocked;
     }
+
     public abstract void ApplyMetaUnlock();
 }

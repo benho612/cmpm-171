@@ -4,16 +4,10 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "MetaData", menuName = "PlayerMetaData/metaData")]
 
 public class MetaData : ScriptableObject{
-    [Header("Elements Unlocked")]
-    public bool fireUnlocked;
-    public bool iceUnlocked;
-    public bool earthUnlocked;
+    [Header("Available Elements")]
+    [SerializeField] private List<string> _elementPool = new List<string>();
 
     public List<string> GetUnlockedElementPool(){
-        List<string> elementPool = new List<string>();
-        if (fireUnlocked) elementPool.Add("Fire");
-        if (iceUnlocked) elementPool.Add("Ice");
-        if (earthUnlocked) elementPool.Add("Earth");
-        return elementPool;
+        return _elementPool;
     }
 }
