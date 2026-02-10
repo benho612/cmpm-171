@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using TMPro;
 
 public class GameManager : MonoBehaviour{
-    public static GameManager instance;
+    public static GameManager Instance;
     public Player PlayerInstance;
-    public MetaData metaData;
+    public MetaData MetaData;
 
 
 //list and array of all possible upgrades and the buttons that will display them
-    public List<UpgradeData> allUpgrades;
-    public ButtonLogic[] upgradeButtons;
+    public List<UpgradeData> AllUpgrades;
+    public ButtonLogic[] UpgradeButtons;
 //canvas the buttons are being held on
-    public Canvas runUpgrades;
+    public Canvas RunUpgrades;
 
     void Awake(){
-        if (instance == null){
-            instance = this;
+        if (Instance == null){
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else Destroy(gameObject);
@@ -44,21 +44,21 @@ public class GameManager : MonoBehaviour{
     public void OpenUpgradeMenu(){
         Time.timeScale = 0f;
         GetUpgradesReady();
-        runUpgrades.enabled = true;
+        RunUpgrades.enabled = true;
     }
 //this function will handle the randomized selection of available upgrades to display 
     public void GetUpgradesReady(){
         List<UpgradeData> shuffleList = new List<UpgradeData>();
-        for(int i = 0; i < allUpgrades.Count; i++){
+        for(int i = 0; i < AllUpgrades.Count; i++){
             int randomIndex = Random.Range(0, shuffleList.Count);
             UpgradeData pickedUpgrade = shuffleList[randomIndex];
             
             if(pickedUpgrade is ComboUnlock combo){
-                List<string> pool = metaData.GetUnlockedElementPool();
+                List<string> pool = MetaData.GetUnlockedElementPool();
                 combo.RunTimeElement = pool[Random.Range(0, pool.Count)];
             }
             
-            upgradeButtons[i].SetUpButton(pickedUpgrade);
+            UpgradeButtons[i].SetUpButton(pickedUpgrade);
             shuffleList.RemoveAt(randomIndex);
         }
     }
