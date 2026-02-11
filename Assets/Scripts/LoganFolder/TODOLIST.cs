@@ -1,46 +1,36 @@
 /*
-1. Asset Creation (The "Data" Phase)
-Before you can test, you need "stuff" in your folders.
+1. Asset & Data Phase (The "Content" Phase)
+[ ] Populate Meta Library: Create the actual .asset files for your Elemental Features (e.g., Fire Spread, Ice Freeze, Rock Armor).
 
-[ ] Run Stats: Create 5-10 StatUpgrade assets (e.g., Glass Cannon, Tank's Resolve, Fleet Footed).
+[ ] Set Prerequisites: In the Inspector, drag the "Mastery" assets into the Prerequisite slots of the "Feature" assets to build your tree's logic.
 
-[ ] Meta Elements: Create your 3 ElementUnlock assets (Fire, Ice, Rock).
-
-[ ] Meta Passives: Create assets for the "Conditional" boosts (e.g., Burning Flesh, Brittle Bones).
-
-[ ] The Combo Library: Create the assets for your base combos (e.g., LLH, HHH, LHL).
+[ ] The Combo Library: Ensure your base combos (LLH, etc.) are created and ready to receive randomized elements.
 
 2. The "Managers" (The "Wiring" Phase)
-Your upgrades need to talk to a central "Brain" that stays active throughout the game.
+[x] MetaManager: Logic complete. (Search by Feature ID, search by Stat Multiplier, Singleton access).
 
-[ ] MetaManager: A script that holds the list of all MetaUnlock assets. The ComboUpgrade will look here to see what elements are unlocked.
+[x] SkillTreeManager: Logic complete. (Registry of nodes, Global Refresh, Singleton access).
 
-[X] RunManager / GameManager: * Needs the allPossibleUpgrades list.
-
-Needs the PrepareUpgradeMenu() logic to shuffle and "Pre-Roll" elements for combos.
-
-[X] The RunData SO: Ensure you have one physical asset of RunData that is shared by the Player and the Upgrades.
+[ ] The "Auto-Link" (Optional): In SkillTreeManager, implement the GetComponentsInChildren logic so you don't have to manually fill the AllNodes list.
 
 3. UI Implementation (The "Visual" Phase)
-Even with great code, the player needs to see the choices.
+[x] Skill Tree Nodes: Logic complete. (Refresh visuals based on SO state, Handle Purchase, Currency Check).
 
-[X] Upgrade Canvas: Create the UI with 3 Buttons.
+[ ] The Skill Tree Layout: Actually place your buttons in the Unity Canvas in a "Tree" shape.
 
-[X] ButtonLogic: Attach your script to these buttons and link the OnClick events.
+[ ] The Currency HUD: Create a small UI element that displays GameManager.Instance.MetaData.MetaCurrency so the player sees their money.
 
-[ ] Skill Tree Menu: Create a separate scene or panel where the player can click those MetaUnlock assets to toggle isUnlocked = true.
+[ ] Visual Feedback: Tweak your RefreshNode colors to make the "Locked" state look distinct from the "Available" state.
 
 4. Gameplay "Receivers" (The "Integration" Phase)
-These are the scripts your teammates (or you) will eventually write. You need to make sure your upgrades have a place to plug in.
+[ ] Status Effect System: Update your Enemy/Health script to actually store a string or enum for status (e.g., "Burning"). This is what the MetaManager will check against for stat boosts.
 
-[X] CombatHandler: Needs the UnlockCombo(string) function and a list to store them.
+[ ] Combat Calculation: In the player's damage logic, call MetaManager.Instance.StatIncreaseCheck() to apply those permanent meta-bonuses to the base damage.
 
-[ ] Enemy/Health Script: Needs to understand Status Effects. It needs to store a string like "Burning" so your Passives know when to trigger.
-
-[ ] The "Split" Logic: Inside the CombatHandler, implement the code to turn "LLH_Fire" into "Play LLH Animation" + "Spawn Fire Particles."
+[ ] The "Split" Logic: Implement the string splitting in CombatHandler to separate the move name from the element name (e.g., LLH | Fire).
 
 5. Saving & Persistence (The "Final Polish")
-[ ] Meta-Reset: A button in your developer menu to set all isUnlocked bools back to false for testing.
+[x] Meta-Reset: You have the logic to wipe isUnlocked bools for testing.
 
-[ ] Run-Reset: Ensure the GameManager calls runData.ResetStats() every time a new run starts.
+[ ] Save to Disk: (Future Task) Implement a system to save your MetaData and MetaUnlock states to a file so progress isn't lost when the game closes.
 */
