@@ -10,6 +10,7 @@ public class SkillTreeNode : MonoBehaviour
     [SerializeField] private Button _nodeButton;
     [SerializeField] private Image _nodeImage;
     [SerializeField] private TextMeshProUGUI _buttonText;
+    public SkillTreeManager SkillTreeManager;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start(){
@@ -21,7 +22,7 @@ public class SkillTreeNode : MonoBehaviour
             Debug.Log("Prerequisite not met");
             return;
         }
-        if(MetaUnlock.cost <= GameManager.Instance.MetaData.MetaCurrency){
+        if(MetaUnlock.Cost <= GameManager.Instance.MetaData.MetaCurrency){
             GameManager.Instance.MetaData.MetaCurrency -= (int)MetaUnlock.Cost;
             MetaUnlock.IsUnlocked = true;
             MetaUnlock.ApplyMetaUnlock();
