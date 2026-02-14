@@ -1,36 +1,36 @@
 /*
-1. Asset & Data Phase (The "Content" Phase)
-[ ] Populate Meta Library: Create the actual .asset files for your Elemental Features (e.g., Fire Spread, Ice Freeze, Rock Armor).
+1. The Unity Editor Phase (The "Bulk" Work)
+Since you have the ScriptableObject classes ready, you now need to create the actual assets they will use.
 
-[ ] Set Prerequisites: In the Inspector, drag the "Mastery" assets into the Prerequisite slots of the "Feature" assets to build your tree's logic.
+[ ] Create Combo Library: In your Project folder, create .asset files for every combo (e.g., L, LH, LLH).
 
-[ ] The Combo Library: Ensure your base combos (LLH, etc.) are created and ready to receive randomized elements.
+[ ] Ensure IsFinisher is Checked for finishers (e.g., LLH) and Unchecked for middle-moves (e.g., L, LH).
 
-2. The "Managers" (The "Wiring" Phase)
-[x] MetaManager: Logic complete. (Search by Feature ID, search by Stat Multiplier, Singleton access).
+[ ] Create Meta Progression Assets: Create .asset files for your Skill Tree (e.g., FireMastery, BurnDamage).
 
-[x] SkillTreeManager: Logic complete. (Registry of nodes, Global Refresh, Singleton access).
+[ ] Wiring: In the Inspector, drag the "Prerequisite" assets into the slots to build the tree logic.
 
-[ ] The "Auto-Link" (Optional): In SkillTreeManager, implement the GetComponentsInChildren logic so you don't have to manually fill the AllNodes list.
+[ ] Populate AllUpgrades: In your GameManager inspector, drag all your ComboUnlock and CombatStatUpgrade assets into the AllUpgrades list.
 
-3. UI Implementation (The "Visual" Phase)
-[x] Skill Tree Nodes: Logic complete. (Refresh visuals based on SO state, Handle Purchase, Currency Check).
+2. The UI Phase (Visual Implementation)
+[ ] Skill Tree Layout:
 
-[ ] The Skill Tree Layout: Actually place your buttons in the Unity Canvas in a "Tree" shape.
+[ ] Place your SkillTreeNode prefabs onto your UI Canvas.
 
-[ ] The Currency HUD: Create a small UI element that displays GameManager.Instance.MetaData.MetaCurrency so the player sees their money.
+[ ] Assign the correct MetaUnlock asset to each button in the Inspector.
 
-[ ] Visual Feedback: Tweak your RefreshNode colors to make the "Locked" state look distinct from the "Available" state.
+[ ] Run Upgrade Menu:
 
-4. Gameplay "Receivers" (The "Integration" Phase)
-[ ] Status Effect System: Update your Enemy/Health script to actually store a string or enum for status (e.g., "Burning"). This is what the MetaManager will check against for stat boosts.
+[ ] Ensure your UpgradeButtons array in the GameManager is filled with the buttons from your "In-Run" UI.
 
-[ ] Combat Calculation: In the player's damage logic, call MetaManager.Instance.StatIncreaseCheck() to apply those permanent meta-bonuses to the base damage.
+[ ] Currency Display: Create a small script or update UpdateUI() to show MetaData.MetaCurrency on screen so players know what they can afford.
 
-[ ] The "Split" Logic: Implement the string splitting in CombatHandler to separate the move name from the element name (e.g., LLH | Fire).
+3. The "Relay Race" Wiring (Integration Prep)
+[ ] Enemy Status Placeholder: Create a simple script (or tell your teammate) to add public string currentStatus = "None"; to the Enemy objects.
 
-5. Saving & Persistence (The "Final Polish")
-[x] Meta-Reset: You have the logic to wipe isUnlocked bools for testing.
+[ ] Hit Detection Bridge:
 
-[ ] Save to Disk: (Future Task) Implement a system to save your MetaData and MetaUnlock states to a file so progress isn't lost when the game closes.
+[ ] Coordinate with Jayson: He must call _combatHandler.ProcessHit(enemyObject) whenever his hitbox trigger touches an enemy.
+
+[ ] Status Application Logic: Update your ProcessHit in CombatHandler to apply the status to the enemy (e.g., if _activeElement is "Fire", change the enemy's currentStatus to "Burning").
 */

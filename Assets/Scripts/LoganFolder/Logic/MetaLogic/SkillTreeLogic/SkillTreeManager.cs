@@ -5,7 +5,7 @@ using System.Collections.Generic;
 //in the skill tree and update them when something has changed
 public class SkillTreeManager : MonoBehaviour
 {
-    public SkillTreeManager Instance;
+    public static SkillTreeManager Instance;
     public List<SkillTreeNode> AllNodes = new List<SkillTreeNode>();
     
     void Awake(){
@@ -13,12 +13,14 @@ public class SkillTreeManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }else Destroy(gameObject);
-
+    }
+    
+    public void Start(){
         AllNodes.AddRange(GetComponentsInChildren<SkillTreeNode>());
         RefreshAllNodes();
     }
 
-    public void RefreshAllNodes(){
+  public void RefreshAllNodes(){
         foreach(SkillTreeNode node in AllNodes){
             node.RefreshNode();
         }

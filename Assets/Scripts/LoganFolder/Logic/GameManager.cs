@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
 
 public class GameManager : MonoBehaviour{
     public static GameManager Instance;
@@ -48,8 +49,8 @@ public class GameManager : MonoBehaviour{
     }
 //this function will handle the randomized selection of available upgrades to display 
     public void GetUpgradesReady(){
-        List<UpgradeData> shuffleList = new List<UpgradeData>();
-        for(int i = 0; i < AllUpgrades.Count; i++){
+        List<UpgradeData> shuffleList = new List<UpgradeData>(AllUpgrades);
+        for(int i = 0; i < UpgradeButtons.Length; i++){
             int randomIndex = Random.Range(0, shuffleList.Count);
             UpgradeData pickedUpgrade = shuffleList[randomIndex];
             

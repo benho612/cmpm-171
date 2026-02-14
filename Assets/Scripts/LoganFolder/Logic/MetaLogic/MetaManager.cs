@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class MetaManager : MonoBehaviour
 {
     public List<MetaUnlock> AllMetaUnlocks;
-    public MetaManager Instance;
+    public static MetaManager Instance;
     public void Awake(){
         if(Instance == null){
             Instance = this;
@@ -12,6 +12,7 @@ public class MetaManager : MonoBehaviour
         }else Destroy(gameObject);
     }
     
+    //checks for the feature logic tied to the skill tree passive unlock
     public bool FeatureLogicCheck(string featureID){
         if(AllMetaUnlocks == null) return false;
         foreach(MetaUnlock unlock in AllMetaUnlocks){
@@ -22,6 +23,7 @@ public class MetaManager : MonoBehaviour
         return false;
     }
 
+    //checks for a stat increase on enemy if effected by the required status effect EX: Burning, Frozen
     public float StatIncreaseCheck(string statEffected, string requiredStatusEffect){
         if(AllMetaUnlocks == null) return 0f;
         float totalIncrease = 0f;
@@ -34,6 +36,8 @@ public class MetaManager : MonoBehaviour
         }
         return totalIncrease;
     }
+
+    //quick reset function if needed
     [ContextMenu("Reset All Unlocks")] // This adds a button in the Inspector!
     public void ResetAllUnlocks()
     {
