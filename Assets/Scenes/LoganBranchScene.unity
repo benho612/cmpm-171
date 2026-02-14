@@ -712,7 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df99351054b1f4149866ba1ed6c5af76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonLogic
-  buttonText: {fileID: 1388484425}
+  _buttonText: {fileID: 1388484425}
 --- !u!1 &1108925754
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df99351054b1f4149866ba1ed6c5af76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonLogic
-  buttonText: {fileID: 402531611}
+  _buttonText: {fileID: 402531611}
 --- !u!1 &1129594342
 GameObject:
   m_ObjectHideFlags: 0
@@ -1006,7 +1006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df99351054b1f4149866ba1ed6c5af76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonLogic
-  buttonText: {fileID: 1762605240}
+  _buttonText: {fileID: 1762605240}
 --- !u!1 &1381949665
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,7 +1040,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerRunData: {fileID: 11400000, guid: 5d587f70f4be94d44b7d36f800ce3b97, type: 2}
-  combatHandler: {fileID: 0}
 --- !u!136 &1381949667
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1130,7 +1129,7 @@ Transform:
   m_GameObject: {fileID: 1381949665}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.35357, y: 0.2475, z: 0.35357}
+  m_LocalPosition: {x: 0.35357, y: 1.6, z: 0.35357}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1302,10 +1301,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01f2d969bb4d5884fa2ad9b057189fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  playerInstance: {fileID: 1381949666}
-  allUpgrades: []
-  upgradeButtons: []
-  runUpgrades: {fileID: 0}
+  PlayerInstance: {fileID: 0}
+  MetaData: {fileID: 0}
+  AllUpgrades: []
+  UpgradeButtons: []
+  RunUpgrades: {fileID: 0}
 --- !u!4 &1445660181
 Transform:
   m_ObjectHideFlags: 0
