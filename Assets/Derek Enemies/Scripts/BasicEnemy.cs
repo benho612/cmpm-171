@@ -16,7 +16,8 @@ public class BasicEnemy : BaseEnemy
     {
         base.Update();
 
-        if (IsDead() || isStunned) return;
+        // Don't continue if dead, stunned, in hit stun, or dashing back
+        if (IsDead() || isStunned || isInHitStun || isDashingBack) return;
 
         // Don't do anything until aware of player
         if (!isAware) return;
@@ -33,9 +34,6 @@ public class BasicEnemy : BaseEnemy
             aiDecisionTimer = aiDecisionInterval + Random.Range(-0.1f, 0.1f);
             MakeDecision();
         }
-
-        // Removed: ChasePlayer() and FacePlayer() calls
-        // These are now handled by ContinueCombat() in BaseEnemy
     }
 
     private void MakeDecision()

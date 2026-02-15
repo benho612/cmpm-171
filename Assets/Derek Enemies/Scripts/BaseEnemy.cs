@@ -15,6 +15,8 @@ public abstract class BaseEnemy : MonoBehaviour
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float chargeSpeed = 5f;
     [SerializeField] protected float chargeStopDistance = 2f;
+    [SerializeField] protected float dashBackDistance = 3f;
+    [SerializeField] protected float dashBackSpeed = 8f;
 
     [Header("Awareness & Engagement")]
     [SerializeField] protected float awarenessRange = 25f;
@@ -29,9 +31,13 @@ public abstract class BaseEnemy : MonoBehaviour
     [SerializeField] protected float stunDuration = 2f;
     [SerializeField] protected float attackCooldown = 1.5f;
 
-    [Header("References")]
-    [SerializeField] protected Transform player;
-    [SerializeField] protected Animator animator;
+    [Header("Hit Stun")]
+    [SerializeField] protected float maxHitStunDuration = 5f; // Max time in hit stun before dash back
+    [SerializeField] protected float hitStunResetTime = 1f; // Time without being hit to reset hit stun
+    protected float hitStunTimer;
+    protected float timeSinceLastHit;
+    protected bool isInHitStun;
+    protected bool isDashingBack;
 
     [Header("Stun Meter")]
     [SerializeField] protected float maxStunMeter = 100f;
@@ -41,6 +47,10 @@ public abstract class BaseEnemy : MonoBehaviour
     [Header("Recovery")]
     [SerializeField] protected float hitRecoveryTime = 0.5f;
     protected bool isRecovering;
+
+    [Header("References")]
+    [SerializeField] protected Transform player;
+    [SerializeField] protected Animator animator;
 
     // Components
     protected NavMeshAgent navAgent;
@@ -61,27 +71,51 @@ public abstract class BaseEnemy : MonoBehaviour
     protected static readonly int AnimChargeAttack = Animator.StringToHash("ChargeAttack");
     protected static readonly int AnimLightRandom = Animator.StringToHash("LightRandom");
     protected static readonly int AnimBlock = Animator.StringToHash("Block");
-    protected static readonly int AnimHit = Animator.StringToHash("Hit");
+    protected static readonly int AnimHitReaction = Animator.StringToHash("HitReaction");
     protected static readonly int AnimDie = Animator.StringToHash("Die");
     protected static readonly int AnimSpeed = Animator.StringToHash("Speed");
     protected static readonly int AnimBlockHit = Animator.StringToHash("BlockHit");
+    // TODO: Add "Stunned" bool parameter to Animator Controller when animation is ready
     protected static readonly int AnimStunned = Animator.StringToHash("Stunned");
+    // TODO: Add "DashBack" trigger parameter to Animator Controller when animation is ready
+    protected static readonly int AnimDashBack = Animator.StringToHash("DashBack");
+
+    private PlayerHealth playerHealth;
 
     protected virtual void Awake()
     {
         navAgent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+
+        // Only get Animator if not already assigned in Inspector
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+            if (animator == null)
+            {
+                animator = GetComponentInChildren<Animator>();
+            }
+        }
 
         if (animator == null)
         {
-            Debug.LogError($"{gameObject.name}: No Animator found! Check that Animator is on this GameObject.", this);
+            Debug.LogError($"{gameObject.name}: No Animator found! Check that Animator is on this GameObject or a child.", this);
         }
 
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-        if (player == null)
+        if (player != null)
+        {
+            playerHealth = player.GetComponent<PlayerHealth>();
+            if (playerHealth == null)
+            {
+                Debug.LogWarning($"{name}: Player found but has no PlayerHealth component!");
+            }
+        }
+        else
+        {
             Debug.LogWarning($"{name}: Player not found!");
+        }
     }
 
     protected virtual void Start()
@@ -93,13 +127,11 @@ public abstract class BaseEnemy : MonoBehaviour
         isEngaged = false;
         hasOpenedWithCharge = false;
 
-        // Ensure NavMeshAgent controls movement by default, not root motion
         if (animator != null)
         {
             animator.applyRootMotion = false;
         }
 
-        // Register with combat manager
         if (EnemyCombatManager.Instance != null)
         {
             EnemyCombatManager.Instance.RegisterEnemy(this);
@@ -108,7 +140,6 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        // Unregister from combat manager
         if (EnemyCombatManager.Instance != null)
         {
             EnemyCombatManager.Instance.UnregisterEnemy(this);
@@ -118,6 +149,29 @@ public abstract class BaseEnemy : MonoBehaviour
     protected virtual void Update()
     {
         if (currentHealth <= 0) return;
+
+        // Update hit stun timer
+        if (isInHitStun)
+        {
+            hitStunTimer += Time.deltaTime;
+            timeSinceLastHit += Time.deltaTime;
+
+            // If hit stun duration exceeded, dash back
+            if (hitStunTimer >= maxHitStunDuration)
+            {
+                StartCoroutine(DashBackRoutine());
+            }
+            // If not hit for a while, reset hit stun
+            else if (timeSinceLastHit >= hitStunResetTime)
+            {
+                ExitHitStun();
+            }
+
+            return; // Don't do normal behavior while in hit stun
+        }
+
+        // Don't do anything while dashing back
+        if (isDashingBack) return;
 
         if (attackCooldownTimer > 0)
             attackCooldownTimer -= Time.deltaTime;
@@ -132,7 +186,6 @@ public abstract class BaseEnemy : MonoBehaviour
         }
         else
         {
-            // Check if we should wait or attack
             if (ShouldWaitForTurn())
             {
                 CircleAroundPlayer();
@@ -148,7 +201,6 @@ public abstract class BaseEnemy : MonoBehaviour
             UpdateChargeAttack();
         }
 
-        // Always face the player when aware and not stunned
         if (isAware && !isStunned)
         {
             FacePlayer();
@@ -157,21 +209,15 @@ public abstract class BaseEnemy : MonoBehaviour
         UpdateAnimatorParameters();
     }
 
-    /// <summary>
-    /// Check if this enemy should wait for their turn to attack
-    /// </summary>
     protected bool ShouldWaitForTurn()
     {
         if (EnemyCombatManager.Instance == null) return false;
         return EnemyCombatManager.Instance.ShouldWait(this);
     }
 
-    /// <summary>
-    /// Circle around the player while waiting
-    /// </summary>
     protected virtual void CircleAroundPlayer()
     {
-        if (isAttacking || isBlocking || isStunned || isCharging) return;
+        if (isAttacking || isBlocking || isStunned || isCharging || isInHitStun || isDashingBack) return;
         if (EnemyCombatManager.Instance == null) return;
 
         Vector3 targetPos = EnemyCombatManager.Instance.GetCirclePosition(this);
@@ -181,21 +227,14 @@ public abstract class BaseEnemy : MonoBehaviour
         navAgent.SetDestination(targetPos);
     }
 
-    /// <summary>
-    /// Check if this enemy is blocking or stunned (used by combat manager)
-    /// </summary>
     public bool IsBlockingOrStunned()
     {
-        return isBlocking || isStunned;
+        return isBlocking || isStunned || isInHitStun;
     }
 
     protected void UpdateAnimatorParameters()
     {
-        if (animator == null)
-        {
-            Debug.LogWarning($"{gameObject.name}: Animator is null in Update!");
-            return;
-        }
+        if (animator == null) return;
 
         Vector3 worldVelocity = navAgent.velocity;
         float rawSpeed = worldVelocity.magnitude;
@@ -207,15 +246,11 @@ public abstract class BaseEnemy : MonoBehaviour
         animator.SetFloat("VelocityZ", localVelocityDir.z);
     }
 
-    /// <summary>
-    /// Handles root motion - applies animation movement to the GameObject during attacks.
-    /// Only applies position, not rotation, so enemy always faces player.
-    /// </summary>
     private void OnAnimatorMove()
     {
         if (animator == null) return;
 
-        if (isAttacking)
+        if (isAttacking || isDashingBack || isInHitStun)
         {
             navAgent.updatePosition = false;
             transform.position += animator.deltaPosition;
@@ -227,20 +262,14 @@ public abstract class BaseEnemy : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handles ongoing combat behavior after the enemy is engaged.
-    /// Override in subclasses for custom attack patterns.
-    /// </summary>
     protected virtual void ContinueCombat()
     {
-        // Skip if busy with an action
-        if (isAttacking || isBlocking || isCharging || isStunned) return;
+        if (isAttacking || isBlocking || isCharging || isStunned || isInHitStun || isDashingBack) return;
 
         float distance = GetDistanceToPlayer();
 
         if (distance <= attackRange)
         {
-            // Request permission to attack
             if (EnemyCombatManager.Instance == null ||
                 EnemyCombatManager.Instance.RequestAttackPermission(this))
             {
@@ -278,7 +307,6 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             isEngaged = true;
 
-            // Only do opening charge if we have attack permission
             if (CanPerformAction())
             {
                 if (EnemyCombatManager.Instance == null ||
@@ -289,7 +317,6 @@ public abstract class BaseEnemy : MonoBehaviour
                 }
                 else
                 {
-                    // Can't attack, just mark opener as done and circle
                     hasOpenedWithCharge = true;
                 }
             }
@@ -307,13 +334,13 @@ public abstract class BaseEnemy : MonoBehaviour
     }
 
     public bool IsAware() => isAware;
-
     public bool IsEngaged() => isEngaged;
+    public bool IsInHitStun() => isInHitStun;
 
     #region Movement
     protected virtual void ChasePlayer()
     {
-        if (isAttacking || isBlocking || isStunned || isCharging || player == null) return;
+        if (isAttacking || isBlocking || isStunned || isCharging || isInHitStun || isDashingBack || player == null) return;
 
         navAgent.isStopped = false;
         navAgent.speed = chaseSpeed;
@@ -342,10 +369,6 @@ public abstract class BaseEnemy : MonoBehaviour
     #endregion
 
     #region Combat Actions
-
-    /// <summary>
-    /// Performs a light attack with random animation selection (0, 1, or 2)
-    /// </summary>
     public virtual void LightAttack()
     {
         if (!CanPerformAction()) return;
@@ -360,9 +383,6 @@ public abstract class BaseEnemy : MonoBehaviour
         animator?.SetTrigger(AnimLightAttack);
     }
 
-    /// <summary>
-    /// Performs a heavy attack
-    /// </summary>
     public virtual void HeavyAttack()
     {
         if (!CanPerformAction()) return;
@@ -377,7 +397,7 @@ public abstract class BaseEnemy : MonoBehaviour
 
     public virtual void StartBlock()
     {
-        if (isAttacking || isStunned || isCharging) return;
+        if (isAttacking || isStunned || isCharging || isInHitStun || isDashingBack) return;
 
         isBlocking = true;
         navAgent.isStopped = true;
@@ -390,9 +410,6 @@ public abstract class BaseEnemy : MonoBehaviour
         animator?.SetBool(AnimBlock, false);
     }
 
-    /// <summary>
-    /// Initiates a charge toward the player, triggers ChargeAttack when in range
-    /// </summary>
     public virtual void ChargeAttack()
     {
         if (!CanPerformAction() || player == null) return;
@@ -458,18 +475,15 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual bool CanPerformAction()
     {
-        return !isAttacking && !isBlocking && !isStunned && !isCharging && attackCooldownTimer <= 0;
+        return !isAttacking && !isBlocking && !isStunned && !isCharging && !isInHitStun && !isDashingBack && attackCooldownTimer <= 0;
     }
     #endregion
 
     #region Damage & Health
-
-
-    /// <summary>
-    /// Called when player attacks this enemy. Handles blocking, stun buildup, and damage.
-    /// </summary>
     public virtual void TakeDamage(float damage)
     {
+        Debug.Log($"=== {gameObject.name} TakeDamage({damage}) CALLED ===");
+
         if (IsDead()) return;
 
         // Become aware and engaged when attacked
@@ -487,24 +501,22 @@ public abstract class BaseEnemy : MonoBehaviour
         // Check if blocking
         if (isBlocking)
         {
-            // Add stun damage when blocking
             currentStunMeter += damage * 0.5f;
 
-            // Check if guard is broken
             if (currentStunMeter >= maxStunMeter)
             {
                 BreakGuard();
                 return;
             }
 
-            // Play block hit reaction
             animator?.SetTrigger(AnimBlockHit);
             Debug.Log($"{gameObject.name} blocked! Stun meter: {currentStunMeter}/{maxStunMeter}");
             return;
         }
 
-        // Not blocking - take full damage
+        // Take damage
         currentHealth -= damage;
+        Debug.Log($"{gameObject.name}: Health now {currentHealth}/{maxHealth}");
 
         // Interrupt current actions
         isAttacking = false;
@@ -524,15 +536,16 @@ public abstract class BaseEnemy : MonoBehaviour
             return;
         }
 
-        // Play hit animation and start recovery
-        animator?.SetTrigger(AnimHit);
-        StartCoroutine(HitRecoveryRoutine());
-    }
+        // Enter or continue hit stun
+        EnterHitStun();
 
-    /// <summary>
-    /// Break enemy's guard and stun them
-    /// </summary>
-    protected virtual void BreakGuard()
+        // Play hit reaction animation
+        Debug.Log($"{gameObject.name}: Triggering HitReaction animation");
+        animator?.SetTrigger(AnimHitReaction);
+    }
+    #endregion
+
+    public virtual void BreakGuard()
     {
         isBlocking = false;
         animator?.SetBool(AnimBlock, false);
@@ -542,24 +555,14 @@ public abstract class BaseEnemy : MonoBehaviour
         ApplyStun(stunDuration);
     }
 
-    private IEnumerator HitRecoveryRoutine()
-    {
-        isRecovering = true;
-        yield return new WaitForSeconds(hitRecoveryTime);
-        isRecovering = false;
-
-        if (!isStunned && navAgent.isOnNavMesh)
-        {
-            navAgent.isStopped = false;
-        }
-    }
-
     protected virtual void Die()
     {
         isAttacking = false;
         isBlocking = false;
         isCharging = false;
         isRecovering = false;
+        isInHitStun = false;
+        isDashingBack = false;
         navAgent.isStopped = true;
         navAgent.velocity = Vector3.zero;
         navAgent.enabled = false;
@@ -581,9 +584,8 @@ public abstract class BaseEnemy : MonoBehaviour
     public float GetHealthPercentage() => currentHealth / maxHealth;
     public float GetStunPercentage() => currentStunMeter / maxStunMeter;
     public bool IsRecovering() => isRecovering;
-    #endregion
 
-    #region Animation Events (call from animation clips)
+    #region Animation Events
     public void OnAttackEnd()
     {
         isAttacking = false;
@@ -592,7 +594,6 @@ public abstract class BaseEnemy : MonoBehaviour
         navAgent.updatePosition = true;
         navAgent.nextPosition = transform.position;
 
-        // Release attack permission when done attacking
         if (EnemyCombatManager.Instance != null)
         {
             EnemyCombatManager.Instance.ReleaseAttackPermission(this);
@@ -600,9 +601,22 @@ public abstract class BaseEnemy : MonoBehaviour
 
         FacePlayerImmediate();
 
-        if (!isStunned && navAgent.isOnNavMesh)
+        if (!isStunned && !isInHitStun && navAgent.isOnNavMesh)
         {
             navAgent.speed = chaseSpeed;
+            navAgent.isStopped = false;
+        }
+    }
+
+    public void OnDashBackEnd()
+    {
+        isDashingBack = false;
+        isInHitStun = false;
+        navAgent.updatePosition = true;
+        navAgent.nextPosition = transform.position;
+
+        if (!isStunned && navAgent.isOnNavMesh)
+        {
             navAgent.isStopped = false;
         }
     }
@@ -627,12 +641,52 @@ public abstract class BaseEnemy : MonoBehaviour
         if (player == null) return false;
 
         float distance = Vector3.Distance(transform.position, player.position);
+        
+        Debug.Log($"{gameObject.name}: Attempting to hit player - Distance: {distance:F2}, EffectiveRange: {effectiveRange:F2}");
+        
         if (distance <= effectiveRange)
         {
-            Debug.Log($"Player hit for {damage} damage!");
-            return true;
+            if (playerHealth != null)
+            {
+                float healthBefore = playerHealth.HealthPercentage * 100f;
+                playerHealth.TakeDamage(damage);
+                float healthAfter = playerHealth.HealthPercentage * 100f;
+                
+                Debug.Log($"=== PLAYER HIT ===");
+                Debug.Log($"  Attacker: {gameObject.name}");
+                Debug.Log($"  Damage: {damage}");
+                Debug.Log($"  Distance: {distance:F2}");
+                Debug.Log($"  Player Health: {healthBefore:F1}% -> {healthAfter:F1}%");
+                
+                if (playerHealth.IsDead)
+                {
+                    Debug.Log($"  >>> PLAYER KILLED BY {gameObject.name}! <<<");
+                }
+                
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning($"{gameObject.name}: Cannot damage player - PlayerHealth component not found!");
+                return false;
+            }
         }
+        else
+        {
+            Debug.Log($"{gameObject.name}: Attack missed - Player out of range");
+        }
+        
         return false;
+    }
+
+    /// <summary>
+    /// Call this from the HitReaction animation event at the end of the clip
+    /// </summary>
+    public void OnHitReactionEnd()
+    {
+        // Don't auto-exit hit stun here - let the timer handle it
+        // This just ensures the animator state is ready for the next hit
+        Debug.Log($"{gameObject.name}: Hit reaction animation ended");
     }
     #endregion
 
@@ -649,13 +703,105 @@ public abstract class BaseEnemy : MonoBehaviour
         isAttacking = false;
         isBlocking = false;
         isCharging = false;
+        isInHitStun = false;
 
         navAgent.isStopped = true;
         navAgent.velocity = Vector3.zero;
 
+        // TODO: Uncomment when Stunned animation is ready
+        // animator?.SetBool(AnimStunned, true);
+
         yield return new WaitForSeconds(duration);
 
+        // TODO: Uncomment when Stunned animation is ready
+        // animator?.SetBool(AnimStunned, false);
         isStunned = false;
+
+        if (navAgent.isOnNavMesh)
+        {
+            navAgent.isStopped = false;
+        }
     }
     #endregion
+
+    /// <summary>
+    /// Enter hit stun state - can be hit multiple times
+    /// </summary>
+    protected virtual void EnterHitStun()
+    {
+        if (!isInHitStun)
+        {
+            isInHitStun = true;
+            hitStunTimer = 0f;
+            Debug.Log($"{gameObject.name} entered hit stun!");
+        }
+
+        // Reset time since last hit (allows combo to continue)
+        timeSinceLastHit = 0f;
+    }
+
+    /// <summary>
+    /// Exit hit stun and return to normal behavior
+    /// </summary>
+    protected virtual void ExitHitStun()
+    {
+        isInHitStun = false;
+        hitStunTimer = 0f;
+        timeSinceLastHit = 0f;
+
+        if (!isStunned && navAgent.isOnNavMesh)
+        {
+            navAgent.isStopped = false;
+        }
+
+        Debug.Log($"{gameObject.name} exited hit stun!");
+    }
+
+    protected IEnumerator DashBackRoutine()
+    {
+        // Prevent multiple dash backs from starting
+        if (isDashingBack) yield break;
+
+        isDashingBack = true;
+        isInHitStun = false;
+        navAgent.isStopped = true;
+        navAgent.velocity = Vector3.zero;
+
+        // TODO: Uncomment when DashBack animation is ready
+        // animator?.SetTrigger(AnimDashBack);
+
+        Vector3 dashDirection = player != null
+            ? -(player.position - transform.position).normalized
+            : -transform.forward;
+        dashDirection.y = 0f;
+
+        Vector3 startPosition = transform.position;
+        Vector3 targetPosition = startPosition + dashDirection * dashBackDistance;
+
+        float dashDuration = dashBackDistance / dashBackSpeed;
+        float elapsed = 0f;
+
+        while (elapsed < dashDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / dashDuration);
+            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            yield return null;
+        }
+
+        transform.position = targetPosition;
+
+        isDashingBack = false;
+        hitStunTimer = 0f;
+        timeSinceLastHit = 0f;
+        navAgent.updatePosition = true;
+        navAgent.nextPosition = transform.position;
+
+        if (!isStunned && navAgent.isOnNavMesh)
+        {
+            navAgent.isStopped = false;
+        }
+
+        Debug.Log($"{gameObject.name} completed dash back!");
+    }
 }
