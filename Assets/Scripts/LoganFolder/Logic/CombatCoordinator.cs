@@ -24,10 +24,11 @@ public class CombatCoordinator : MonoBehaviour
         string bestMatch = "";
 
         foreach(string combo in _combatHandler.UnlockedCombos){
-            if(combo.StartsWith(RecordedCombo + "_")){
+            string[] parts = combo.Split('_');
+            if(parts[0] == RecordedCombo){
                 bestMatch = combo;
                 //_combatHandler.ExecuteMove(combo);
-                //call Jayson's combat script 
+                //call combat script 
                 break;
             }
         }   

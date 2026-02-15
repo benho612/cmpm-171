@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80bdc5a4f42ac78479546d5e968b0d26, type: 3}
-  m_Name: UpgradedBasic
-  m_EditorClassIdentifier: Assembly-CSharp::ComboUnlock
-  upgradeName: Heavy Basic
-  icon: {fileID: 0}
-  ComboID: 
-  RunTimeElement: None
+  m_Script: {fileID: 11500000, guid: 59b7da2b28307e84792b0a5bfdd6ded5, type: 3}
+  m_Name: MetaData
+  m_EditorClassIdentifier: Assembly-CSharp::MetaData
+  MetaCurrency: 0
+  _elementPool: []

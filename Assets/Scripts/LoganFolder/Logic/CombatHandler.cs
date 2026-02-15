@@ -41,6 +41,8 @@ public class CombatHandler : MonoBehaviour{
 //helper function to see if the combo is the finishing part of the combo and not mid combo
     public bool IsFinisher(string moveID){
         foreach(var data in _unlockedComboData){
+            if(data == null) continue;
+
             string checkID = data.ComboID + "_" + data.RunTimeElement;
             if(checkID == moveID) return data.IsFinisher;
         }
@@ -48,10 +50,42 @@ public class CombatHandler : MonoBehaviour{
     }
 
     public void ProcessHit(GameObject enemy){
-        float finalDamage = GameManager.Instance.PlayerInstance.playerRunData.damage;
+        float baseDamage = GameManager.Instance.PlayerInstance.PlayerRunData.Damage;
+        float baseStagger = GameManager.Instance.PlayerInstance.PlayerRunData.StaggerDamage;
+        float baseCritChance = GameManager.Instance.PlayerInstance.PlayerRunData.CritChance;
+        
+        //info from enemy
         string enemyStatus = "None";
+        bool isStaggered = false;
 
-        float multiplier = MetaManager.Instance.StatIncreaseCheck("Damage", enemyStatus);
-        finalDamage *= (1.0f + multiplier);
+        float damageMult = MetaManager.Instance.StatIncreaseCheck("Damage", enemyStatus);
+        float staggerMult = MetaManager.Instance.StatIncreaseCheck("Stagger", enemyStatus);
+        float critBonus = MetaManager.Instance.StatIncreaseCheck("CritChance", enemyStatus);
+
+        float finalDamage = baseDamage *= (1.0f + damageMult);
+
+        //check for stagger
+        if(isStaggered) finalDamage *= 1.5f;
+        
+        //check for crit
+        float totalCritChance = baseCritChance * (1.0f + critBonus);
+        bool isCrit = Random.Range(0f, 100f) <= totalCritChance;
+        if(isCrit){
+            finalDamage *= 2.0f;
+        }
+        
+        float finalStagger = baseStagger * (1.0f + staggerMult);
+
+        //apply damage
+        //enemy.TakeDamage(finalDamage);
+        //enemy.TakeStagger(finalStagger);
+
+        //handling feature Logic
+        if(_activeElement == "Ice" && MetaManager.Instance.FeatureLogicCheck("FlashFreeze")){
+            //spawn Cold Zone
+        }
+        if(_activeElement == "Stone" && MetaManager.Instance.FeatureLogicCheck("StoneArmor")){
+            //apply Stone Armor
+        }
     }
 }

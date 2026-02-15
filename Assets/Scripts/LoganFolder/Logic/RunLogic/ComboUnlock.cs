@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class ComboUnlock : UpgradeData{
     public string ComboID;
     public bool IsFinisher;
+    public List<string> RequiredMoveParts = new List<string>();
 
     [HideInInspector]
     public string RunTimeElement = "None";
@@ -17,6 +18,9 @@ public class ComboUnlock : UpgradeData{
         }
 
         CombatHandler combatHandler = playerScript.GetComponent<CombatHandler>();
+        foreach(string part in RequiredMoveParts){
+            combatHandler.UnlockCombo(null, part + "_" + RunTimeElement);
+        }
         string FinalCombo = ComboID + "_" + RunTimeElement;
         combatHandler.UnlockCombo(this, FinalCombo);
     }
