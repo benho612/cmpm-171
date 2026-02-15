@@ -2,15 +2,7 @@ using UnityEngine;
 
 public class GameEnums : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public enum ElementType{None, Fire, Ice, Stone}
+    public enum StatusEffect{None, Burning, Chilled, Concussed}
+    public enum StatType{Damage, AttackSpeed, Knockback, CritChance, StaggerDamage, WallSlamDamage, ParryStaggerAmount, CurrentHealth, MaxHealth, HealthRegenRate, LifeSteal}
 }
