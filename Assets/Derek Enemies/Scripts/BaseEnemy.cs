@@ -518,6 +518,10 @@ public abstract class BaseEnemy : MonoBehaviour
         currentHealth -= damage;
         Debug.Log($"{gameObject.name}: Health now {currentHealth}/{maxHealth}");
 
+        // Show health bar when damaged
+        var healthBar = GetComponentInChildren<EnemyHealthBar>();
+        healthBar?.ShowHealthBar();
+
         // Interrupt current actions
         isAttacking = false;
         isCharging = false;
@@ -671,11 +675,6 @@ public abstract class BaseEnemy : MonoBehaviour
                 return false;
             }
         }
-        else
-        {
-            Debug.Log($"{gameObject.name}: Attack missed - Player out of range");
-        }
-        
         return false;
     }
 
