@@ -2,7 +2,7 @@ using UnityEngine;
     
     public enum ElementType{None, Fire, Ice, Stone}
     public enum StatusEffect{None, Burning, Chilled, Concussed}
-    public enum StatType{Damage, CritChance, StaggerDamage}
+    public enum StatType{None, Damage, CritChance, StaggerDamage}
 public abstract class MetaUnlock : ScriptableObject{
     
     [Header("Meta Base Info")]

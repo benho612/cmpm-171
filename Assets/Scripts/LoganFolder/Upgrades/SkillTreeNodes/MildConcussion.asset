@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: MildConcussion
   m_EditorClassIdentifier: Assembly-CSharp::ElementalEffectUnlocks
   UpgradeName: Concussing Fists
-  Description: 'Target Takes '
-  Cost: 0
+  Description: Target Takes 15% extra stagger damage will concussed
+  Cost: 50
   IsUnlocked: 0
   Icon: {fileID: 0}
-  ElementCategory: 
+  ElementCategory: 3
   PrerequisiteUnlock: {fileID: 0}
   FeatureID: 
-  RequiredStatusEffect: 
-  StatEffected: 
-  EffectIncrease: 0
+  RequiredStatusEffect: 3
+  StatEffected: 3
+  EffectIncrease: 0.15

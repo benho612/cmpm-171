@@ -1,36 +1,25 @@
 /*
-1. The Unity Editor Phase (The "Bulk" Work)
-Since you have the ScriptableObject classes ready, you now need to create the actual assets they will use.
+1. The Player-System Handshake
 
-[ ] Create Combo Library: In your Project folder, create .asset files for every combo (e.g., L, LH, LLH).
+[ ] Input-to-Logic Bridge: Ensure your CombatCoordinator is receiving events from the New Input System (e.g., OnLightAttack) and passing those strings ("L" or "H") into the RecordInput function.
 
-[ ] Ensure IsFinisher is Checked for finishers (e.g., LLH) and Unchecked for middle-moves (e.g., L, LH).
+[ ] Animation Event Wiring: Work with your teammate to place Animation Events on the attack clips. These should trigger the hitbox and call CombatHandler.ProcessHit(enemy) at the exact moment of impact.
 
-[ ] Create Meta Progression Assets: Create .asset files for your Skill Tree (e.g., FireMastery, BurnDamage).
+[ ] Active Element Sync: Double-check that CombatHandler.ExecuteMove correctly parses the ElementType from the moveID string so ProcessHit knows which multipliers to pull.
 
-[ ] Wiring: In the Inspector, drag the "Prerequisite" assets into the slots to build the tree logic.
+2. UI & Meta-Progression Verification
 
-[ ] Populate AllUpgrades: In your GameManager inspector, drag all your ComboUnlock and CombatStatUpgrade assets into the AllUpgrades list.
+[ ] Currency Real-Time Update: Confirm your MetaCurrencyDisplay updates immediately after a SkillTreeNode.OnClick event so the player sees the "Gems" deducted.
 
-2. The UI Phase (Visual Implementation)
-[ ] Skill Tree Layout:
+[ ] Prerequisite Visual Chain: Verify that unlocking a "Basic" node immediately makes its "Child" nodes in the Skill Tree interactable and changes their color.
 
-[ ] Place your SkillTreeNode prefabs onto your UI Canvas.
+[ ] Runtime Combo Injection: Test if buying a combo in the UI successfully adds it to the CombatHandler.UnlockedCombos list so the CombatCoordinator can actually find and play the move.
 
-[ ] Assign the correct MetaUnlock asset to each button in the Inspector.
+3. The "Relay Race" (Data Flow Testing)
 
-[ ] Run Upgrade Menu:
+[ ] Dummy Stagger Test: Attach your TempStatusScript to a cube and verify that hitting it with a "Stone" finisher correctly sets currentStatus to Concussed.
 
-[ ] Ensure your UpgradeButtons array in the GameManager is filled with the buttons from your "In-Run" UI.
+[ ] Multiplier Validation: Use Debug.Log in ProcessHit to print out finalDamage. Ensure that hitting a "Burning" enemy with a "Weak Flesh" upgrade active actually results in a higher number.
 
-[ ] Currency Display: Create a small script or update UpdateUI() to show MetaData.MetaCurrency on screen so players know what they can afford.
-
-3. The "Relay Race" Wiring (Integration Prep)
-[ ] Enemy Status Placeholder: Create a simple script (or tell your teammate) to add public string currentStatus = "None"; to the Enemy objects.
-
-[ ] Hit Detection Bridge:
-
-[ ] Coordinate with Jayson: He must call _combatHandler.ProcessHit(enemyObject) whenever his hitbox trigger touches an enemy.
-
-[ ] Status Application Logic: Update your ProcessHit in CombatHandler to apply the status to the enemy (e.g., if _activeElement is "Fire", change the enemy's currentStatus to "Burning").
+[ ] IsFinisher Safety: Confirm that hitting an enemy with a "mid-combo" move (like the first "L") does not reset the combo or apply an elemental status.
 */

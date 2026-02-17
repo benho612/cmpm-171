@@ -12,15 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cc3dbc3b188b149971b721e2b491c0, type: 3}
   m_Name: BurningFlesh
   m_EditorClassIdentifier: Assembly-CSharp::ElementalEffectUnlocks
-  UpgradeName: 
-  Description: 
-  Cost: 0
-  IsUnlocked: 0
+  UpgradeName: Burning Flesh
+  Description: Target takes 25% increased Damge
+  Cost: 50
+  IsUnlocked: 1
   Icon: {fileID: 0}
-  ElementCategory: 
+  ElementCategory: 1
   PrerequisiteUnlock: {fileID: 0}
   FeatureID: 
-  FeatureDescription: 
-  RequiredStatusEffect: 
-  StatEffected: 
-  EffectIncrease: 0
+  RequiredStatusEffect: 1
+  StatEffected: 1
+  EffectIncrease: 0.25
