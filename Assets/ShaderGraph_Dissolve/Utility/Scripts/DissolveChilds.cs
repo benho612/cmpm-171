@@ -6,50 +6,88 @@ namespace DissolveExample
 {
     public class DissolveChilds : MonoBehaviour
     {
-        // Start is called before the first frame update
-        List<Material> materials = new List<Material>();
-        bool PingPong = false;
+        [Header("Dissolve Settings")]
+        [SerializeField] private float dissolveDuration = 2f;
+        [SerializeField] private float dissolveDelay = 0.5f;
+        [SerializeField] private bool destroyOnComplete = true;
+
+        private List<Material> materials = new List<Material>();
+        private bool isDissolving = false;
+
         void Start()
         {
-            var renders = GetComponentsInChildren<Renderer>();
-            for (int i = 0; i < renders.Length; i++)
+            CollectMaterials();
+            SetValue(0f); // Ensure fully visible at start
+        }
+
+        private void CollectMaterials()
+        {
+            materials.Clear();
+            var renderers = GetComponentsInChildren<Renderer>();
+            foreach (var renderer in renderers)
             {
-                materials.AddRange(renders[i].materials);
+                foreach (var mat in renderer.materials)
+                {
+                    if (mat.HasProperty("_Dissolve"))
+                    {
+                        materials.Add(mat);
+                    }
+                }
             }
         }
 
-        private void Reset()
+        public void StartDissolve()
         {
-            Start();
-            SetValue(0);
+            if (isDissolving) return;
+
+            if (materials.Count == 0)
+                CollectMaterials();
+
+            StartCoroutine(DissolveRoutine());
         }
 
-        // Update is called once per frame
-        void Update()
+        public void StartDissolve(float duration)
         {
-
-            var value = Mathf.PingPong(Time.time * 0.5f, 1f);
-            SetValue(value);
+            dissolveDuration = duration;
+            StartDissolve();
         }
 
-        //IEnumerator enumerator()
-        //{
+        private IEnumerator DissolveRoutine()
+        {
+            isDissolving = true;
 
-        //    //float value =         while (true)
-        //    //{
-        //    //    Mathf.PingPong(value, 1f);
-        //    //    value += Time.deltaTime;
-        //    //    SetValue(value);
-        //    //    yield return new WaitForEndOfFrame();
-        //    //}
-        //}
+            if (dissolveDelay > 0f)
+                yield return new WaitForSeconds(dissolveDelay);
+
+            float elapsed = 0f;
+
+            while (elapsed < dissolveDuration)
+            {
+                elapsed += Time.deltaTime;
+                float value = Mathf.Clamp01(elapsed / dissolveDuration);
+                SetValue(value);
+                yield return null;
+            }
+
+            SetValue(1f);
+
+            if (destroyOnComplete)
+                Destroy(gameObject);
+        }
 
         public void SetValue(float value)
         {
-            for (int i = 0; i < materials.Count; i++)
+            foreach (var mat in materials)
             {
-                materials[i].SetFloat("_Dissolve", value);
+                mat.SetFloat("_Dissolve", value);
             }
+        }
+
+        public void ResetDissolve()
+        {
+            StopAllCoroutines();
+            isDissolving = false;
+            SetValue(0f);
         }
     }
 }

@@ -4,8 +4,8 @@ using UnityEngine.UI;
 public class EnemyHealthBar : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Image healthFillImage;
-    [SerializeField] private Image backgroundImage;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Image fillImage;
     [SerializeField] private Canvas canvas;
 
     [Header("Settings")]
@@ -13,6 +13,7 @@ public class EnemyHealthBar : MonoBehaviour
     [SerializeField] private bool hideWhenFull = true;
     [SerializeField] private float hideDelay = 2f;
     [SerializeField] private bool alwaysFaceCamera = true;
+    [SerializeField] private bool debugMode = true; // Enable to see debug info
 
     [Header("Colors")]
     [SerializeField] private Color healthyColor = Color.green;
@@ -26,7 +27,7 @@ public class EnemyHealthBar : MonoBehaviour
 
     private BaseEnemy enemy;
     private Transform cameraTransform;
-    private float targetFillAmount;
+    private float targetValue;
     private float hideTimer;
     private bool isVisible;
     private CanvasGroup canvasGroup;
@@ -38,15 +39,29 @@ public class EnemyHealthBar : MonoBehaviour
         if (canvas == null)
             canvas = GetComponent<Canvas>();
 
+        // Ensure canvas is set to World Space
+        if (canvas != null)
+        {
+            canvas.renderMode = RenderMode.WorldSpace;
+        }
+
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
         if (enemy == null)
         {
-            Debug.LogError("EnemyHealthBar: No BaseEnemy found in parent!");
+            Debug.LogError($"EnemyHealthBar on {gameObject.name}: No BaseEnemy found in parent!");
             enabled = false;
             return;
+        }
+
+        if (debugMode)
+        {
+            Debug.Log($"EnemyHealthBar: Found enemy {enemy.name}");
+            Debug.Log($"EnemyHealthBar: Canvas assigned: {canvas != null}");
+            Debug.Log($"EnemyHealthBar: Slider assigned: {healthSlider != null}");
+            Debug.Log($"EnemyHealthBar: Fill Image assigned: {fillImage != null}");
         }
     }
 
@@ -59,15 +74,32 @@ public class EnemyHealthBar : MonoBehaviour
             Debug.LogWarning("EnemyHealthBar: Main camera not found!");
         }
 
-        // Initialize
-        targetFillAmount = 1f;
-        if (healthFillImage != null)
-            healthFillImage.fillAmount = 1f;
+        // Initialize slider
+        if (healthSlider != null)
+        {
+            healthSlider.minValue = 0f;
+            healthSlider.maxValue = 1f;
+            healthSlider.value = 1f;
+        }
+
+        targetValue = 1f;
+
+        // Set initial position
+        transform.localPosition = offset;
 
         // Hide if full health at start
         if (hideWhenFull)
         {
             SetVisibility(false);
+        }
+        else
+        {
+            SetVisibility(true);
+        }
+
+        if (debugMode)
+        {
+            Debug.Log($"EnemyHealthBar: Started. HideWhenFull: {hideWhenFull}, Visible: {isVisible}");
         }
     }
 
@@ -79,30 +111,38 @@ public class EnemyHealthBar : MonoBehaviour
             return;
         }
 
-        // Update position
-        transform.position = enemy.transform.position + offset;
+        // Update local position (stays relative to parent enemy)
+        transform.localPosition = offset;
 
         // Billboard - face camera
         if (alwaysFaceCamera && cameraTransform != null)
         {
-            transform.forward = cameraTransform.forward;
+            Vector3 dirToCamera = cameraTransform.position - transform.position;
+            dirToCamera.y = 0f;
+            if (dirToCamera.sqrMagnitude > 0.001f)
+            {
+                transform.rotation = Quaternion.LookRotation(-dirToCamera);
+            }
         }
 
         // Update health display
         float healthPercent = enemy.GetHealthPercentage();
-        targetFillAmount = healthPercent;
+        targetValue = healthPercent;
 
-        // Smooth fill animation
-        if (healthFillImage != null)
+        // Smooth slider animation
+        if (healthSlider != null)
         {
-            healthFillImage.fillAmount = Mathf.Lerp(
-                healthFillImage.fillAmount,
-                targetFillAmount,
+            healthSlider.value = Mathf.Lerp(
+                healthSlider.value,
+                targetValue,
                 smoothSpeed * Time.deltaTime
             );
+        }
 
-            // Update color based on health
-            healthFillImage.color = GetHealthColor(healthPercent);
+        // Update fill color based on health
+        if (fillImage != null)
+        {
+            fillImage.color = GetHealthColor(healthPercent);
         }
 
         // Handle visibility
@@ -146,6 +186,11 @@ public class EnemyHealthBar : MonoBehaviour
         {
             canvas.enabled = visible;
         }
+
+        if (debugMode && visible)
+        {
+            Debug.Log($"EnemyHealthBar: Now visible for {enemy?.name}");
+        }
     }
 
     /// <summary>
@@ -153,7 +198,22 @@ public class EnemyHealthBar : MonoBehaviour
     /// </summary>
     public void ShowHealthBar()
     {
+        if (debugMode)
+        {
+            Debug.Log($"EnemyHealthBar: ShowHealthBar called for {enemy?.name}");
+        }
+
         SetVisibility(true);
         hideTimer = hideDelay;
+    }
+
+    // Draw gizmo to visualize health bar position in Scene view
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Vector3 pos = transform.parent != null
+            ? transform.parent.position + offset
+            : transform.position;
+        Gizmos.DrawWireCube(pos, new Vector3(1f, 0.2f, 0.1f));
     }
 }

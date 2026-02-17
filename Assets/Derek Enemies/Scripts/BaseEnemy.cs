@@ -581,6 +581,22 @@ public abstract class BaseEnemy : MonoBehaviour
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
+        // Hide health bar
+        var healthBar = GetComponentInChildren<EnemyHealthBar>();
+        if (healthBar != null) healthBar.gameObject.SetActive(false);
+
+        // Start dissolve effect
+        var dissolve = GetComponent<DissolveExample.DissolveChilds>();
+        if (dissolve != null)
+        {
+            dissolve.StartDissolve();
+        }
+        else
+        {
+            // No dissolve script found, destroy after delay
+            Destroy(gameObject, 3f);
+        }
+
         enabled = false;
     }
 
