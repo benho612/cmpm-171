@@ -6,8 +6,8 @@ public class ElementalEffectUnlocks : MetaUnlock
     [Header("Feature Logic")]
     public string FeatureID; //Unique identifier for the passive skill feature
     [Header("Stat increase logic")]
-    public string RequiredStatusEffect;
-    public string StatEffected;
+    public StatusEffect RequiredStatusEffect;
+    public StatType StatEffected;
     public float EffectIncrease;
     
     public override void ApplyMetaUnlock(){

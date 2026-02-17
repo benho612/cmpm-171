@@ -3,10 +3,14 @@ using System.Collections.Generic;
 public class CombatHandler : MonoBehaviour{
     public List <string> UnlockedCombos = new List<string>();
     private List<ComboUnlock> _unlockedComboData = new List<ComboUnlock>();
-    private string _activeElement;
+    private ElementType _activeElement;
+    
+    private RunData _stats;
+    private MetaManager _meta;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start(){
-        
+        _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
+        _meta = MetaManager.Instance;
     }
 
 //logic to unlock combos
@@ -24,8 +28,8 @@ public class CombatHandler : MonoBehaviour{
     public void ExecuteMove(string moveID){
         string[] parts = moveID.Split('_');
         string moveName = parts[0];
-        if(IsFinisher(moveID)) _activeElement = parts[1];
-        else _activeElement = "None";
+        if(IsFinisher(moveID)) _activeElement = (ElementType)System.Enum.Parse(typeof(ElementType), parts[1]);
+        else _activeElement = ElementType.None;
 
         //Later implementation of VFX script
         // VFXManager.Instance.PlayEffect(_activeElement, transform.position);
@@ -50,17 +54,20 @@ public class CombatHandler : MonoBehaviour{
     }
 
     public void ProcessHit(GameObject enemy){
-        float baseDamage = GameManager.Instance.PlayerInstance.PlayerRunData.Damage;
-        float baseStagger = GameManager.Instance.PlayerInstance.PlayerRunData.StaggerDamage;
-        float baseCritChance = GameManager.Instance.PlayerInstance.PlayerRunData.CritChance;
+        //not sure if this is actual enemy script but this should link enemy to the hit
+        TempStatusScript enemyData = enemy.GetComponent<TempStatusScript>();
+
+        float baseDamage = _stats.Damage;
+        float baseStagger = _stats.StaggerDamage;
+        float baseCritChance = _stats.CritChance;
         
         //info from enemy
-        string enemyStatus = "None";
+        StatusEffect enemyStatus = enemyData.CurrentStatus;
         bool isStaggered = false;
 
-        float damageMult = MetaManager.Instance.StatIncreaseCheck("Damage", enemyStatus);
-        float staggerMult = MetaManager.Instance.StatIncreaseCheck("Stagger", enemyStatus);
-        float critBonus = MetaManager.Instance.StatIncreaseCheck("CritChance", enemyStatus);
+        float damageMult = _meta.StatIncreaseCheck(StatType.Damage, enemyStatus);
+        float staggerMult = _meta.StatIncreaseCheck(StatType.StaggerDamage, enemyStatus);
+        float critBonus = _meta.StatIncreaseCheck(StatType.CritChance, enemyStatus);
 
         float finalDamage = baseDamage *= (1.0f + damageMult);
 
@@ -76,16 +83,30 @@ public class CombatHandler : MonoBehaviour{
         
         float finalStagger = baseStagger * (1.0f + staggerMult);
 
+        //Status Application
+        if(_activeElement != ElementType.None){
+            StatusEffect newStatus = GetStatusFromElement(_activeElement);
+            enemyData.CurrentStatus = newStatus;
+        }
         //apply damage
         //enemy.TakeDamage(finalDamage);
         //enemy.TakeStagger(finalStagger);
 
         //handling feature Logic
-        if(_activeElement == "Ice" && MetaManager.Instance.FeatureLogicCheck("FlashFreeze")){
+        if(_activeElement == ElementType.Ice && _meta.FeatureLogicCheck("FlashFreeze")){
             //spawn Cold Zone
         }
-        if(_activeElement == "Stone" && MetaManager.Instance.FeatureLogicCheck("StoneArmor")){
+        if(_activeElement == ElementType.Stone && _meta.FeatureLogicCheck("StoneArmor")){
             //apply Stone Armor
         }
+    }
+
+    private StatusEffect GetStatusFromElement(ElementType element){
+        return element switch{
+            ElementType.Fire => StatusEffect.Burning,
+            ElementType.Ice => StatusEffect.Chilled,
+            ElementType.Stone => StatusEffect.Concussed,
+            _ => StatusEffect.None
+        };
     }
 }

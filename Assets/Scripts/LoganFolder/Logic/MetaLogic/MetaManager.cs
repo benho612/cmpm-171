@@ -24,12 +24,13 @@ public class MetaManager : MonoBehaviour
     }
 
     //checks for a stat increase on enemy if effected by the required status effect EX: Burning, Frozen
-    public float StatIncreaseCheck(string statEffected, string requiredStatusEffect){
+    public float StatIncreaseCheck(StatType statEffected, StatusEffect enemyStatus){
         if(AllMetaUnlocks == null) return 0f;
         float totalIncrease = 0f;
+
         foreach(MetaUnlock unlock in AllMetaUnlocks){
             if(unlock is ElementalEffectUnlocks eUnlock && unlock.IsUnlocked){
-                if(eUnlock.StatEffected == statEffected && eUnlock.RequiredStatusEffect == requiredStatusEffect){
+                if(eUnlock.StatEffected == statEffected && eUnlock.RequiredStatusEffect == enemyStatus){
                     totalIncrease += eUnlock.EffectIncrease;
                 }
             }
