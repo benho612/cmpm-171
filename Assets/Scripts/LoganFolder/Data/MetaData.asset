@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59b7da2b28307e84792b0a5bfdd6ded5, type: 3}
   m_Name: MetaData
   m_EditorClassIdentifier: Assembly-CSharp::MetaData
-  MetaCurrency: 0
-  _elementPool: []
+  MetaCurrency: 30
+  _elementPool:
+  - Fire
+  - Ice
+  - Stone

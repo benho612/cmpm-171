@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ComboUnlock
   upgradeName: Basic Combo
   icon: {fileID: 0}
-  ComboID: 
-  RunTimeElement: None
+  ComboID: LLH
+  IsFinisher: 1
+  RequiredMoveParts: []
+  RunTimeElement: Fire

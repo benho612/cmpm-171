@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ComboUnlock
   upgradeName: Heavy Basic
   icon: {fileID: 0}
-  ComboID: 
-  RunTimeElement: None
+  ComboID: LHHH
+  IsFinisher: 0
+  RequiredMoveParts: []
+  RunTimeElement: Stone
