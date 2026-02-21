@@ -26,12 +26,13 @@ public class EliteEnemy : BaseEnemy
     {
         base.Update();
 
-        if (IsDead() || isStunned) return;
+        // Don't continue if dead, stunned, in hit stun, or dashing back
+        if (IsDead() || isStunned || isInHitStun || isDashingBack) return;
 
         aiDecisionTimer -= Time.deltaTime;
         if (aiDecisionTimer <= 0f)
         {
-            aiDecisionTimer = aiDecisionInterval + Random.Range(-0.1f, 0.1f); // Small variation for organic feel
+            aiDecisionTimer = aiDecisionInterval + Random.Range(-0.1f, 0.1f);
             MakeDecision();
         }
 
