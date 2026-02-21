@@ -4,6 +4,8 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "ComboUnlock", menuName = "playerCombos/ComboUnlock")]
 public class ComboUnlock : UpgradeData{
     public string ComboID;
+    public bool IsFinisher;
+    public List<string> RequiredMoveParts = new List<string>();
 
     [HideInInspector]
     public string RunTimeElement = "None";
@@ -16,9 +18,10 @@ public class ComboUnlock : UpgradeData{
         }
 
         CombatHandler combatHandler = playerScript.GetComponent<CombatHandler>();
-        string FinalCombo = (RunTimeElement == "None" || string.IsNullOrEmpty(RunTimeElement))
-            ? ComboID
-            : ComboID + "_" + RunTimeElement;
-        combatHandler.UnlockCombo(FinalCombo);
+        foreach(string part in RequiredMoveParts){
+            combatHandler.UnlockCombo(null, part + "_" + RunTimeElement);
+        }
+        string FinalCombo = ComboID + "_" + RunTimeElement;
+        combatHandler.UnlockCombo(this, FinalCombo);
     }
 }

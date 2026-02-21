@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80bdc5a4f42ac78479546d5e968b0d26, type: 3}
-  m_Name: UpgradedBasic
+  m_Name: GroundedHitter
   m_EditorClassIdentifier: Assembly-CSharp::ComboUnlock
   upgradeName: Heavy Basic
   icon: {fileID: 0}
-  ComboID: 
-  RunTimeElement: None
+  ComboID: LHHH
+  IsFinisher: 0
+  RequiredMoveParts: []
+  RunTimeElement: Stone

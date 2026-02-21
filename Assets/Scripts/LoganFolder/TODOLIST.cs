@@ -1,46 +1,25 @@
 /*
-1. Asset Creation (The "Data" Phase)
-Before you can test, you need "stuff" in your folders.
+1. The Player-System Handshake
 
-[ ] Run Stats: Create 5-10 StatUpgrade assets (e.g., Glass Cannon, Tank's Resolve, Fleet Footed).
+[ ] Input-to-Logic Bridge: Ensure your CombatCoordinator is receiving events from the New Input System (e.g., OnLightAttack) and passing those strings ("L" or "H") into the RecordInput function.
 
-[ ] Meta Elements: Create your 3 ElementUnlock assets (Fire, Ice, Rock).
+[ ] Animation Event Wiring: Work with your teammate to place Animation Events on the attack clips. These should trigger the hitbox and call CombatHandler.ProcessHit(enemy) at the exact moment of impact.
 
-[ ] Meta Passives: Create assets for the "Conditional" boosts (e.g., Burning Flesh, Brittle Bones).
+[ ] Active Element Sync: Double-check that CombatHandler.ExecuteMove correctly parses the ElementType from the moveID string so ProcessHit knows which multipliers to pull.
 
-[ ] The Combo Library: Create the assets for your base combos (e.g., LLH, HHH, LHL).
+2. UI & Meta-Progression Verification
 
-2. The "Managers" (The "Wiring" Phase)
-Your upgrades need to talk to a central "Brain" that stays active throughout the game.
+[ ] Currency Real-Time Update: Confirm your MetaCurrencyDisplay updates immediately after a SkillTreeNode.OnClick event so the player sees the "Gems" deducted.
 
-[ ] MetaManager: A script that holds the list of all MetaUnlock assets. The ComboUpgrade will look here to see what elements are unlocked.
+[ ] Prerequisite Visual Chain: Verify that unlocking a "Basic" node immediately makes its "Child" nodes in the Skill Tree interactable and changes their color.
 
-[X] RunManager / GameManager: * Needs the allPossibleUpgrades list.
+[ ] Runtime Combo Injection: Test if buying a combo in the UI successfully adds it to the CombatHandler.UnlockedCombos list so the CombatCoordinator can actually find and play the move.
 
-Needs the PrepareUpgradeMenu() logic to shuffle and "Pre-Roll" elements for combos.
+3. The "Relay Race" (Data Flow Testing)
 
-[X] The RunData SO: Ensure you have one physical asset of RunData that is shared by the Player and the Upgrades.
+[ ] Dummy Stagger Test: Attach your TempStatusScript to a cube and verify that hitting it with a "Stone" finisher correctly sets currentStatus to Concussed.
 
-3. UI Implementation (The "Visual" Phase)
-Even with great code, the player needs to see the choices.
+[ ] Multiplier Validation: Use Debug.Log in ProcessHit to print out finalDamage. Ensure that hitting a "Burning" enemy with a "Weak Flesh" upgrade active actually results in a higher number.
 
-[X] Upgrade Canvas: Create the UI with 3 Buttons.
-
-[X] ButtonLogic: Attach your script to these buttons and link the OnClick events.
-
-[ ] Skill Tree Menu: Create a separate scene or panel where the player can click those MetaUnlock assets to toggle isUnlocked = true.
-
-4. Gameplay "Receivers" (The "Integration" Phase)
-These are the scripts your teammates (or you) will eventually write. You need to make sure your upgrades have a place to plug in.
-
-[X] CombatHandler: Needs the UnlockCombo(string) function and a list to store them.
-
-[ ] Enemy/Health Script: Needs to understand Status Effects. It needs to store a string like "Burning" so your Passives know when to trigger.
-
-[ ] The "Split" Logic: Inside the CombatHandler, implement the code to turn "LLH_Fire" into "Play LLH Animation" + "Spawn Fire Particles."
-
-5. Saving & Persistence (The "Final Polish")
-[ ] Meta-Reset: A button in your developer menu to set all isUnlocked bools back to false for testing.
-
-[ ] Run-Reset: Ensure the GameManager calls runData.ResetStats() every time a new run starts.
+[ ] IsFinisher Safety: Confirm that hitting an enemy with a "mid-combo" move (like the first "L") does not reset the combo or apply an elemental status.
 */
