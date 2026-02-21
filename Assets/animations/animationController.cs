@@ -3,19 +3,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerBlendTreeStrafeRun : MonoBehaviour
+public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
 {
-    [Header("Speeds")]
+    [Header("Movement Speeds")]
     public float walkSpeed = 2.5f;
     public float runForwardSpeed = 6.0f;
     public float runStrafeSpeed = 5.0f;
     public float battleWalkSpeed = 1.6f;
 
     [Header("Speed Multipliers")]
-    [Range(0.5f, 1f)]
-    public float diagonalSpeedMultiplier = 0.85f;     // W+A / W+D / S+A / S+D slower
-    [Range(0.5f, 1f)]
-    public float backwardSpeedMultiplier = 0.80f;     // S slower than W
+    [Range(0.5f, 1f)] public float diagonalSpeedMultiplier = 0.85f;
+    [Range(0.5f, 1f)] public float backwardSpeedMultiplier = 0.80f;
 
     [Header("Rotation")]
     public float rotationSpeed = 12f;
@@ -28,10 +26,6 @@ public class PlayerBlendTreeStrafeRun : MonoBehaviour
     public string moveXParam = "MoveX";
     public string moveYParam = "MoveY";
 
-    [Header("Gravity")]
-    public float gravity = -20f;
-    public float groundedStickForce = -2f;
-
     [Header("Battle Mode")]
     public float battleDuration = 5f;
     public string battleBool = "isBattle";
@@ -39,22 +33,39 @@ public class PlayerBlendTreeStrafeRun : MonoBehaviour
     [Header("Punch")]
     public string punchTrigger = "right_punch";
 
+    [Header("Dodge")]
+    public bool dodgeOnlyInBattle = true;
+    public string dodgeTrigger = "dodge";
+    public string dodgeStateName = "Dodge Backward"; 
+    public float dodgeCooldown = 0.35f;
+
+    [Header("Block")]
+    public bool blockOnlyInBattle = true;
+    public string blockTrigger = "block";
+    public string blockStateName = "Standing Block";
+    public float blockCooldown = 0.35f;
+
     CharacterController controller;
     Vector2 moveInput;
     bool shiftHeld;
     bool isBattle;
 
-    float yVelocity;
     Coroutine battleRoutine;
+
+    bool isDodging;
+    float lastDodgeTime = -999f;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         if (!animator) animator = GetComponentInChildren<Animator>();
         if (!cameraTransform && Camera.main) cameraTransform = Camera.main.transform;
+
+        // IMPORTANT: do NOT override applyRootMotion here since you want it enabled already.
+        // animator.applyRootMotion = true/false;  <-- removed on purpose
     }
 
-    // PlayerInput (Invoke Unity Events)
+    // PlayerInput events (New Input System)
     public void OnMove(InputAction.CallbackContext ctx) => moveInput = ctx.ReadValue<Vector2>();
     public void OnRun(InputAction.CallbackContext ctx) => shiftHeld = !ctx.canceled;
 
@@ -79,12 +90,17 @@ public class PlayerBlendTreeStrafeRun : MonoBehaviour
     {
         if (!ctx.performed) return;
 
-        // Optional: punching forces battle mode + refresh timer
         SetBattle(true);
         if (battleRoutine != null) StopCoroutine(battleRoutine);
         battleRoutine = StartCoroutine(BattleTimeout());
 
         animator?.SetTrigger(punchTrigger);
+    }
+
+    public void OnDodge(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed) return;
+        TryDodge();
     }
 
     void SetBattle(bool value)
@@ -93,10 +109,61 @@ public class PlayerBlendTreeStrafeRun : MonoBehaviour
         animator?.SetBool(battleBool, value);
     }
 
+    void TryDodge()
+    {
+        if (isDodging) return;
+        if (Time.time < lastDodgeTime + dodgeCooldown) return;
+        if (dodgeOnlyInBattle && !isBattle) return;
+
+        StartCoroutine(DodgeRoutine());
+    }
+
+    IEnumerator DodgeRoutine()
+    {
+        isDodging = true;
+        lastDodgeTime = Time.time;
+
+        animator?.SetTrigger(dodgeTrigger);
+
+        // Wait until we ENTER the dodge state (with a timeout so we never get stuck)
+        float t = 0f;
+        while (t < 1.0f)
+        {
+            if (animator && animator.GetCurrentAnimatorStateInfo(0).IsName(dodgeStateName))
+                break;
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        // If we never entered dodge state, don't lock player forever
+        if (!(animator && animator.GetCurrentAnimatorStateInfo(0).IsName(dodgeStateName)))
+        {
+            isDodging = false;
+            yield break;
+        }
+
+        // Wait until we LEAVE the dodge state (this is the key fix)
+        while (animator && animator.GetCurrentAnimatorStateInfo(0).IsName(dodgeStateName))
+            yield return null;
+
+        isDodging = false;
+    }
+
     void Update()
     {
-        Vector2 input = Vector2.ClampMagnitude(moveInput, 1f);
+        if (isDodging)
+        {
+            // Freeze blend tree input while dodging
+            if (animator)
+            {
+                animator.SetFloat(moveXParam, 0f, 0.08f, Time.deltaTime);
+                animator.SetFloat(moveYParam, 0f, 0.08f, Time.deltaTime);
+            }
+            return;
+        }
 
+        Vector2 input = Vector2.ClampMagnitude(moveInput, 1f);
         bool isMoving = input.sqrMagnitude > 0.001f;
         if (!isMoving) input = Vector2.zero;
 
@@ -115,33 +182,18 @@ public class PlayerBlendTreeStrafeRun : MonoBehaviour
             }
         }
 
-        // Run conditions:
-        // - only normal mode
-        // - Shift held
-        // - only forward/strafe (NO backward run)
+        // Run only in normal mode, no backward run
         bool canRun = !isBattle && shiftHeld && (input.y >= 0f) && isMoving;
 
-        // Base speed
         float speed;
-        if (isBattle)
-        {
-            speed = battleWalkSpeed;
-        }
-        else if (canRun)
-        {
-            // If mostly strafing, use strafe run speed; if mostly forward, use forward run speed
-            speed = (Mathf.Abs(input.x) > Mathf.Abs(input.y)) ? runStrafeSpeed : runForwardSpeed;
-        }
-        else
-        {
-            speed = walkSpeed;
-        }
+        if (isBattle) speed = battleWalkSpeed;
+        else if (canRun) speed = (Mathf.Abs(input.x) > Mathf.Abs(input.y)) ? runStrafeSpeed : runForwardSpeed;
+        else speed = walkSpeed;
 
-        // Apply backward + diagonal slowdowns
         if (isBackward) speed *= backwardSpeedMultiplier;
         if (isDiagonal) speed *= diagonalSpeedMultiplier;
 
-        // Camera-relative move direction
+        // Camera-relative movement direction
         Vector3 camForward = Vector3.forward;
         Vector3 camRight = Vector3.right;
 
@@ -155,19 +207,14 @@ public class PlayerBlendTreeStrafeRun : MonoBehaviour
 
         Vector3 moveDirWorld = camRight * input.x + camForward * input.y;
 
-        // Gravity / grounding
-        if (controller.isGrounded && yVelocity < 0f) yVelocity = groundedStickForce;
-        yVelocity += gravity * Time.deltaTime;
-
+        // If you're using root motion for dodge only, it's fine to still move via CC for locomotion.
+        // Stick to ground:
         Vector3 velocity = moveDirWorld * speed;
-        velocity.y = yVelocity;
+        velocity.y = -2f;
         controller.Move(velocity * Time.deltaTime);
 
-        // Blend tree values:
-        // Walk region: -1..1
-        // Run region:  -2..2 (hits run clips placed at (กำ2,0) and (0,2))
+        // Blend tree params (run region uses กำ2 and 0,2 if you set it up that way)
         float blendMul = canRun ? 2f : 1f;
-
         if (animator)
         {
             animator.SetFloat(moveXParam, input.x * blendMul, 0.10f, Time.deltaTime);

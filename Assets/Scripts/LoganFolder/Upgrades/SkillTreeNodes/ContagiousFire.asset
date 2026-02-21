@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1cc3dbc3b188b149971b721e2b491c0, type: 3}
+  m_Name: ContagiousFire
+  m_EditorClassIdentifier: Assembly-CSharp::ElementalEffectUnlocks
+  UpgradeName: Contagious Flames
+  Description: Fire will spread to near by enemies
+  Cost: 100
+  IsUnlocked: 0
+  Icon: {fileID: 0}
+  ElementCategory: 1
+  PrerequisiteUnlock: {fileID: 11400000, guid: 11b3578b3e0d80a4e87d86bd83bd45c6, type: 2}
+  FeatureID: FireSpread
+  RequiredStatusEffect: 1
+  StatEffected: 0
+  EffectIncrease: 0

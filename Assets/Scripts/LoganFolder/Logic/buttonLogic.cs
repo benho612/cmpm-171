@@ -8,13 +8,13 @@ public class ButtonLogic : MonoBehaviour{
     public void SetUpButton(UpgradeData data){
         assignedData = data;
         _buttonText.text = assignedData.upgradeName;
+        Debug.Log("setup Button");
     }
     public void OnClick(){
         GameObject player = GameObject.FindWithTag("Player");
 
         Debug.Log("Button clicked for upgrade: " + assignedData.upgradeName);
         assignedData.ApplyUpgrade(player);
-        Time.timeScale = 1f;
-        GameManager.Instance.RunUpgrades.enabled = false;
+        GameManager.Instance.CloseUpgradeMenu();
     }
 }

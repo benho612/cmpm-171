@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ComboUnlock
   upgradeName: Quick Jabs
   icon: {fileID: 0}
-  ComboID: 
-  RunTimeElement: None
+  ComboID: LLLLL
+  IsFinisher: 0
+  RequiredMoveParts: []
+  RunTimeElement: Fire
