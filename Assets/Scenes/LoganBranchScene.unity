@@ -2469,11 +2469,12 @@ GameObject:
   - component: {fileID: 1381949668}
   - component: {fileID: 1381949667}
   - component: {fileID: 1381949666}
+  - component: {fileID: 1381949678}
+  - component: {fileID: 1381949674}
+  - component: {fileID: 1381949677}
   - component: {fileID: 1381949675}
   - component: {fileID: 1381949673}
-  - component: {fileID: 1381949672}
-  - component: {fileID: 1381949671}
-  - component: {fileID: 1381949674}
+  - component: {fileID: 1381949676}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2591,47 +2592,6 @@ Transform:
   - {fileID: 552914412}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1381949671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1381949665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fddb8c94680b87940a62ac25e75148eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Combat
-  lightAttackDamage: 15
-  heavyAttackDamage: 30
-  lightAttackDuration: 0.2
-  heavyAttackDuration: 0.5
-  hitboxOffset: {x: 0, y: 1, z: 1}
-  lightHitboxSize: {x: 0.5, y: 0.5, z: 0.5}
-  heavyHitboxSize: {x: 1, y: 1, z: 1}
-  lightAttackColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &1381949672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1381949665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4b5320a5d0e21f4091b08bc8682905b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Movement
-  walkSpeed: 5
-  sprintSpeed: 9
-  dashSpeed: 15
-  dashDuration: 0.2
-  rotationSpeed: 15
-  strafeTurnSpeed: 20
-  gravity: -9.81
-  gravityMultiplier: 2
 --- !u!143 &1381949673
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2670,6 +2630,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatHandler
   UnlockedCombos: []
+  _playerAnimator: {fileID: 1381949675}
 --- !u!114 &1381949675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2682,6 +2643,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c3b121b935920c4683afb70ffe3180f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimationBridge
+--- !u!114 &1381949676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381949665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46431e2fe42b8864bbd3b7f7cf9ffe31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementSandBox
+  walkSpeed: 5
+  sprintSpeed: 9
+  dashSpeed: 15
+  dashDuration: 0.2
+  rotationSpeed: 15
+  strafeTurnSpeed: 20
+  gravity: -9.81
+  gravityMultiplier: 2
+--- !u!114 &1381949677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381949665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4cd5206f468c4e9ba282b8b68c517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatSandBox
+  lightAttackDamage: 15
+  heavyAttackDamage: 30
+  lightAttackDuration: 0.2
+  heavyAttackDuration: 0.5
+  MinCancelTime: 0.15
+  hitboxOffset: {x: 0, y: 1, z: 1}
+  lightHitboxSize: {x: 1.5, y: 1.5, z: 1.5}
+  heavyHitboxSize: {x: 2, y: 2, z: 2}
+  lightAttackColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &1381949678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381949665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dae83e79e5f40564ba3f4e69c0f0fc33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatCoordinator
+  _combatHandler: {fileID: 1381949674}
+  RecordedCombo: 
+  LastInputTime: 0
+  ComboResetTime: 0.8
 --- !u!1 &1388484423
 GameObject:
   m_ObjectHideFlags: 0
@@ -3263,7 +3282,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 55e881b180bcb6d4baefbaa45cb3b98c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.09
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 55e881b180bcb6d4baefbaa45cb3b98c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3304,7 +3323,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 55e881b180bcb6d4baefbaa45cb3b98c, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 8380253073493d243a4579023c0ff69b, type: 2}
+      objectReference: {fileID: 9100000, guid: 1957e8118a4f0eb449b7525827b10790, type: 2}
     - target: {fileID: 7603786706384944740, guid: 55e881b180bcb6d4baefbaa45cb3b98c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -4041,7 +4060,7 @@ Transform:
   m_GameObject: {fileID: 2110615729}
   serializedVersion: 2
   m_LocalRotation: {x: 0.17364816, y: -0, z: -0, w: 0.9848078}
-  m_LocalPosition: {x: -0.35357, y: 2.775, z: -9.93357}
+  m_LocalPosition: {x: -2.44, y: 4.77, z: -9.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
