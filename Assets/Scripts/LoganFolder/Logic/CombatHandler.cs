@@ -7,10 +7,12 @@ public class CombatHandler : MonoBehaviour{
     
     private RunData _stats;
     private MetaManager _meta;
+    [SerializeField] private AnimationBridge _playerAnimator;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
         _meta = MetaManager.Instance;
+        _playerAnimator.GetComponent<AnimationBridge>();
     }
 
 //logic to unlock combos
@@ -28,16 +30,28 @@ public class CombatHandler : MonoBehaviour{
     public void ExecuteMove(string moveID){
         string[] parts = moveID.Split('_');
         string moveName = parts[0];
-        if(IsFinisher(moveID)) _activeElement = (ElementType)System.Enum.Parse(typeof(ElementType), parts[1]);
-        else _activeElement = ElementType.None;
 
-        //Later implementation of VFX script
-        // VFXManager.Instance.PlayEffect(_activeElement, transform.position);
+        char lastInput = moveName[moveName.Length - 1];
+        int step = moveName.Length;
+        string animationToPlay = "";
 
+        if(lastInput == 'L'){
+            int index = ((step - 1) % 2) + 1;
+            animationToPlay = "Light_" + index;
+            Debug.Log(animationToPlay);
+        }else if(lastInput == 'H'){
+            int index = ((step - 1) % 2) + 1;
+            animationToPlay = "Heavy_" + 1;
+        }
+
+        if(IsFinisher(moveID)){
+            _activeElement = (ElementType)System.Enum.Parse(typeof(ElementType), parts[1]);
+            //Later implementation of VFX script 
+            // VFXManager.Instance.PlayEffect(_activeElement, transform.position);
+        }else _activeElement = ElementType.None;
+        
         //For animation
-        // playerAnimator.SetTrigger(moveName);
-        // playerAnimator.SetInteger("ElementID", GetElementID(_activeElement));
-
+        _playerAnimator.PlayAttack(animationToPlay);
         //the actual attack
         //CombatScript.PerformAttack(moveName);
     }
