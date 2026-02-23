@@ -8,6 +8,7 @@ public class CombatHandler : MonoBehaviour{
     private RunData _stats;
     private MetaManager _meta;
     [SerializeField] private AnimationBridge _playerAnimator;
+    [SerializeField] private CombatSandBox _combatSandBox;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
@@ -27,10 +28,11 @@ public class CombatHandler : MonoBehaviour{
         }
     }
 
-    public void ExecuteMove(string moveID){
+    public bool ExecuteMove(string moveID, bool canInterrupt){
         string[] parts = moveID.Split('_');
         string moveName = parts[0];
 
+        bool attackStarted = false;
         char lastInput = moveName[moveName.Length - 1];
         int step = moveName.Length;
         string animationToPlay = "";
@@ -41,17 +43,38 @@ public class CombatHandler : MonoBehaviour{
             Debug.Log(animationToPlay);
         }else if(lastInput == 'H'){
             int index = ((step - 1) % 2) + 1;
-            animationToPlay = "Heavy_" + 1;
+            animationToPlay = "Heavy_" + index;
         }
 
-        if(IsFinisher(moveID)){
+        if (lastInput == 'L'){
+            attackStarted = _combatSandBox.ExecutePhysicalAttack(
+                canInterrupt, 
+                _combatSandBox.lightAttackDuration, 
+                _combatSandBox.lightHitboxSize, 
+                _combatSandBox.lightAttackColor, 
+                _stats.LightAttackDamage
+            );
+        }
+        else{
+            attackStarted = _combatSandBox.ExecutePhysicalAttack(
+                canInterrupt, 
+                _combatSandBox.heavyAttackDuration, 
+                _combatSandBox.heavyHitboxSize, 
+                _combatSandBox.heavyAttackColor, 
+                _stats.HeavyAttackDamage
+            );
+        }
+        
+        if(attackStarted){
+            _playerAnimator.PlayAttack(animationToPlay);
+
+            if(IsFinisher(moveID)){
             _activeElement = (ElementType)System.Enum.Parse(typeof(ElementType), parts[1]);
             //Later implementation of VFX script 
             // VFXManager.Instance.PlayEffect(_activeElement, transform.position);
-        }else _activeElement = ElementType.None;
-        
-        //For animation
-        _playerAnimator.PlayAttack(animationToPlay);
+            }else _activeElement = ElementType.None;
+        }
+        return attackStarted;
         //the actual attack
         //CombatScript.PerformAttack(moveName);
     }
@@ -67,15 +90,19 @@ public class CombatHandler : MonoBehaviour{
         return false;
     }
 
-    public void ProcessHit(GameObject enemy){
+    public void ProcessHit(GameObject enemy, float baseDamage){
         //not sure if this is actual enemy script but this should link enemy to the hit
         TempStatusScript enemyData = enemy.GetComponent<TempStatusScript>();
+        BaseEnemy enemyScript = enemy.GetComponent<BaseEnemy>();
+        if(enemyScript == null) {
+            Debug.Log("enemyScript = null");
+            return;
+        }
 
-        float baseDamage = _stats.Damage;
         float baseStagger = _stats.StaggerDamage;
         float baseCritChance = _stats.CritChance;
         
-        //info from enemy
+        //info from enemy - this is temporary since enemy does not have a status currently
         StatusEffect enemyStatus = enemyData.CurrentStatus;
         bool isStaggered = false;
 
@@ -83,7 +110,7 @@ public class CombatHandler : MonoBehaviour{
         float staggerMult = _meta.StatIncreaseCheck(StatType.StaggerDamage, enemyStatus);
         float critBonus = _meta.StatIncreaseCheck(StatType.CritChance, enemyStatus);
 
-        float finalDamage = baseDamage *= (1.0f + damageMult);
+        float finalDamage = baseDamage * (1.0f + damageMult);
 
         //check for stagger
         if(isStaggered) finalDamage *= 1.5f;
@@ -103,7 +130,8 @@ public class CombatHandler : MonoBehaviour{
             enemyData.CurrentStatus = newStatus;
         }
         //apply damage
-        //enemy.TakeDamage(finalDamage);
+        enemyScript.TakeDamage(finalDamage);
+        Debug.Log($"Processed hit on {enemy.name} for {finalDamage} total damage!");
         //enemy.TakeStagger(finalStagger);
 
         //handling feature Logic

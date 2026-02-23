@@ -24,10 +24,11 @@ public class AnimationBridge : MonoBehaviour
         //give vars to animator
         _animator.SetFloat("MoveX", moveX, 0.1f, Time.deltaTime);
         _animator.SetFloat("MoveZ", moveZ, 0.1f, Time.deltaTime);
-        _animator.SetFloat("Speed", localVelocity.magnitude);
+        float currentSpeed = _controller.velocity.magnitude;
+        _animator.SetFloat("Speed", currentSpeed, 0.1f, Time.deltaTime);
     }
 
     public void PlayAttack(string moveName){
-        _animator.CrossFadeInFixedTime(moveName, 0.05f);
+        _animator.CrossFadeInFixedTime(moveName, 0.15f);
     }
 }

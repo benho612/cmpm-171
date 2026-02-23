@@ -11,38 +11,38 @@ public class CombatCoordinator : MonoBehaviour
 
     private void Start(){
         _input = new PlayerControls();
+        _input.Enable();
         _input.Gameplay.LightAttack.performed += ctx => RecordInput('L');
         _input.Gameplay.HeavyAttack.performed += ctx => RecordInput('H');
     }
 
     public void RecordInput(char input){
-        Debug.Log("test1");
         if(Time.time - LastInputTime > ComboResetTime) RecordedCombo = "";
         
-        RecordedCombo += input;
-        LastInputTime = Time.time;
-        
+        string potentialCombo = RecordedCombo + input;
         string bestMatch = "";
-
+        
         foreach(string combo in _combatHandler.UnlockedCombos){
-            string[] parts = combo.Split('_');
-            if(parts[0] == RecordedCombo){
+            if(combo.Split('_')[0] == potentialCombo){
                 bestMatch = combo;
-                //call combat script 
                 break;
             }
         } 
         
-        //ifElse to make sure something happens even if there is no combo available  
+        bool success = false;
+        //ifElse to make sure something happens even if there is no combo available 
         if(bestMatch != ""){
-            _combatHandler.ExecuteMove(bestMatch);
-            if(_combatHandler.IsFinisher(bestMatch)){
-                RecordedCombo = "";
-            }
+            success = _combatHandler.ExecuteMove(bestMatch, true);//true makes a interruption in the combo animation possible
         } else{
-            _combatHandler.ExecuteMove(input.ToString() + "_None");
-            if(RecordedCombo.Length > 5) RecordedCombo = "";
-            Debug.Log("test");
+            success = _combatHandler.ExecuteMove(input.ToString() + "_None", false);//false is for the non combo moves
+            
+        }
+
+        if(success){ //only updates the combo if a move was actually able to be fired
+            RecordedCombo = potentialCombo;
+            LastInputTime = Time.time;
+
+            if(_combatHandler.IsFinisher(bestMatch) || RecordedCombo.Length > 5) RecordedCombo = "";
         }
     }
 }

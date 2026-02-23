@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class CombatSandBox : MonoBehaviour
 {
@@ -10,9 +11,9 @@ public class CombatSandBox : MonoBehaviour
     [Header("Combat Settings")]
     public float lightAttackDamage = 15f;
     public float heavyAttackDamage = 30f;
-    public float lightAttackDuration = 0.2f;
-    public float heavyAttackDuration = 0.5f;
-    public float MinCancelTime = 0.15f;
+    public float lightAttackDuration = 0.5f;
+    public float heavyAttackDuration = 0.9f;
+    public float MinCancelTime = 0.3f;
     private float _attackStartTime;
 
     [Header("Visual Feedback")]
@@ -26,6 +27,7 @@ public class CombatSandBox : MonoBehaviour
     // References
     private PlayerControls _input;
     private bool _isAttacking;
+    [SerializeField] private CombatHandler _combatHandler; 
 
     // Expose this so Movement.cs can see it
     public bool IsAttacking => _isAttacking;
@@ -33,14 +35,32 @@ public class CombatSandBox : MonoBehaviour
     private void Awake()
     {
         _input = new PlayerControls();
-        _input.Gameplay.LightAttack.performed += ctx => PerformLightAttack();
-        _input.Gameplay.HeavyAttack.performed += ctx => PerformHeavyAttack();
+        //_input.Gameplay.LightAttack.performed += ctx => PerformLightAttack();
+        //_input.Gameplay.HeavyAttack.performed += ctx => PerformHeavyAttack();
     }
 
-    private void OnEnable() => _input.Enable();
-    private void OnDisable() => _input.Disable();
+    //private void OnEnable() => _input.Enable();
+    //private void OnDisable() => _input.Disable();
 
-    private void PerformLightAttack()
+    public bool ExecutePhysicalAttack(bool canInterrupt, float duration, Vector3 size, Color color, float damage){
+        if(_isAttacking){
+            float timeSinceStart = Time.time - _attackStartTime;
+            if(timeSinceStart < MinCancelTime) return false;
+
+            if(!canInterrupt) return false;
+            Debug.Log("ExecutePhysicalAttackTest");
+
+            StopCoroutine(_activeAttackRoutine);
+            if(_currentHitBox != null) Destroy(_currentHitBox);
+        }
+        _attackStartTime = Time.time;
+        _activeAttackRoutine = StartCoroutine(AttackRoutine(duration, size, color, damage));
+        return true;
+    }
+    
+    
+    
+    /*private void PerformLightAttack()
     {
         if (_isAttacking){
             float timeSinceStart = Time.time - _attackStartTime;
@@ -61,7 +81,7 @@ public class CombatSandBox : MonoBehaviour
 
         RotateToInputDirection();
         StartCoroutine(AttackRoutine(heavyAttackDuration, heavyHitboxSize, heavyAttackColor, heavyAttackDamage));
-    }
+    }*/
 
     private void RotateToInputDirection()
     {
@@ -106,8 +126,7 @@ public class CombatSandBox : MonoBehaviour
             BaseEnemy enemy = hit.GetComponent<BaseEnemy>();
             if (enemy != null && !enemy.IsDead())
             {
-                enemy.TakeDamage(damage);
-                Debug.Log($"Hit {enemy.name} for {damage} damage!");
+                _combatHandler.ProcessHit(hit.gameObject, damage);
             }
         }
 

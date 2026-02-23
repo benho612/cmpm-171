@@ -2631,6 +2631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatHandler
   UnlockedCombos: []
   _playerAnimator: {fileID: 1381949675}
+  _combatSandBox: {fileID: 1381949677}
 --- !u!114 &1381949675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2677,14 +2678,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatSandBox
   lightAttackDamage: 15
   heavyAttackDamage: 30
-  lightAttackDuration: 0.2
-  heavyAttackDuration: 0.5
-  MinCancelTime: 0.15
+  lightAttackDuration: 0.5
+  heavyAttackDuration: 0.9
+  MinCancelTime: 0.25
   hitboxOffset: {x: 0, y: 1, z: 1}
   lightHitboxSize: {x: 1.5, y: 1.5, z: 1.5}
   heavyHitboxSize: {x: 2, y: 2, z: 2}
   lightAttackColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
+  _combatHandler: {fileID: 0}
 --- !u!114 &1381949678
 MonoBehaviour:
   m_ObjectHideFlags: 0
