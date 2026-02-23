@@ -35,7 +35,7 @@ public class CombatCoordinator : MonoBehaviour
             success = _combatHandler.ExecuteMove(bestMatch, true);//true makes a interruption in the combo animation possible
         } else{
             success = _combatHandler.ExecuteMove(input.ToString() + "_None", false);//false is for the non combo moves
-            
+            if(success) RecordedCombo = "";
         }
 
         if(success){ //only updates the combo if a move was actually able to be fired
