@@ -19,7 +19,6 @@ public class CombatHandler : MonoBehaviour{
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
         _meta = MetaManager.Instance;
-        _playerAnimator.GetComponent<AnimationBridge>();
     }
 
 //logic to unlock combos
