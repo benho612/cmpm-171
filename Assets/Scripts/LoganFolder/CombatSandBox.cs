@@ -8,6 +8,18 @@ public class CombatSandBox : MonoBehaviour
     private Coroutine _activeAttackRoutine;
     private GameObject _currentHitBox;
 
+    [Header("Defense & Parry Settings")]
+    public float parryWindow = 0.2f;
+    public Color blockColor = new Color(0f, 0f, 1f, 0.4f); 
+    public Color parryColor = new Color(0.6f, 0.8f, 1f, 0.8f); 
+    public Vector3 blockVisualSize = new Vector3(1.2f, 2.0f, 1.2f);
+    public Material baseBlockMaterial; 
+
+    [Header("Stationary Dodge Settings")]
+    public float dodgeDuration = 0.35f;
+    public Color dodgeHighColor = new Color(0f, 1f, 0f, 0.5f); 
+    public Color dodgeLowColor = new Color(0.5f, 0f, 0.5f, 0.5f);
+    
     [Header("Combat Settings")]
     public float lightAttackDamage = 15f;
     public float heavyAttackDamage = 30f;
@@ -26,21 +38,31 @@ public class CombatSandBox : MonoBehaviour
 
     // References
     private PlayerControls _input;
-    private bool _isAttacking;
     [SerializeField] private CombatHandler _combatHandler; 
+    
+    // States
+    private bool _isAttacking;
+    private bool _isBlocking;
+    private bool _isParrying;
+    private bool _isDodgingHigh;
+    private bool _isDodgingLow;
 
-    // Expose this so Movement.cs can see it
+
+    
+    private GameObject _blockVisual;
+    private Coroutine _parryCoroutine;
+    private Coroutine _dodgeCoroutine;
+
     public bool IsAttacking => _isAttacking;
+    public bool IsBlocking => _isBlocking;
+    public bool IsParrying => _isParrying;
+    public bool IsDodging => _isDodgingHigh || _isDodgingLow;
 
     private void Awake()
     {
         _input = new PlayerControls();
-        //_input.Gameplay.LightAttack.performed += ctx => PerformLightAttack();
-        //_input.Gameplay.HeavyAttack.performed += ctx => PerformHeavyAttack();
+        CreateBlockVisual();
     }
-
-    //private void OnEnable() => _input.Enable();
-    //private void OnDisable() => _input.Disable();
 
     public bool ExecutePhysicalAttack(bool canInterrupt, float duration, Vector3 size, Color color, float damage){
         if(_isAttacking){
@@ -57,31 +79,29 @@ public class CombatSandBox : MonoBehaviour
         _activeAttackRoutine = StartCoroutine(AttackRoutine(duration, size, color, damage));
         return true;
     }
-    
-    
-    
-    /*private void PerformLightAttack()
+
+    public void StartDefense()
     {
-        if (_isAttacking){
-            float timeSinceStart = Time.time - _attackStartTime;
-            if(timeSinceStart < MinCancelTime) return;
-
-            StopCoroutine(_activeAttackRoutine);
-            if(_currentHitBox != null) Destroy(_currentHitBox);
-        }
-
-        RotateToInputDirection();
-        _attackStartTime = Time.time;
-        _activeAttackRoutine = StartCoroutine(AttackRoutine(lightAttackDuration, lightHitboxSize, lightAttackColor, lightAttackDamage));
+        _isBlocking = true;
+        _blockVisual.SetActive(true);
+        _blockVisual.transform.localPosition = new Vector3(0, 1f, 0); 
+        
+        if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
+        _parryCoroutine = StartCoroutine(ParryRoutine());
     }
 
-    private void PerformHeavyAttack()
+    public void StopDefense()
     {
-        if (_isAttacking) return;
+        _isBlocking = false;
+        _isParrying = false;
+        _blockVisual.SetActive(false);
+        if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
+    }
 
-        RotateToInputDirection();
-        StartCoroutine(AttackRoutine(heavyAttackDuration, heavyHitboxSize, heavyAttackColor, heavyAttackDamage));
-    }*/
+    public void ExecuteStationaryDodge(bool isHigh){
+        if(_dodgeCoroutine != null) StopCoroutine(_dodgeCoroutine);
+        _dodgeCoroutine = StartCoroutine(StationaryDodgeRoutine(isHigh));
+    }
 
     private void RotateToInputDirection()
     {
@@ -136,5 +156,64 @@ public class CombatSandBox : MonoBehaviour
             Destroy(_currentHitBox);
         }
         _isAttacking = false;
+    }
+
+    private IEnumerator StationaryDodgeRoutine(bool isHigh)
+        {
+            if (isHigh) _isDodgingHigh = true;
+            else _isDodgingLow = true;
+
+            Renderer rend = _blockVisual.GetComponent<Renderer>();
+            rend.material.color = isHigh ? dodgeHighColor : dodgeLowColor;
+            _blockVisual.transform.localPosition = new Vector3(0, isHigh ? 1.5f : 0.5f, 0);
+
+            yield return new WaitForSeconds(dodgeDuration);
+
+            _isDodgingHigh = false;
+            _isDodgingLow = false;
+
+            // Revert visuals back to standard block/parry if they are still holding the defend button
+            if (_isBlocking)
+            {
+                rend.material.color = _isParrying ? parryColor : blockColor;
+                _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
+            }
+        }
+
+    private IEnumerator ParryRoutine()
+    {
+        _isParrying = true;
+        Renderer rend = _blockVisual.GetComponent<Renderer>();
+        rend.material.color = parryColor;
+        
+        yield return new WaitForSeconds(parryWindow);
+        
+        _isParrying = false;
+        if (!IsDodging) rend.material.color = blockColor; 
+    }
+
+//temp visual for blocking
+    private void CreateBlockVisual()
+    {
+        _blockVisual = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        Destroy(_blockVisual.GetComponent<BoxCollider>()); 
+        
+        _blockVisual.transform.SetParent(transform);
+        _blockVisual.transform.localPosition = new Vector3(0, 1f, 0); 
+        _blockVisual.transform.localScale = blockVisualSize;
+        
+        Renderer rend = _blockVisual.GetComponent<Renderer>();
+
+        if (baseBlockMaterial != null)
+        {
+            rend.material = new Material(baseBlockMaterial); 
+        }
+        else
+        {
+            Debug.LogWarning("Combat: Please assign a transparent Material to 'Base Block Material' in the Inspector!");
+        }
+        
+        rend.material.color = blockColor;
+        _blockVisual.SetActive(false); 
     }
 }

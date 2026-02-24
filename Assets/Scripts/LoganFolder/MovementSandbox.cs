@@ -32,6 +32,7 @@ public class MovementSandBox : MonoBehaviour
     
     // Dash Logic
     private bool _isDashing;
+    public bool IsDashing => _isDashing;
     private float _dashTimer;
     private Vector3 _dashDirection;
 
@@ -79,9 +80,9 @@ public class MovementSandBox : MonoBehaviour
         }
 
         // If Attacking, stop movement logic so Combat.cs controls rotation
-        if (_combat != null && _combat.IsAttacking)
+        if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking))
         {
-            _smoothSpeed = 0; // Rapidly decelerate
+            _smoothSpeed = 0; // Rapidly decelerate to a stop
             return;
         }
 
@@ -130,7 +131,7 @@ public class MovementSandBox : MonoBehaviour
     private void AttemptDash()
     {
         if (_isDashing) return;
-        if (_combat != null && _combat.IsAttacking) return; // Can't dash mid-attack
+        if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking)) return; // Can't dash mid-attack
 
         _isDashing = true;
         _dashTimer = dashDuration;

@@ -9,6 +9,12 @@ public class CombatHandler : MonoBehaviour{
     private MetaManager _meta;
     [SerializeField] private AnimationBridge _playerAnimator;
     [SerializeField] private CombatSandBox _combatSandBox;
+    [SerializeField] private MovementSandBox _movement;
+
+//exposing these for the CombatCoordinator so it doesn't read inputs while these are happening
+    public bool IsBlocking => _combatSandBox.IsBlocking;
+    public bool IsDodging => _combatSandBox.IsDodging;
+    public bool IsDashing => _movement.IsDashing;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
@@ -90,6 +96,26 @@ public class CombatHandler : MonoBehaviour{
         return false;
     }
 
+//check call for parry/block
+    public void ToggleDefence(bool isBlocking){
+        if(isBlocking){
+            if(_combatSandBox.IsAttacking || _movement.IsDashing) return;
+
+            _combatSandBox.StartDefense();
+        } else{
+            _combatSandBox.StopDefense();
+        }
+    }
+
+    public void AttemptStationaryDodge(bool isHigh){
+        if(_combatSandBox.IsAttacking || _movement.IsDashing) return;
+
+        if(_combatSandBox.IsBlocking && !_combatSandBox.IsDodging){
+            _combatSandBox.ExecuteStationaryDodge(isHigh);
+        }
+    }
+
+//brings all the damage logic together and sends the damage to the enemy hit
     public void ProcessHit(GameObject enemy, float baseDamage){
         //not sure if this is actual enemy script but this should link enemy to the hit
         TempStatusScript enemyData = enemy.GetComponent<TempStatusScript>();
