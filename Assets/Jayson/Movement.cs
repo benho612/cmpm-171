@@ -7,14 +7,13 @@ public class Movement : MonoBehaviour
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
     public float sprintSpeed = 9f;
+    
+    [Header("Dash Settings (Mobility)")]
     public float dashSpeed = 15f;
     public float dashDuration = 0.2f;
     
-    [Tooltip("How fast the character turns while sprinting")]
+    [Tooltip("How fast the character turns while sprinting/walking")]
     public float rotationSpeed = 15f; 
-    
-    [Tooltip("How fast the character aligns with the camera while strafing")]
-    public float strafeTurnSpeed = 20f; 
 
     [Header("Physics")]
     public float gravity = -9.81f;
@@ -24,21 +23,23 @@ public class Movement : MonoBehaviour
     private CharacterController _controller;
     private PlayerControls _input;
     private Transform _cameraTransform;
-    private Combat _combat; // Reference to Combat script
+    private Combat _combat; 
     
     private Vector3 _velocity;
     private Vector2 _moveInput;
     private float _smoothSpeed;
     
-    // Dash Logic
+    // Dash States
     private bool _isDashing;
     private float _dashTimer;
     private Vector3 _dashDirection;
 
+    public bool IsDashing => _isDashing;
+
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-        _combat = GetComponent<Combat>(); // Get the Combat component
+        _combat = GetComponent<Combat>(); 
         _cameraTransform = Camera.main.transform;
         
         _input = new PlayerControls();
@@ -46,6 +47,7 @@ public class Movement : MonoBehaviour
         _input.Gameplay.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
         _input.Gameplay.Move.canceled += ctx => _moveInput = Vector2.zero;
         
+        // Listen for Dash action
         _input.Gameplay.Dash.performed += ctx => AttemptDash();
     }
 
@@ -56,36 +58,26 @@ public class Movement : MonoBehaviour
     {
         ApplyGravity();
 
-        // Mouse Lock Toggle (Alt key)
         if (Keyboard.current.leftAltKey.wasPressedThisFrame)
         {
-            if (Cursor.lockState == CursorLockMode.Locked)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
+            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = Cursor.lockState == CursorLockMode.None;
         }
-        
-        // If Dashing, override everything
+
         if (_isDashing)
         {
             HandleDash();
             return;
         }
 
-        // If Attacking, stop movement logic so Combat.cs controls rotation
-        if (_combat != null && _combat.IsAttacking)
+        // Halt movement if attacking or actively holding block/dodging
+        if (_combat != null && (_combat.IsAttacking || _combat.IsBlocking))
         {
-            _smoothSpeed = 0; // Rapidly decelerate
+            _smoothSpeed = 0; 
             return;
         }
 
-        // Otherwise, handle standard movement
+        //Standard Movement
         HandleMovement();
     }
 
@@ -93,9 +85,8 @@ public class Movement : MonoBehaviour
     {
         if (_moveInput.magnitude < 0.1f) return;
 
-        bool isSprinting = _input.Gameplay.Dash.IsPressed();
+        bool isSprinting = false;
 
-        //Calculate World Direction relative to Camera
         Vector3 camForward = _cameraTransform.forward;
         Vector3 camRight = _cameraTransform.right;
         camForward.y = 0;
@@ -105,20 +96,10 @@ public class Movement : MonoBehaviour
 
         Vector3 moveDir = (camForward * _moveInput.y + camRight * _moveInput.x).normalized;
 
-        if (isSprinting)
+        if (moveDir != Vector3.zero)
         {
-            // Sprinting: Face the direction we are moving
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
-        else
-        {
-            // Walking: Strafe
-            if (camForward != Vector3.zero)
-            {
-                Quaternion strafeRotation = Quaternion.LookRotation(camForward);
-                transform.rotation = Quaternion.Slerp(transform.rotation, strafeRotation, strafeTurnSpeed * Time.deltaTime);
-            }
         }
 
         float targetSpeed = isSprinting ? sprintSpeed : walkSpeed;
@@ -129,8 +110,7 @@ public class Movement : MonoBehaviour
 
     private void AttemptDash()
     {
-        if (_isDashing) return;
-        if (_combat != null && _combat.IsAttacking) return; // Can't dash mid-attack
+        if (_isDashing || (_combat != null && (_combat.IsAttacking || _combat.IsBlocking))) return;
 
         _isDashing = true;
         _dashTimer = dashDuration;
