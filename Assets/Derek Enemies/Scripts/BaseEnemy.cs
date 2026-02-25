@@ -32,12 +32,21 @@ public abstract class BaseEnemy : MonoBehaviour
     [SerializeField] protected float attackCooldown = 1.5f;
 
     [Header("Hit Stun")]
-    [SerializeField] protected float maxHitStunDuration = 5f; // Max time in hit stun before dash back
-    [SerializeField] protected float hitStunResetTime = 1f; // Time without being hit to reset hit stun
+    [SerializeField] protected float maxHitStunDuration = 5f;
+    [SerializeField] protected float hitStunResetTime = 1f;
     protected float hitStunTimer;
     protected float timeSinceLastHit;
     protected bool isInHitStun;
     protected bool isDashingBack;
+
+    [Header("Dodge Settings")]
+    [SerializeField] protected int hitsBeforeDodge = 2; // Dodge after this many consecutive hits
+    [SerializeField] protected float dodgeCooldown = 3f; // Can't dodge again for this long
+    [SerializeField] protected float comboResetTime = 2f; // Reset hit counter if no hit for this long
+    protected int consecutiveHitsTaken;
+    protected float dodgeCooldownTimer;
+    protected float comboResetTimer;
+    protected bool wantsToDodge; // Flag to dodge at next opportunity
 
     [Header("Stun Meter")]
     [SerializeField] protected float maxStunMeter = 100f;
@@ -75,10 +84,9 @@ public abstract class BaseEnemy : MonoBehaviour
     protected static readonly int AnimDie = Animator.StringToHash("Die");
     protected static readonly int AnimSpeed = Animator.StringToHash("Speed");
     protected static readonly int AnimBlockHit = Animator.StringToHash("BlockHit");
-    // TODO: Add "Stunned" bool parameter to Animator Controller when animation is ready
     protected static readonly int AnimStunned = Animator.StringToHash("Stunned");
-    // TODO: Add "DashBack" trigger parameter to Animator Controller when animation is ready
     protected static readonly int AnimDashBack = Animator.StringToHash("DashBack");
+    protected static readonly int AnimDodgeBack = Animator.StringToHash("DodgeBack"); // New dodge animation
 
     private PlayerHealth playerHealth;
 
@@ -86,7 +94,6 @@ public abstract class BaseEnemy : MonoBehaviour
     {
         navAgent = GetComponent<NavMeshAgent>();
 
-        // Only get Animator if not already assigned in Inspector
         if (animator == null)
         {
             animator = GetComponent<Animator>();
@@ -126,6 +133,9 @@ public abstract class BaseEnemy : MonoBehaviour
         isAware = false;
         isEngaged = false;
         hasOpenedWithCharge = false;
+        consecutiveHitsTaken = 0;
+        dodgeCooldownTimer = 0f;
+        wantsToDodge = false;
 
         if (animator != null)
         {
@@ -150,6 +160,22 @@ public abstract class BaseEnemy : MonoBehaviour
     {
         if (currentHealth <= 0) return;
 
+        // Update dodge cooldown
+        if (dodgeCooldownTimer > 0)
+            dodgeCooldownTimer -= Time.deltaTime;
+
+        // Update combo reset timer
+        if (consecutiveHitsTaken > 0)
+        {
+            comboResetTimer += Time.deltaTime;
+            if (comboResetTimer >= comboResetTime)
+            {
+                consecutiveHitsTaken = 0;
+                wantsToDodge = false;
+                Debug.Log($"{gameObject.name}: Combo reset - no hits for {comboResetTime}s");
+            }
+        }
+
         // Update hit stun timer
         if (isInHitStun)
         {
@@ -161,13 +187,21 @@ public abstract class BaseEnemy : MonoBehaviour
             {
                 StartCoroutine(DashBackRoutine());
             }
-            // If not hit for a while, reset hit stun
+            // If not hit for a while, check if we want to dodge or just exit
             else if (timeSinceLastHit >= hitStunResetTime)
             {
-                ExitHitStun();
+                // This is our window to dodge!
+                if (wantsToDodge && CanDodge())
+                {
+                    StartCoroutine(DodgeBackRoutine());
+                }
+                else
+                {
+                    ExitHitStun();
+                }
             }
 
-            return; // Don't do normal behavior while in hit stun
+            return;
         }
 
         // Don't do anything while dashing back
@@ -477,6 +511,14 @@ public abstract class BaseEnemy : MonoBehaviour
     {
         return !isAttacking && !isBlocking && !isStunned && !isCharging && !isInHitStun && !isDashingBack && attackCooldownTimer <= 0;
     }
+
+    /// <summary>
+    /// Check if enemy can perform a dodge
+    /// </summary>
+    protected bool CanDodge()
+    {
+        return !isDashingBack && !isStunned && dodgeCooldownTimer <= 0;
+    }
     #endregion
 
     #region Damage & Health
@@ -540,6 +582,18 @@ public abstract class BaseEnemy : MonoBehaviour
             return;
         }
 
+        // Track consecutive hits for dodge mechanic
+        consecutiveHitsTaken++;
+        comboResetTimer = 0f; // Reset the combo timeout
+        Debug.Log($"{gameObject.name}: Consecutive hits: {consecutiveHitsTaken}/{hitsBeforeDodge}");
+
+        // Check if we should dodge after this hit
+        if (consecutiveHitsTaken >= hitsBeforeDodge && CanDodge())
+        {
+            wantsToDodge = true;
+            Debug.Log($"{gameObject.name}: Will dodge at next opportunity!");
+        }
+
         // Enter or continue hit stun
         EnterHitStun();
 
@@ -593,7 +647,6 @@ public abstract class BaseEnemy : MonoBehaviour
         }
         else
         {
-            // No dissolve script found, destroy after delay
             Destroy(gameObject, 3f);
         }
 
@@ -641,6 +694,24 @@ public abstract class BaseEnemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Call this from the DodgeBack animation at the end
+    /// </summary>
+    public void OnDodgeEnd()
+    {
+        isDashingBack = false;
+        isInHitStun = false;
+        navAgent.updatePosition = true;
+        navAgent.nextPosition = transform.position;
+
+        if (!isStunned && navAgent.isOnNavMesh)
+        {
+            navAgent.isStopped = false;
+        }
+
+        Debug.Log($"{gameObject.name}: Dodge completed!");
+    }
+
     public void OnLightAttackHit()
     {
         TryDamagePlayer(lightAttackDamage, attackRange);
@@ -661,9 +732,9 @@ public abstract class BaseEnemy : MonoBehaviour
         if (player == null) return false;
 
         float distance = Vector3.Distance(transform.position, player.position);
-        
+
         Debug.Log($"{gameObject.name}: Attempting to hit player - Distance: {distance:F2}, EffectiveRange: {effectiveRange:F2}");
-        
+
         if (distance <= effectiveRange)
         {
             if (playerHealth != null)
@@ -671,18 +742,18 @@ public abstract class BaseEnemy : MonoBehaviour
                 float healthBefore = playerHealth.HealthPercentage * 100f;
                 playerHealth.TakeDamage(damage);
                 float healthAfter = playerHealth.HealthPercentage * 100f;
-                
+
                 Debug.Log($"=== PLAYER HIT ===");
                 Debug.Log($"  Attacker: {gameObject.name}");
                 Debug.Log($"  Damage: {damage}");
                 Debug.Log($"  Distance: {distance:F2}");
                 Debug.Log($"  Player Health: {healthBefore:F1}% -> {healthAfter:F1}%");
-                
+
                 if (playerHealth.IsDead)
                 {
                     Debug.Log($"  >>> PLAYER KILLED BY {gameObject.name}! <<<");
                 }
-                
+
                 return true;
             }
             else
@@ -699,9 +770,13 @@ public abstract class BaseEnemy : MonoBehaviour
     /// </summary>
     public void OnHitReactionEnd()
     {
-        // Don't auto-exit hit stun here - let the timer handle it
-        // This just ensures the animator state is ready for the next hit
         Debug.Log($"{gameObject.name}: Hit reaction animation ended");
+
+        // Check if we should dodge now (between hits)
+        if (wantsToDodge && CanDodge() && isInHitStun)
+        {
+            StartCoroutine(DodgeBackRoutine());
+        }
     }
     #endregion
 
@@ -723,13 +798,12 @@ public abstract class BaseEnemy : MonoBehaviour
         navAgent.isStopped = true;
         navAgent.velocity = Vector3.zero;
 
-        // TODO: Uncomment when Stunned animation is ready
-        // animator?.SetBool(AnimStunned, true);
+        // Reset dodge state when stunned
+        wantsToDodge = false;
+        consecutiveHitsTaken = 0;
 
         yield return new WaitForSeconds(duration);
 
-        // TODO: Uncomment when Stunned animation is ready
-        // animator?.SetBool(AnimStunned, false);
         isStunned = false;
 
         if (navAgent.isOnNavMesh)
@@ -751,7 +825,6 @@ public abstract class BaseEnemy : MonoBehaviour
             Debug.Log($"{gameObject.name} entered hit stun!");
         }
 
-        // Reset time since last hit (allows combo to continue)
         timeSinceLastHit = 0f;
     }
 
@@ -763,6 +836,7 @@ public abstract class BaseEnemy : MonoBehaviour
         isInHitStun = false;
         hitStunTimer = 0f;
         timeSinceLastHit = 0f;
+        wantsToDodge = false;
 
         if (!isStunned && navAgent.isOnNavMesh)
         {
@@ -772,9 +846,64 @@ public abstract class BaseEnemy : MonoBehaviour
         Debug.Log($"{gameObject.name} exited hit stun!");
     }
 
+    /// <summary>
+    /// Dodge backward to escape player combo
+    /// </summary>
+    protected IEnumerator DodgeBackRoutine()
+    {
+        if (isDashingBack) yield break;
+
+        Debug.Log($"{gameObject.name}: Executing dodge back!");
+
+        isDashingBack = true;
+        isInHitStun = false;
+        wantsToDodge = false;
+        consecutiveHitsTaken = 0;
+        dodgeCooldownTimer = dodgeCooldown;
+
+        navAgent.isStopped = true;
+        navAgent.velocity = Vector3.zero;
+
+        // Trigger dodge animation
+        animator?.SetTrigger(AnimDodgeBack);
+
+        Vector3 dashDirection = player != null
+            ? -(player.position - transform.position).normalized
+            : -transform.forward;
+        dashDirection.y = 0f;
+
+        Vector3 startPosition = transform.position;
+        Vector3 targetPosition = startPosition + dashDirection * dashBackDistance;
+
+        float dashDuration = dashBackDistance / dashBackSpeed;
+        float elapsed = 0f;
+
+        while (elapsed < dashDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / dashDuration);
+            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            yield return null;
+        }
+
+        transform.position = targetPosition;
+
+        isDashingBack = false;
+        hitStunTimer = 0f;
+        timeSinceLastHit = 0f;
+        navAgent.updatePosition = true;
+        navAgent.nextPosition = transform.position;
+
+        if (!isStunned && navAgent.isOnNavMesh)
+        {
+            navAgent.isStopped = false;
+        }
+
+        Debug.Log($"{gameObject.name} completed dodge back!");
+    }
+
     protected IEnumerator DashBackRoutine()
     {
-        // Prevent multiple dash backs from starting
         if (isDashingBack) yield break;
 
         isDashingBack = true;
