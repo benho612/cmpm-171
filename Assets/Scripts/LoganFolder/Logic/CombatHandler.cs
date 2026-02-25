@@ -115,6 +115,7 @@ public class CombatHandler : MonoBehaviour{
     }
 
 //brings all the damage logic together and sends the damage to the enemy hit
+//NOTE - Enemey has no status variable yet so majority of this doesn't work, but the structure is there for when it does
     public void ProcessHit(GameObject enemy, float baseDamage){
         //not sure if this is actual enemy script but this should link enemy to the hit
         TempStatusScript enemyData = enemy.GetComponent<TempStatusScript>();
@@ -124,36 +125,37 @@ public class CombatHandler : MonoBehaviour{
             return;
         }
 
+        float finalDamage = baseDamage; //temp variable creation 
         float baseStagger = _stats.StaggerDamage;
         float baseCritChance = _stats.CritChance;
         
         //info from enemy - this is temporary since enemy does not have a status currently
-        StatusEffect enemyStatus = enemyData.CurrentStatus;
+        //StatusEffect enemyStatus = enemyData.CurrentStatus;
         bool isStaggered = false;
 
-        float damageMult = _meta.StatIncreaseCheck(StatType.Damage, enemyStatus);
-        float staggerMult = _meta.StatIncreaseCheck(StatType.StaggerDamage, enemyStatus);
-        float critBonus = _meta.StatIncreaseCheck(StatType.CritChance, enemyStatus);
+        //float damageMult = _meta.StatIncreaseCheck(StatType.Damage, enemyStatus);
+        //float staggerMult = _meta.StatIncreaseCheck(StatType.StaggerDamage, enemyStatus);
+        //float critBonus = _meta.StatIncreaseCheck(StatType.CritChance, enemyStatus);
 
-        float finalDamage = baseDamage * (1.0f + damageMult);
+        //float finalDamage = baseDamage * (1.0f + damageMult);
 
         //check for stagger
         if(isStaggered) finalDamage *= 1.5f;
         
         //check for crit
-        float totalCritChance = baseCritChance * (1.0f + critBonus);
-        bool isCrit = Random.Range(0f, 100f) <= totalCritChance;
+        //float totalCritChance = baseCritChance * (1.0f + critBonus);
+        /*bool isCrit = Random.Range(0f, 100f) <= totalCritChance;
         if(isCrit){
             finalDamage *= 2.0f;
         }
-        
-        float finalStagger = baseStagger * (1.0f + staggerMult);
+        */
+        //float finalStagger = baseStagger * (1.0f + staggerMult);
 
         //Status Application
-        if(_activeElement != ElementType.None){
+        /*if(_activeElement != ElementType.None){
             StatusEffect newStatus = GetStatusFromElement(_activeElement);
             enemyData.CurrentStatus = newStatus;
-        }
+        }*/
         //apply damage
         enemyScript.TakeDamage(finalDamage);
         Debug.Log($"Processed hit on {enemy.name} for {finalDamage} total damage!");
