@@ -10,25 +10,22 @@ public class EnemyCombatManager : MonoBehaviour
     public static EnemyCombatManager Instance { get; private set; }
 
     [Header("Combat Settings")]
-    [SerializeField] private float engageChance = 0.5f;
-    [SerializeField] private float opportunityCheckInterval = 2f; // Changed to 2 seconds
-    [SerializeField] private float circleRadius = 4f;
-    [SerializeField] private float maxAttackDuration = 5f; // Force release after this time
+    [SerializeField] private float engageChance = 0.5f; // 50% chance to engage when opportunity arises
+    [SerializeField] private float opportunityCheckInterval = 0.5f; // How often to check for engagement opportunities
+    [SerializeField] private float circleRadius = 4f; // Distance waiting enemies keep from player
+    [SerializeField] private float circleSpeed = 2f; // Speed enemies circle at
 
     [Header("References")]
     [SerializeField] private Transform player;
-
-    [Header("Debug")]
-    [SerializeField] private bool showDebugLogs = true;
 
     // Track all enemies and who's currently attacking
     private List<BaseEnemy> registeredEnemies = new List<BaseEnemy>();
     private BaseEnemy currentAttacker;
     private float opportunityCheckTimer;
-    private float attackDurationTimer;
 
     private void Awake()
     {
+        // Singleton pattern
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -49,23 +46,8 @@ public class EnemyCombatManager : MonoBehaviour
         // Clean up dead enemies
         registeredEnemies.RemoveAll(e => e == null || e.IsDead());
 
-        // Validate current attacker
+        // Check if current attacker is still valid
         ValidateCurrentAttacker();
-
-        // Track how long current attacker has been attacking
-        if (currentAttacker != null)
-        {
-            attackDurationTimer += Time.deltaTime;
-
-            // Force release if attacking too long
-            if (attackDurationTimer >= maxAttackDuration)
-            {
-                if (showDebugLogs)
-                    Debug.Log($"[CombatManager] Forcing {currentAttacker.name} to release - max duration reached");
-
-                ReleaseAttackPermission(currentAttacker);
-            }
-        }
 
         // Periodically check for engagement opportunities
         opportunityCheckTimer -= Time.deltaTime;
@@ -74,39 +56,43 @@ public class EnemyCombatManager : MonoBehaviour
             opportunityCheckTimer = opportunityCheckInterval;
             CheckEngagementOpportunities();
         }
+
+        // Update waiting enemies to circle around
+        UpdateWaitingEnemies();
     }
 
+    /// <summary>
+    /// Register an enemy with the combat manager
+    /// </summary>
     public void RegisterEnemy(BaseEnemy enemy)
     {
         if (!registeredEnemies.Contains(enemy))
         {
             registeredEnemies.Add(enemy);
-            if (showDebugLogs)
-                Debug.Log($"[CombatManager] Registered: {enemy.name} (Total: {registeredEnemies.Count})");
         }
     }
 
+    /// <summary>
+    /// Unregister an enemy (call when enemy dies or is destroyed)
+    /// </summary>
     public void UnregisterEnemy(BaseEnemy enemy)
     {
         registeredEnemies.Remove(enemy);
         if (currentAttacker == enemy)
         {
             currentAttacker = null;
-            attackDurationTimer = 0f;
         }
-        if (showDebugLogs)
-            Debug.Log($"[CombatManager] Unregistered: {enemy.name} (Total: {registeredEnemies.Count})");
     }
 
+    /// <summary>
+    /// Request permission to attack the player
+    /// </summary>
     public bool RequestAttackPermission(BaseEnemy enemy)
     {
         // If no one is attacking, grant permission
         if (currentAttacker == null)
         {
             currentAttacker = enemy;
-            attackDurationTimer = 0f;
-            if (showDebugLogs)
-                Debug.Log($"[CombatManager] GRANTED attack permission to: {enemy.name}");
             return true;
         }
 
@@ -116,42 +102,45 @@ public class EnemyCombatManager : MonoBehaviour
             return true;
         }
 
-        // Otherwise, deny
-        if (showDebugLogs)
-            Debug.Log($"[CombatManager] DENIED attack permission to: {enemy.name} (Current: {currentAttacker.name})");
+        // Otherwise, deny - someone else is attacking
         return false;
     }
 
+    /// <summary>
+    /// Release attack permission (call when enemy stops attacking)
+    /// </summary>
     public void ReleaseAttackPermission(BaseEnemy enemy)
     {
         if (currentAttacker == enemy)
         {
-            if (showDebugLogs)
-                Debug.Log($"[CombatManager] Released attack permission from: {enemy.name}");
             currentAttacker = null;
-            attackDurationTimer = 0f;
         }
     }
 
+    /// <summary>
+    /// Check if this enemy is the current attacker
+    /// </summary>
     public bool IsCurrentAttacker(BaseEnemy enemy)
     {
         return currentAttacker == enemy;
     }
 
+    /// <summary>
+    /// Check if an enemy should be waiting (circling) instead of attacking
+    /// </summary>
     public bool ShouldWait(BaseEnemy enemy)
     {
-        // Must wait if someone else is attacking
-        if (currentAttacker != null && currentAttacker != enemy)
-        {
-            return true;
-        }
-        return false;
+        return currentAttacker != null && currentAttacker != enemy;
     }
 
+    /// <summary>
+    /// Get a position for a waiting enemy to circle to
+    /// </summary>
     public Vector3 GetCirclePosition(BaseEnemy enemy)
     {
         if (player == null) return enemy.transform.position;
 
+        // Find this enemy's index among waiting enemies
         int waitingIndex = 0;
         int totalWaiting = 0;
 
@@ -168,8 +157,9 @@ public class EnemyCombatManager : MonoBehaviour
 
         if (totalWaiting == 0) return enemy.transform.position;
 
+        // Distribute enemies evenly around the player
         float angleStep = 360f / totalWaiting;
-        float angle = (angleStep * waitingIndex) + (Time.time * 15f);
+        float angle = (angleStep * waitingIndex) + (Time.time * 20f); // Slow rotation over time
         float radians = angle * Mathf.Deg2Rad;
 
         Vector3 offset = new Vector3(Mathf.Cos(radians), 0f, Mathf.Sin(radians)) * circleRadius;
@@ -180,31 +170,15 @@ public class EnemyCombatManager : MonoBehaviour
     {
         if (currentAttacker == null) return;
 
-        // Release if dead
+        // If current attacker is dead, release them
         if (currentAttacker.IsDead())
         {
-            if (showDebugLogs)
-                Debug.Log($"[CombatManager] Attacker died: {currentAttacker.name}");
             currentAttacker = null;
-            attackDurationTimer = 0f;
-            return;
-        }
-
-        // Release if in hit stun (got interrupted by player)
-        if (currentAttacker.IsInHitStun())
-        {
-            if (showDebugLogs)
-                Debug.Log($"[CombatManager] Attacker interrupted: {currentAttacker.name}");
-            currentAttacker = null;
-            attackDurationTimer = 0f;
         }
     }
 
     private void CheckEngagementOpportunities()
     {
-        if (showDebugLogs)
-            Debug.Log($"[CombatManager] Checking opportunities... Current attacker: {(currentAttacker != null ? currentAttacker.name : "NONE")}");
-
         // If no current attacker, find one
         if (currentAttacker == null)
         {
@@ -212,18 +186,17 @@ public class EnemyCombatManager : MonoBehaviour
             return;
         }
 
-        // Check if current attacker is vulnerable
+        // Check if current attacker is blocking or stunned - opportunity for another enemy
         if (IsCurrentAttackerVulnerable())
         {
+            // 50% chance for another enemy to engage
             if (Random.value <= engageChance)
             {
+                // Find a waiting enemy to take over
                 BaseEnemy newAttacker = FindBestWaitingEnemy();
                 if (newAttacker != null)
                 {
-                    if (showDebugLogs)
-                        Debug.Log($"[CombatManager] Swapping attacker: {currentAttacker.name} -> {newAttacker.name}");
                     currentAttacker = newAttacker;
-                    attackDurationTimer = 0f;
                 }
             }
         }
@@ -232,7 +205,10 @@ public class EnemyCombatManager : MonoBehaviour
     private bool IsCurrentAttackerVulnerable()
     {
         if (currentAttacker == null) return false;
-        return currentAttacker.IsBlockingOrStunned() || currentAttacker.IsInHitStun();
+
+        // Use reflection or add public methods to check state
+        // For now, we'll add helper methods to BaseEnemy
+        return currentAttacker.IsBlockingOrStunned();
     }
 
     private void AssignNewAttacker()
@@ -241,9 +217,6 @@ public class EnemyCombatManager : MonoBehaviour
         if (closest != null)
         {
             currentAttacker = closest;
-            attackDurationTimer = 0f;
-            if (showDebugLogs)
-                Debug.Log($"[CombatManager] Assigned new attacker: {closest.name}");
         }
     }
 
@@ -256,9 +229,7 @@ public class EnemyCombatManager : MonoBehaviour
 
         foreach (var enemy in registeredEnemies)
         {
-            if (enemy == null || enemy.IsDead()) continue;
-            if (!enemy.IsEngaged()) continue;
-            if (enemy.IsInHitStun()) continue; // Don't pick stunned enemies
+            if (enemy == null || enemy.IsDead() || !enemy.IsEngaged()) continue;
 
             float dist = Vector3.Distance(enemy.transform.position, player.position);
             if (dist < closestDist)
@@ -282,7 +253,6 @@ public class EnemyCombatManager : MonoBehaviour
         {
             if (enemy == null || enemy.IsDead() || enemy == currentAttacker) continue;
             if (!enemy.IsEngaged()) continue;
-            if (enemy.IsInHitStun()) continue; // Don't pick stunned enemies
 
             float dist = Vector3.Distance(enemy.transform.position, player.position);
             if (dist < closestDist)
@@ -295,26 +265,33 @@ public class EnemyCombatManager : MonoBehaviour
         return best;
     }
 
+    private void UpdateWaitingEnemies()
+    {
+        foreach (var enemy in registeredEnemies)
+        {
+            if (enemy == null || enemy.IsDead()) continue;
+            if (enemy == currentAttacker) continue;
+            if (!enemy.IsEngaged()) continue;
+
+            // This enemy should be circling, not attacking
+            // The enemy's Update will handle this via ShouldWait()
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (player == null) return;
 
+        // Draw circle radius
         Gizmos.color = Color.yellow;
         DrawCircle(player.position, circleRadius, 32);
 
+        // Draw current attacker
         if (currentAttacker != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(player.position, currentAttacker.transform.position);
             Gizmos.DrawWireSphere(currentAttacker.transform.position, 1f);
-        }
-
-        // Draw waiting enemies in blue
-        Gizmos.color = Color.blue;
-        foreach (var enemy in registeredEnemies)
-        {
-            if (enemy == null || enemy == currentAttacker) continue;
-            Gizmos.DrawWireSphere(enemy.transform.position, 0.5f);
         }
     }
 
