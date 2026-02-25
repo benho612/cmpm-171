@@ -9,7 +9,7 @@ public class Combat : MonoBehaviour
     public float heavyAttackDuration = 0.5f;
 
     [Header("Defense & Parry Settings")]
-    public float parryWindow = 0.2f;
+    public float parryWindow = 0.2f; // Window that opens upon RELEASING block
     public Color blockColor = new Color(0f, 0f, 1f, 0.4f); 
     public Color parryColor = new Color(0.6f, 0.8f, 1f, 0.8f); 
     public Vector3 blockVisualSize = new Vector3(1.2f, 2.0f, 1.2f);
@@ -71,7 +71,6 @@ public class Combat : MonoBehaviour
     {
         Vector2 moveInput = _input.Gameplay.Move.ReadValue<Vector2>();
 
-        // Only allow a stationary dodge if blocking, not already dodging, and not dashing
         if (_isBlocking && !IsDodging && !_movement.IsDashing)
         {
             if (moveInput.y > 0.5f && _lastMoveY <= 0.5f) 
@@ -86,9 +85,9 @@ public class Combat : MonoBehaviour
             }
         }
 
-        // Store this frame's Y input so we can compare it next frame
         _lastMoveY = moveInput.y;
     }
+
 
     private void StartDefense()
     {
@@ -98,29 +97,40 @@ public class Combat : MonoBehaviour
         _blockVisual.SetActive(true);
         _blockVisual.transform.localPosition = new Vector3(0, 1f, 0); 
         
+        // If the player presses block again while a release-parry is still active, cancel the parry
         if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
-        _parryCoroutine = StartCoroutine(ParryRoutine());
+        _isParrying = false;
+
+        Renderer rend = _blockVisual.GetComponent<Renderer>();
+        rend.material.color = blockColor;
     }
 
     private void StopDefense()
     {
+        if (!_isBlocking) return; 
+
         _isBlocking = false;
-        _isParrying = false;
-        _blockVisual.SetActive(false);
         
         if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
+        _parryCoroutine = StartCoroutine(ParryRoutine());
     }
 
     private IEnumerator ParryRoutine()
     {
         _isParrying = true;
+        
         Renderer rend = _blockVisual.GetComponent<Renderer>();
         rend.material.color = parryColor;
+        _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
         
         yield return new WaitForSeconds(parryWindow);
         
         _isParrying = false;
-        if (!IsDodging) rend.material.color = blockColor; 
+        
+        if (!_isBlocking && !IsDodging)
+        {
+            _blockVisual.SetActive(false);
+        }
     }
 
     private IEnumerator StationaryDodgeRoutine(bool isHigh)
@@ -137,11 +147,20 @@ public class Combat : MonoBehaviour
         _isDodgingHigh = false;
         _isDodgingLow = false;
 
-        // Revert visuals back to standard block/parry if they are still holding the defend button
+        // Gracefully handle visuals depending on what state we are in after the dodge finishes
         if (_isBlocking)
         {
-            rend.material.color = _isParrying ? parryColor : blockColor;
+            rend.material.color = blockColor;
             _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
+        }
+        else if (_isParrying) // In case they released block mid-dodge
+        {
+            rend.material.color = parryColor;
+            _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
+        }
+        else
+        {
+            _blockVisual.SetActive(false);
         }
     }
 
