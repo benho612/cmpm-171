@@ -55,36 +55,34 @@ public class EliteEnemy : BaseEnemy
         {
             float roll = Random.value;
 
-            // DISABLED FOR TESTING - uncomment to re-enable blocking
-            // if (roll < blockChance)
-            // {
-            //     StartBlock();
-            //     float blockTime = Random.Range(0.3f, 1f);
-            //     Invoke(nameof(StopBlock), blockTime);
-            // }
-            // else if (roll < 0.35f)
-            if (roll < 0.05f)
+            if (roll < blockChance)
+            {
+                StartBlock();
+                float blockTime = Random.Range(0.3f, 1f);
+                Invoke(nameof(StopBlock), blockTime);
+            }
+            else if (roll < 0.35f)
             {
                 //SimplePunch();
             }
-            else if (roll < 0.2f)
+            else if (roll < 0.5f)
             {
                 //Shove();
             }
-            else if (roll < 0.5f)
+            else if (roll < 0.7f)
             {
                 UnblockableSwordSwing();
             }
-            else if (roll < 0.75f)
+            else if (roll < 0.85f)
             {
                 LegSweep();
             }
             else
             {
-                SwordSlam();
+                SwordSlam(); // Standalone powerful attack
             }
         }
-        // Medium distance - chance to charge
+        // Medium distance ? chance to charge
         else if (distance <= chargeDistance && distance > attackDistance + 1.5f)
         {
             if (Random.value < chargeChance)
@@ -92,6 +90,7 @@ public class EliteEnemy : BaseEnemy
                 ChargeAttack();
             }
         }
+        // Otherwise keep chasing (handled in Update)
     }
 
     #region Elite Attacks

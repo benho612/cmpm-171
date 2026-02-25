@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 692466235146739208}
   - component: {fileID: 288945690025827334}
   - component: {fileID: 1565237438741689417}
-  - component: {fileID: 4526375225493487774}
+  - component: {fileID: 491325864711362521}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -35,7 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4920258541907322210}
-  - {fileID: 8595339940223243444}
+  - {fileID: 1682787556135036376}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &3067601119996316583
@@ -127,7 +127,7 @@ MonoBehaviour:
   heavyHitboxSize: {x: 1, y: 1, z: 1}
   lightAttackColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &4526375225493487774
+--- !u!114 &491325864711362521
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -364,7 +364,7 @@ MonoBehaviour:
         DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 1
---- !u!1001 &8125181333955064671
+--- !u!1001 &1211696039017120307
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -437,8 +437,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3e0113baba768c4794dbbc12ddae59c, type: 3}
---- !u!4 &8595339940223243444 stripped
+--- !u!4 &1682787556135036376 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a3e0113baba768c4794dbbc12ddae59c, type: 3}
-  m_PrefabInstance: {fileID: 8125181333955064671}
+  m_PrefabInstance: {fileID: 1211696039017120307}
   m_PrefabAsset: {fileID: 0}
