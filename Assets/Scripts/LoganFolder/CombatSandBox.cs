@@ -58,6 +58,8 @@ public class CombatSandBox : MonoBehaviour
     public bool IsParrying => _isParrying;
     public bool IsDodging => _isDodgingHigh || _isDodgingLow;
 
+    public int punishWindowFrames = 1;
+
     private void Awake()
     {
         _input = new PlayerControls();
@@ -87,15 +89,19 @@ public class CombatSandBox : MonoBehaviour
         _blockVisual.transform.localPosition = new Vector3(0, 1f, 0); 
         
         if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
-        _parryCoroutine = StartCoroutine(ParryRoutine());
+        //_parryCoroutine = StartCoroutine(ParryRoutine());
     }
 
     public void StopDefense()
     {
+        _parryCoroutine = StartCoroutine(ParryRoutine());
+    }
+
+    private void FinishDefense()
+    {
         _isBlocking = false;
         _isParrying = false;
         _blockVisual.SetActive(false);
-        if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
     }
 
     public void ExecuteStationaryDodge(bool isHigh){
@@ -127,6 +133,8 @@ public class CombatSandBox : MonoBehaviour
 
         // Create visual hitbox
         _currentHitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        _currentHitBox.transform.SetParent(this.transform);
+
         _currentHitBox.transform.position = transform.TransformPoint(hitboxOffset);
         _currentHitBox.transform.rotation = transform.rotation;
         _currentHitBox.transform.localScale = size;
@@ -182,6 +190,10 @@ public class CombatSandBox : MonoBehaviour
 
     private IEnumerator ParryRoutine()
     {
+        for (int i = 0; i < punishWindowFrames; i++)
+        {
+            yield return null; 
+        }
         _isParrying = true;
         Renderer rend = _blockVisual.GetComponent<Renderer>();
         rend.material.color = parryColor;
@@ -189,7 +201,8 @@ public class CombatSandBox : MonoBehaviour
         yield return new WaitForSeconds(parryWindow);
         
         _isParrying = false;
-        if (!IsDodging) rend.material.color = blockColor; 
+        if (!IsDodging) rend.material.color = blockColor;
+        FinishDefense(); 
     }
 
 //temp visual for blocking
