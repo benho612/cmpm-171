@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatStatUpgrade
   upgradeName: Combo Mastery
   icon: {fileID: 0}
-  UpgradeDescription: 
+  UpgradeDescription: Increased Attack speed
   DamageIncrease: 0
-  AttackSpeedIncrease: 0
+  AttackSpeedIncrease: 2
   KnockbackIncrease: 0
   WallSlamDamageIncrease: 0
   StaggerDamageIncrease: 0

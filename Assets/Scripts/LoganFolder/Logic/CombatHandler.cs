@@ -19,6 +19,7 @@ public class CombatHandler : MonoBehaviour{
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
         _meta = MetaManager.Instance;
+        _stats.ResetStats();
     }
 
 //logic to unlock combos
@@ -162,12 +163,14 @@ public class CombatHandler : MonoBehaviour{
         //enemy.TakeStagger(finalStagger);
 
         //handling feature Logic
+        /*
         if(_activeElement == ElementType.Ice && _meta.FeatureLogicCheck("FlashFreeze")){
             //spawn Cold Zone
         }
         if(_activeElement == ElementType.Stone && _meta.FeatureLogicCheck("StoneArmor")){
             //apply Stone Armor
         }
+        */
     }
 
     private StatusEffect GetStatusFromElement(ElementType element){

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatStatUpgrade
   upgradeName: Dense Fists
   icon: {fileID: 0}
-  UpgradeDescription: 
-  DamageIncrease: 0
+  UpgradeDescription: Increased Base Damage
+  DamageIncrease: 4
   AttackSpeedIncrease: 0
   KnockbackIncrease: 0
   WallSlamDamageIncrease: 0

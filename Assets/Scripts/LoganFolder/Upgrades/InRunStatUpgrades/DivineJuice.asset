@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatStatUpgrade
   upgradeName: Divine Juice
   icon: {fileID: 0}
-  UpgradeDescription: 
+  UpgradeDescription: Max Life increase
   DamageIncrease: 0
   AttackSpeedIncrease: 0
   KnockbackIncrease: 0
-  MaxHealthIncrease: 0
-  HealthIncrease: 0
+  WallSlamDamageIncrease: 0
+  StaggerDamageIncrease: 0
+  MaxHealthIncrease: 25
+  HealthIncrease: 25
   LifeStealIncrease: 0

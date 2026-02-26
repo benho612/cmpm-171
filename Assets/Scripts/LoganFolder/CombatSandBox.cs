@@ -21,10 +21,8 @@ public class CombatSandBox : MonoBehaviour
     public Color dodgeLowColor = new Color(0.5f, 0f, 0.5f, 0.5f);
     
     [Header("Combat Settings")]
-    public float lightAttackDamage = 15f;
-    public float heavyAttackDamage = 30f;
     public float lightAttackDuration = 0.5f;
-    public float heavyAttackDuration = 0.9f;
+    public float heavyAttackDuration = 1.2f;
     public float MinCancelTime = 0.3f;
     private float _attackStartTime;
 
@@ -46,8 +44,6 @@ public class CombatSandBox : MonoBehaviour
     private bool _isParrying;
     private bool _isDodgingHigh;
     private bool _isDodgingLow;
-
-
     
     private GameObject _blockVisual;
     private Coroutine _parryCoroutine;
