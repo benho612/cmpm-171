@@ -12093,12 +12093,15 @@ MonoBehaviour:
   lightAttackDuration: 0.5
   heavyAttackDuration: 0.9
   MinCancelTime: 0.25
+  _maxAttackDistance: 2
+  _stoppingDistance: 1.2
   hitboxOffset: {x: 0, y: 1, z: 1}
   lightHitboxSize: {x: 1.5, y: 1.5, z: 1.5}
   heavyHitboxSize: {x: 2, y: 2, z: 2}
   lightAttackColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
   _combatHandler: {fileID: 711210738}
+  _controller: {fileID: 711210735}
   punishWindowFrames: 1
 --- !u!114 &711210738
 MonoBehaviour:

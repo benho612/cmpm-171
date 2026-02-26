@@ -31,6 +31,8 @@ public class CombatSandBox : MonoBehaviour
     public float heavyAttackDuration = 1.2f;
     public float MinCancelTime = 0.3f;
     private float _attackStartTime;
+    [SerializeField] private float _maxAttackDistance = 2.0f;
+    [SerializeField] private float _stoppingDistance = 1.2f;
 
     [Header("Visual Feedback")]
     public Vector3 hitboxOffset = new Vector3(0, 1.0f, 1.0f);
@@ -43,6 +45,7 @@ public class CombatSandBox : MonoBehaviour
     // References
     private PlayerControls _input;
     [SerializeField] private CombatHandler _combatHandler; 
+    [SerializeField] private CharacterController _controller;
     
     // States
     private bool _isAttacking;
@@ -290,12 +293,19 @@ public class CombatSandBox : MonoBehaviour
         }
 
         // Rotate the player
-        if (bestTarget != null)
+        if (bestTarget != null && _controller != null)
         {
             // If an enemy is found in that direction, snap directly to them
             Vector3 targetDir = bestTarget.position - transform.position;
             targetDir.y = 0;
             transform.rotation = Quaternion.LookRotation(targetDir.normalized);
+
+            float actualDistance = targetDir.magnitude;
+            float distanceToMove = Mathf.Clamp(actualDistance - _stoppingDistance, 0, _maxAttackDistance);
+
+            if(distanceToMove > 0){
+                _controller.Move(targetDir.normalized * distanceToMove); //Slightly move the character towards the enemy
+            }
         }
         else
         {
