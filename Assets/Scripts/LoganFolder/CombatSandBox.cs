@@ -40,7 +40,12 @@ public class CombatSandBox : MonoBehaviour
     public Vector3 heavyHitboxSize = new Vector3(2.0f, 2.0f, 2.0f);
     public Color lightAttackColor = Color.yellow;
     public Color heavyAttackColor = Color.red;
-    
+
+    [Header("AnimationEvent Testing Vars")]
+    private float _duration;
+    private Vector3 _size;
+    private Color _color;
+    private float _damage;
 
     // References
     private PlayerControls _input;
@@ -88,13 +93,24 @@ public class CombatSandBox : MonoBehaviour
 
             if(!canInterrupt) return false;
             Debug.Log("ExecutePhysicalAttackTest");
-
             StopCoroutine(_activeAttackRoutine);
             if(_currentHitBox != null) Destroy(_currentHitBox);
         }
+        //assign variables for attackImpact animation event
+        _duration = duration;
+        _size = size;
+        _color = color;
+        _damage = damage;
         _attackStartTime = Time.time;
-        _activeAttackRoutine = StartCoroutine(AttackRoutine(duration, size, color, damage));
+        _isAttacking = true;
+        //_activeAttackRoutine = StartCoroutine(AttackRoutine(duration, size, color, damage));
         return true;
+    }
+
+    public void ExecuteAttackImpact(){
+        MagnetizeToTarget();
+        _activeAttackRoutine = StartCoroutine(AttackRoutine(_duration, _size, _color, _damage));
+
     }
 
     public void StartDefense()
@@ -144,10 +160,6 @@ public class CombatSandBox : MonoBehaviour
 
     private IEnumerator AttackRoutine(float duration, Vector3 size, Color color, float damage)
     {
-        _isAttacking = true;
-
-        MagnetizeToTarget();
-
         // Create visual hitbox
         _currentHitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
         _currentHitBox.transform.SetParent(this.transform);

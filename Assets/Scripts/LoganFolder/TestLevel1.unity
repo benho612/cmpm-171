@@ -11969,7 +11969,6 @@ GameObject:
   - component: {fileID: 711210732}
   - component: {fileID: 711210739}
   - component: {fileID: 711210738}
-  - component: {fileID: 711210737}
   - component: {fileID: 711210736}
   - component: {fileID: 711210735}
   - component: {fileID: 711210734}
@@ -12067,42 +12066,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c3b121b935920c4683afb70ffe3180f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimationBridge
---- !u!114 &711210737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 711210731}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c4cd5206f468c4e9ba282b8b68c517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CombatSandBox
-  magnetizeRadius: 6
-  magnetizeAngle: 120
-  magnetizeRotationSpeed: 25
-  parryWindow: 0.2
-  blockColor: {r: 0, g: 0, b: 1, a: 0.4}
-  parryColor: {r: 0.6, g: 0.8, b: 1, a: 0.8}
-  blockVisualSize: {x: 1.2, y: 2, z: 1.2}
-  baseBlockMaterial: {fileID: 0}
-  dodgeDuration: 0.35
-  dodgeHighColor: {r: 0, g: 1, b: 0, a: 0.5}
-  dodgeLowColor: {r: 0.5, g: 0, b: 0.5, a: 0.5}
-  lightAttackDuration: 0.5
-  heavyAttackDuration: 0.9
-  MinCancelTime: 0.25
-  _maxAttackDistance: 2
-  _stoppingDistance: 1.2
-  hitboxOffset: {x: 0, y: 1, z: 1}
-  lightHitboxSize: {x: 1.5, y: 1.5, z: 1.5}
-  heavyHitboxSize: {x: 2, y: 2, z: 2}
-  lightAttackColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
-  _combatHandler: {fileID: 711210738}
-  _controller: {fileID: 711210735}
-  punishWindowFrames: 1
 --- !u!114 &711210738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12117,7 +12080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CombatHandler
   UnlockedCombos: []
   _playerAnimator: {fileID: 711210736}
-  _combatSandBox: {fileID: 711210737}
+  _combatSandBox: {fileID: 1316113357}
   _movement: {fileID: 711210734}
 --- !u!114 &711210739
 MonoBehaviour:
@@ -22189,6 +22152,47 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5684410579998868592, guid: d4d914d248560644ab635c73338aa101, type: 3}
   m_PrefabInstance: {fileID: 1313814965}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1316113355 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 55e881b180bcb6d4baefbaa45cb3b98c, type: 3}
+  m_PrefabInstance: {fileID: 1739953223}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1316113357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316113355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4cd5206f468c4e9ba282b8b68c517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatSandBox
+  magnetizeRadius: 6
+  magnetizeAngle: 120
+  magnetizeRotationSpeed: 25
+  parryWindow: 0.2
+  blockColor: {r: 0, g: 0, b: 1, a: 0.4}
+  parryColor: {r: 0.6, g: 0.8, b: 1, a: 0.8}
+  blockVisualSize: {x: 1.2, y: 2, z: 1.2}
+  baseBlockMaterial: {fileID: 0}
+  dodgeDuration: 0.35
+  dodgeHighColor: {r: 0, g: 1, b: 0, a: 0.5}
+  dodgeLowColor: {r: 0.5, g: 0, b: 0.5, a: 0.5}
+  lightAttackDuration: 0.5
+  heavyAttackDuration: 1.2
+  MinCancelTime: 0.3
+  _maxAttackDistance: 2
+  _stoppingDistance: 1.2
+  hitboxOffset: {x: 0, y: 1, z: 1}
+  lightHitboxSize: {x: 1.5, y: 1.5, z: 1.5}
+  heavyHitboxSize: {x: 2, y: 2, z: 2}
+  lightAttackColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
+  _combatHandler: {fileID: 711210738}
+  _controller: {fileID: 711210735}
+  punishWindowFrames: 1
 --- !u!1001 &1318770208
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28458,7 +28462,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55e881b180bcb6d4baefbaa45cb3b98c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1316113357}
   m_SourcePrefab: {fileID: 100100000, guid: 55e881b180bcb6d4baefbaa45cb3b98c, type: 3}
 --- !u!1001 &1741061929
 PrefabInstance:
