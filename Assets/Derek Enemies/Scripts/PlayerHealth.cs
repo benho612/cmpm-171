@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -12,6 +14,9 @@ public class PlayerHealth : MonoBehaviour
     private float invincibilityTimer;
     private bool isInvincible;
 
+    [Header("UI References")]
+    [SerializeField] private Slider _healthSlider;
+
     // Events for UI or other systems to subscribe to
     public event Action<float, float> OnHealthChanged; // currentHealth, maxHealth
     public event Action OnPlayerDeath;
@@ -23,6 +28,10 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        if(_healthSlider != null){
+            _healthSlider.maxValue = maxHealth;
+            _healthSlider.value = maxHealth;
+        }
     }
 
     private void Update()
@@ -44,6 +53,7 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0);
 
+        _healthSlider.value = currentHealth;
         Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
 
         // Brief invincibility to prevent multiple hits from same attack
@@ -71,7 +81,10 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died!");
-        OnPlayerDeath?.Invoke();
+        //OnPlayerDeath?.Invoke();
         // TODO: Add death logic (respawn, game over screen, etc.)
+        Time.timeScale = 1f;
+        //temp reset scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour{
 
     public void CloseUpgradeMenu(){
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         RunUpgrades.gameObject.SetActive(false);
     }
 //this function will handle the randomized selection of available upgrades to display 
