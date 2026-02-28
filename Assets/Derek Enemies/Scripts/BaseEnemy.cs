@@ -15,8 +15,6 @@ public abstract class BaseEnemy : MonoBehaviour
     [SerializeField] protected float attackRange = 2f;
     [SerializeField] protected float chargeSpeed = 5f;
     [SerializeField] protected float chargeStopDistance = 2f;
-    [SerializeField] protected float dashBackDistance = 3f;
-    [SerializeField] protected float dashBackSpeed = 8f;
 
     [Header("Awareness & Engagement")]
     [SerializeField] protected float awarenessRange = 25f;
@@ -37,16 +35,11 @@ public abstract class BaseEnemy : MonoBehaviour
     protected float hitStunTimer;
     protected float timeSinceLastHit;
     protected bool isInHitStun;
-    protected bool isDashingBack;
 
-    [Header("Dodge Settings")]
-    [SerializeField] protected int hitsBeforeDodge = 2; // Dodge after this many consecutive hits
-    [SerializeField] protected float dodgeCooldown = 3f; // Can't dodge again for this long
-    [SerializeField] protected float comboResetTime = 2f; // Reset hit counter if no hit for this long
-    protected int consecutiveHitsTaken;
-    protected float dodgeCooldownTimer;
-    protected float comboResetTimer;
-    protected bool wantsToDodge; // Flag to dodge at next opportunity
+    [Header("Hit Immunity")]
+    [SerializeField] protected float hitImmunityDuration = 5f; // Can't be staggered for this long after hit stun ends
+    protected bool isHitImmune;
+    protected float hitImmuneTimer;
 
     [Header("Stun Meter")]
     [SerializeField] protected float maxStunMeter = 100f;
@@ -85,8 +78,6 @@ public abstract class BaseEnemy : MonoBehaviour
     protected static readonly int AnimSpeed = Animator.StringToHash("Speed");
     protected static readonly int AnimBlockHit = Animator.StringToHash("BlockHit");
     protected static readonly int AnimStunned = Animator.StringToHash("Stunned");
-    protected static readonly int AnimDashBack = Animator.StringToHash("DashBack");
-    protected static readonly int AnimDodgeBack = Animator.StringToHash("DodgeBack"); // New dodge animation
 
     private PlayerHealth playerHealth;
 
@@ -133,9 +124,8 @@ public abstract class BaseEnemy : MonoBehaviour
         isAware = false;
         isEngaged = false;
         hasOpenedWithCharge = false;
-        consecutiveHitsTaken = 0;
-        dodgeCooldownTimer = 0f;
-        wantsToDodge = false;
+        isHitImmune = false;
+        hitImmuneTimer = 0f;
 
         if (animator != null)
         {
@@ -160,19 +150,14 @@ public abstract class BaseEnemy : MonoBehaviour
     {
         if (currentHealth <= 0) return;
 
-        // Update dodge cooldown
-        if (dodgeCooldownTimer > 0)
-            dodgeCooldownTimer -= Time.deltaTime;
-
-        // Update combo reset timer
-        if (consecutiveHitsTaken > 0)
+        // Update hit immunity timer
+        if (isHitImmune)
         {
-            comboResetTimer += Time.deltaTime;
-            if (comboResetTimer >= comboResetTime)
+            hitImmuneTimer -= Time.deltaTime;
+            if (hitImmuneTimer <= 0f)
             {
-                consecutiveHitsTaken = 0;
-                wantsToDodge = false;
-                Debug.Log($"{gameObject.name}: Combo reset - no hits for {comboResetTime}s");
+                isHitImmune = false;
+                Debug.Log($"{gameObject.name}: Hit immunity expired");
             }
         }
 
@@ -182,30 +167,17 @@ public abstract class BaseEnemy : MonoBehaviour
             hitStunTimer += Time.deltaTime;
             timeSinceLastHit += Time.deltaTime;
 
-            // If hit stun duration exceeded, dash back
             if (hitStunTimer >= maxHitStunDuration)
             {
-                StartCoroutine(DashBackRoutine());
+                ExitHitStunWithImmunity();
             }
-            // If not hit for a while, check if we want to dodge or just exit
             else if (timeSinceLastHit >= hitStunResetTime)
             {
-                // This is our window to dodge!
-                if (wantsToDodge && CanDodge())
-                {
-                    StartCoroutine(DodgeBackRoutine());
-                }
-                else
-                {
-                    ExitHitStun();
-                }
+                ExitHitStunWithImmunity();
             }
 
             return;
         }
-
-        // Don't do anything while dashing back
-        if (isDashingBack) return;
 
         if (attackCooldownTimer > 0)
             attackCooldownTimer -= Time.deltaTime;
@@ -251,7 +223,7 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual void CircleAroundPlayer()
     {
-        if (isAttacking || isBlocking || isStunned || isCharging || isInHitStun || isDashingBack) return;
+        if (isAttacking || isBlocking || isStunned || isCharging || isInHitStun) return;
         if (EnemyCombatManager.Instance == null) return;
 
         Vector3 targetPos = EnemyCombatManager.Instance.GetCirclePosition(this);
@@ -284,7 +256,7 @@ public abstract class BaseEnemy : MonoBehaviour
     {
         if (animator == null) return;
 
-        if (isAttacking || isDashingBack || isInHitStun)
+        if (isAttacking || isInHitStun)
         {
             navAgent.updatePosition = false;
             transform.position += animator.deltaPosition;
@@ -298,7 +270,7 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual void ContinueCombat()
     {
-        if (isAttacking || isBlocking || isCharging || isStunned || isInHitStun || isDashingBack) return;
+        if (isAttacking || isBlocking || isCharging || isStunned || isInHitStun) return;
 
         float distance = GetDistanceToPlayer();
 
@@ -374,7 +346,7 @@ public abstract class BaseEnemy : MonoBehaviour
     #region Movement
     protected virtual void ChasePlayer()
     {
-        if (isAttacking || isBlocking || isStunned || isCharging || isInHitStun || isDashingBack || player == null) return;
+        if (isAttacking || isBlocking || isStunned || isCharging || isInHitStun || player == null) return;
 
         navAgent.isStopped = false;
         navAgent.speed = chaseSpeed;
@@ -431,7 +403,7 @@ public abstract class BaseEnemy : MonoBehaviour
 
     public virtual void StartBlock()
     {
-        if (isAttacking || isStunned || isCharging || isInHitStun || isDashingBack) return;
+        if (isAttacking || isStunned || isCharging || isInHitStun) return;
 
         isBlocking = true;
         navAgent.isStopped = true;
@@ -509,15 +481,7 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual bool CanPerformAction()
     {
-        return !isAttacking && !isBlocking && !isStunned && !isCharging && !isInHitStun && !isDashingBack && attackCooldownTimer <= 0;
-    }
-
-    /// <summary>
-    /// Check if enemy can perform a dodge
-    /// </summary>
-    protected bool CanDodge()
-    {
-        return !isDashingBack && !isStunned && dodgeCooldownTimer <= 0;
+        return !isAttacking && !isBlocking && !isStunned && !isCharging && !isInHitStun && attackCooldownTimer <= 0;
     }
     #endregion
 
@@ -556,13 +520,26 @@ public abstract class BaseEnemy : MonoBehaviour
             return;
         }
 
-        // Take damage
+        // Take damage (always take damage, even if immune to stagger)
         currentHealth -= damage;
         Debug.Log($"{gameObject.name}: Health now {currentHealth}/{maxHealth}");
 
         // Show health bar when damaged
         var healthBar = GetComponentInChildren<EnemyHealthBar>();
         healthBar?.ShowHealthBar();
+
+        if (currentHealth <= 0)
+        {
+            Die();
+            return;
+        }
+
+        // If immune to hit stun, just take damage but don't stagger
+        if (isHitImmune)
+        {
+            Debug.Log($"{gameObject.name}: Hit immune - took damage but no stagger ({hitImmuneTimer:F1}s remaining)");
+            return;
+        }
 
         // Interrupt current actions
         isAttacking = false;
@@ -576,30 +553,10 @@ public abstract class BaseEnemy : MonoBehaviour
             EnemyCombatManager.Instance.ReleaseAttackPermission(this);
         }
 
-        if (currentHealth <= 0)
-        {
-            Die();
-            return;
-        }
-
-        // Track consecutive hits for dodge mechanic
-        consecutiveHitsTaken++;
-        comboResetTimer = 0f; // Reset the combo timeout
-        Debug.Log($"{gameObject.name}: Consecutive hits: {consecutiveHitsTaken}/{hitsBeforeDodge}");
-
-        // Check if we should dodge after this hit
-        if (consecutiveHitsTaken >= hitsBeforeDodge && CanDodge())
-        {
-            wantsToDodge = true;
-            Debug.Log($"{gameObject.name}: Will dodge at next opportunity!");
-        }
-
-        // Enter or continue hit stun
-        EnterHitStun();
-
-        // Play hit reaction animation
-        Debug.Log($"{gameObject.name}: Triggering HitReaction animation");
+        // Enter hit stun and play hit reaction
+        Debug.Log($"{gameObject.name}: Hit! Entering hit stun");
         animator?.SetTrigger(AnimHitReaction);
+        EnterHitStun();
     }
     #endregion
 
@@ -615,12 +572,15 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual void Die()
     {
+        // Stop all coroutines to prevent any ongoing routines
+        StopAllCoroutines();
+
         isAttacking = false;
         isBlocking = false;
         isCharging = false;
         isRecovering = false;
         isInHitStun = false;
-        isDashingBack = false;
+        isHitImmune = false;
         navAgent.isStopped = true;
         navAgent.velocity = Vector3.zero;
         navAgent.enabled = false;
@@ -657,6 +617,7 @@ public abstract class BaseEnemy : MonoBehaviour
     public float GetHealthPercentage() => currentHealth / maxHealth;
     public float GetStunPercentage() => currentStunMeter / maxStunMeter;
     public bool IsRecovering() => isRecovering;
+    public bool IsHitImmune() => isHitImmune;
 
     #region Animation Events
     public void OnAttackEnd()
@@ -679,37 +640,6 @@ public abstract class BaseEnemy : MonoBehaviour
             navAgent.speed = chaseSpeed;
             navAgent.isStopped = false;
         }
-    }
-
-    public void OnDashBackEnd()
-    {
-        isDashingBack = false;
-        isInHitStun = false;
-        navAgent.updatePosition = true;
-        navAgent.nextPosition = transform.position;
-
-        if (!isStunned && navAgent.isOnNavMesh)
-        {
-            navAgent.isStopped = false;
-        }
-    }
-
-    /// <summary>
-    /// Call this from the DodgeBack animation at the end
-    /// </summary>
-    public void OnDodgeEnd()
-    {
-        isDashingBack = false;
-        isInHitStun = false;
-        navAgent.updatePosition = true;
-        navAgent.nextPosition = transform.position;
-
-        if (!isStunned && navAgent.isOnNavMesh)
-        {
-            navAgent.isStopped = false;
-        }
-
-        Debug.Log($"{gameObject.name}: Dodge completed!");
     }
 
     public void OnLightAttackHit()
@@ -765,25 +695,16 @@ public abstract class BaseEnemy : MonoBehaviour
         return false;
     }
 
-    /// <summary>
-    /// Call this from the HitReaction animation event at the end of the clip
-    /// </summary>
     public void OnHitReactionEnd()
     {
         Debug.Log($"{gameObject.name}: Hit reaction animation ended");
-
-        // Check if we should dodge now (between hits)
-        if (wantsToDodge && CanDodge() && isInHitStun)
-        {
-            StartCoroutine(DodgeBackRoutine());
-        }
     }
     #endregion
 
     #region Stun
     public virtual void ApplyStun(float duration)
     {
-        if (isStunned) return;
+        if (isStunned || isHitImmune) return;
         StartCoroutine(StunRoutine(duration));
     }
 
@@ -798,10 +719,6 @@ public abstract class BaseEnemy : MonoBehaviour
         navAgent.isStopped = true;
         navAgent.velocity = Vector3.zero;
 
-        // Reset dodge state when stunned
-        wantsToDodge = false;
-        consecutiveHitsTaken = 0;
-
         yield return new WaitForSeconds(duration);
 
         isStunned = false;
@@ -813,84 +730,31 @@ public abstract class BaseEnemy : MonoBehaviour
     }
     #endregion
 
-    /// <summary>
-    /// Enter hit stun state - can be hit multiple times
-    /// </summary>
     protected virtual void EnterHitStun()
     {
         if (!isInHitStun)
         {
             isInHitStun = true;
             hitStunTimer = 0f;
-            Debug.Log($"{gameObject.name} entered hit stun!");
+
+            // Grant hit immunity immediately so they can't be staggered again
+            isHitImmune = true;
+            hitImmuneTimer = hitImmunityDuration;
+            Debug.Log($"{gameObject.name}: Entered hit stun, now immune to stagger for {hitImmunityDuration}s!");
         }
 
         timeSinceLastHit = 0f;
     }
 
     /// <summary>
-    /// Exit hit stun and return to normal behavior
+    /// Exit hit stun and resume normal combat (immunity already granted on enter)
     /// </summary>
-    protected virtual void ExitHitStun()
+    protected virtual void ExitHitStunWithImmunity()
     {
         isInHitStun = false;
         hitStunTimer = 0f;
         timeSinceLastHit = 0f;
-        wantsToDodge = false;
 
-        if (!isStunned && navAgent.isOnNavMesh)
-        {
-            navAgent.isStopped = false;
-        }
-
-        Debug.Log($"{gameObject.name} exited hit stun!");
-    }
-
-    /// <summary>
-    /// Dodge backward to escape player combo
-    /// </summary>
-    protected IEnumerator DodgeBackRoutine()
-    {
-        if (isDashingBack) yield break;
-
-        Debug.Log($"{gameObject.name}: Executing dodge back!");
-
-        isDashingBack = true;
-        isInHitStun = false;
-        wantsToDodge = false;
-        consecutiveHitsTaken = 0;
-        dodgeCooldownTimer = dodgeCooldown;
-
-        navAgent.isStopped = true;
-        navAgent.velocity = Vector3.zero;
-
-        // Trigger dodge animation
-        animator?.SetTrigger(AnimDodgeBack);
-
-        Vector3 dashDirection = player != null
-            ? -(player.position - transform.position).normalized
-            : -transform.forward;
-        dashDirection.y = 0f;
-
-        Vector3 startPosition = transform.position;
-        Vector3 targetPosition = startPosition + dashDirection * dashBackDistance;
-
-        float dashDuration = dashBackDistance / dashBackSpeed;
-        float elapsed = 0f;
-
-        while (elapsed < dashDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / dashDuration);
-            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            yield return null;
-        }
-
-        transform.position = targetPosition;
-
-        isDashingBack = false;
-        hitStunTimer = 0f;
-        timeSinceLastHit = 0f;
         navAgent.updatePosition = true;
         navAgent.nextPosition = transform.position;
 
@@ -899,53 +763,6 @@ public abstract class BaseEnemy : MonoBehaviour
             navAgent.isStopped = false;
         }
 
-        Debug.Log($"{gameObject.name} completed dodge back!");
-    }
-
-    protected IEnumerator DashBackRoutine()
-    {
-        if (isDashingBack) yield break;
-
-        isDashingBack = true;
-        isInHitStun = false;
-        navAgent.isStopped = true;
-        navAgent.velocity = Vector3.zero;
-
-        // TODO: Uncomment when DashBack animation is ready
-        // animator?.SetTrigger(AnimDashBack);
-
-        Vector3 dashDirection = player != null
-            ? -(player.position - transform.position).normalized
-            : -transform.forward;
-        dashDirection.y = 0f;
-
-        Vector3 startPosition = transform.position;
-        Vector3 targetPosition = startPosition + dashDirection * dashBackDistance;
-
-        float dashDuration = dashBackDistance / dashBackSpeed;
-        float elapsed = 0f;
-
-        while (elapsed < dashDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / dashDuration);
-            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            yield return null;
-        }
-
-        transform.position = targetPosition;
-
-        isDashingBack = false;
-        hitStunTimer = 0f;
-        timeSinceLastHit = 0f;
-        navAgent.updatePosition = true;
-        navAgent.nextPosition = transform.position;
-
-        if (!isStunned && navAgent.isOnNavMesh)
-        {
-            navAgent.isStopped = false;
-        }
-
-        Debug.Log($"{gameObject.name} completed dash back!");
+        Debug.Log($"{gameObject.name}: Exited hit stun, resuming combat");
     }
 }
