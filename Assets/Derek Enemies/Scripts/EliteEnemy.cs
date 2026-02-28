@@ -27,7 +27,7 @@ public class EliteEnemy : BaseEnemy
         base.Update();
 
         // Don't continue if dead, stunned, in hit stun, or dashing back
-        if (IsDead() || isStunned || isInHitStun || isDashingBack) return;
+        if (IsDead() || isStunned || isInHitStun) return;
 
         aiDecisionTimer -= Time.deltaTime;
         if (aiDecisionTimer <= 0f)

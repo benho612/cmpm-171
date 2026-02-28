@@ -3,7 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "RunData", menuName = "PlayerRunData/runData")]
 public class RunData : ScriptableObject{
     [Header("Combat Data")]
-    public float Damage;
+    public float LightAttackDamage;
+    public float HeavyAttackDamage;
     public float AttackSpeed;
     public float Knockback;
     public float StaggerDamage;
@@ -20,7 +21,8 @@ public class RunData : ScriptableObject{
     public float LifeSteal;
 
     public void ResetStats(){
-        Damage = 10f;
+        LightAttackDamage = 15f;
+        HeavyAttackDamage = 30f;
         AttackSpeed = 5f;
         Knockback = 5f;
         StaggerDamage = 3f;

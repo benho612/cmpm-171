@@ -51,18 +51,16 @@ public class GameManager : MonoBehaviour{
 
     public void CloseUpgradeMenu(){
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         RunUpgrades.gameObject.SetActive(false);
     }
 //this function will handle the randomized selection of available upgrades to display 
     public void GetUpgradesReady(){
         List<UpgradeData> shuffleList = new List<UpgradeData>(AllUpgrades);
-        Debug.Log("allUpgrades count = " + AllUpgrades.Count);
         for(int i = 0; i < UpgradeButtons.Length; i++){
-            Debug.Log("Check1");
             int randomIndex = Random.Range(0, shuffleList.Count);
-            Debug.Log("Check2" + shuffleList.Count);
             UpgradeData pickedUpgrade = shuffleList[randomIndex];
-            Debug.Log("Check3");
             if(pickedUpgrade is ComboUnlock combo){
                 List<string> pool = MetaData.GetUnlockedElementPool();
                 combo.RunTimeElement = pool[Random.Range(0, pool.Count)];

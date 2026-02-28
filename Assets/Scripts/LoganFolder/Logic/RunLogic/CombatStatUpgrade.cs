@@ -22,7 +22,8 @@ public class CombatStatUpgrade : UpgradeData
         Player playerScript = Player.GetComponent<Player>();
         if(playerScript != null)
         {
-            playerScript.PlayerRunData.Damage += DamageIncrease;
+            playerScript.PlayerRunData.LightAttackDamage += DamageIncrease;
+            playerScript.PlayerRunData.HeavyAttackDamage += DamageIncrease;
             playerScript.PlayerRunData.AttackSpeed += AttackSpeedIncrease;
             playerScript.PlayerRunData.Knockback += KnockbackIncrease;
             playerScript.PlayerRunData.WallSlamDamage += WallSlamDamageIncrease;

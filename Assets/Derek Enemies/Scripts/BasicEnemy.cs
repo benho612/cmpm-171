@@ -17,7 +17,7 @@ public class BasicEnemy : BaseEnemy
         base.Update();
 
         // Don't continue if dead, stunned, in hit stun, or dashing back
-        if (IsDead() || isStunned || isInHitStun || isDashingBack) return;
+        if (IsDead() || isStunned || isInHitStun) return;
 
         // Don't do anything until aware of player
         if (!isAware) return;

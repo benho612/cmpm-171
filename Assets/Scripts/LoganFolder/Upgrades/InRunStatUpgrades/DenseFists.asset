@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4795212848ea7e447840d7568ebc0b62, type: 3}
   m_Name: DenseFists
   m_EditorClassIdentifier: Assembly-CSharp::CombatStatUpgrade
-  upgradeName: 
+  upgradeName: Dense Fists
   icon: {fileID: 0}
-  UpgradeDescription: 
-  DamageIncrease: 0
+  UpgradeDescription: Increased Base Damage
+  DamageIncrease: 4
   AttackSpeedIncrease: 0
   KnockbackIncrease: 0
+  WallSlamDamageIncrease: 0
   StaggerDamageIncrease: 0
   MaxHealthIncrease: 0
   HealthIncrease: 0

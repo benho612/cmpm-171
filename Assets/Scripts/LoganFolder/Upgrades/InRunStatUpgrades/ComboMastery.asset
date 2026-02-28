@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4795212848ea7e447840d7568ebc0b62, type: 3}
   m_Name: ComboMastery
   m_EditorClassIdentifier: Assembly-CSharp::CombatStatUpgrade
-  upgradeName: 
+  upgradeName: Combo Mastery
   icon: {fileID: 0}
-  UpgradeDescription: 
+  UpgradeDescription: Increased Attack speed
   DamageIncrease: 0
-  AttackSpeedIncrease: 0
+  AttackSpeedIncrease: 2
   KnockbackIncrease: 0
   WallSlamDamageIncrease: 0
   StaggerDamageIncrease: 0

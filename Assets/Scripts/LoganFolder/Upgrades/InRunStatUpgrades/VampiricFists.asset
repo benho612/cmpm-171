@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4795212848ea7e447840d7568ebc0b62, type: 3}
   m_Name: VampiricFists
   m_EditorClassIdentifier: Assembly-CSharp::CombatStatUpgrade
-  upgradeName: 
+  upgradeName: Vampiric Fists
   icon: {fileID: 0}
-  UpgradeDescription: 
+  UpgradeDescription: Life Steal
   DamageIncrease: 0
   AttackSpeedIncrease: 0
   KnockbackIncrease: 0
@@ -22,4 +22,4 @@ MonoBehaviour:
   StaggerDamageIncrease: 0
   MaxHealthIncrease: 0
   HealthIncrease: 0
-  LifeStealIncrease: 0
+  LifeStealIncrease: 3

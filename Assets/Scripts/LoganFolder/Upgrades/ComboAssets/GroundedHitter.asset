@@ -15,6 +15,9 @@ MonoBehaviour:
   upgradeName: Heavy Basic
   icon: {fileID: 0}
   ComboID: LHHH
-  IsFinisher: 0
-  RequiredMoveParts: []
+  IsFinisher: 1
+  RequiredMoveParts:
+  - L
+  - LH
+  - LHH
   RunTimeElement: Stone

@@ -16,5 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   ComboID: LLH
   IsFinisher: 1
-  RequiredMoveParts: []
-  RunTimeElement: Fire
+  RequiredMoveParts:
+  - L
+  - LL
+  RunTimeElement: Stone

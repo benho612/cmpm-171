@@ -15,6 +15,10 @@ MonoBehaviour:
   upgradeName: Quick Jabs
   icon: {fileID: 0}
   ComboID: LLLLL
-  IsFinisher: 0
-  RequiredMoveParts: []
+  IsFinisher: 1
+  RequiredMoveParts:
+  - L
+  - LL
+  - LLL
+  - LLLL
   RunTimeElement: Fire
