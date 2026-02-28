@@ -36,7 +36,7 @@ public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
     [Header("Dodge")]
     public bool dodgeOnlyInBattle = true;
     public string dodgeTrigger = "dodge";
-    public string dodgeStateName = "Dodge Backward"; 
+    public string dodgeStateName = "Dodge Backward";
     public float dodgeCooldown = 0.35f;
 
     [Header("Block")]
@@ -44,6 +44,27 @@ public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
     public string blockTrigger = "block";
     public string blockStateName = "Standing Block";
     public float blockCooldown = 0.35f;
+
+    [Header("Finisher")]
+    public string finisherTrigger = "finisher";
+    [Tooltip("MUST match the finisher state's name in Animator exactly.")]
+    public string finisherStateName = "Finisher";
+    public float finisherCooldown = 0.35f;
+
+    [Header("Finisher Target (Trigger Zone)")]
+    public EnemyFinisherTarget currentFinisherTarget;
+
+    [Tooltip("Max seconds allowed for finisher. Prevents permanent lock if transitions are wrong.")]
+    public float maxFinisherTime = 3.0f;
+
+    [Header("Cinemachine (optional)")]
+    // Cinemachine 3 uses CinemachineCamera. If you're on Cinemachine 2, use CinemachineVirtualCamera instead.
+    public Unity.Cinemachine.CinemachineCamera finisherVCam;
+    public int finisherCamPriority = 50;
+
+    Vector3 preFinisherPos;
+    Quaternion preFinisherRot;
+    bool hasPreFinisherTransform;
 
     CharacterController controller;
     Vector2 moveInput;
@@ -55,16 +76,47 @@ public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
     bool isDodging;
     float lastDodgeTime = -999f;
 
+    bool isFinishing;
+    float lastFinisherTime = -999f;
+
+    int cachedFinisherCamPriority;
+    bool hasCachedFinisherCamPriority;
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         if (!animator) animator = GetComponentInChildren<Animator>();
         if (!cameraTransform && Camera.main) cameraTransform = Camera.main.transform;
-
-        // IMPORTANT: do NOT override applyRootMotion here since you want it enabled already.
-        // animator.applyRootMotion = true/false;  <-- removed on purpose
     }
 
+    void OnDisable()
+    {
+        // Safety: if script gets disabled mid-finisher, always unlock.
+        ForceUnlock();
+    }
+
+    void SavePreFinisherTransform()
+    {
+        preFinisherPos = transform.position;
+        preFinisherRot = transform.rotation;
+        hasPreFinisherTransform = true;
+    }
+
+    void RestorePreFinisherTransform()
+    {
+        if (!hasPreFinisherTransform) return;
+
+        bool ccWasEnabled = controller != null && controller.enabled;
+        if (controller) controller.enabled = false;
+
+        transform.position = preFinisherPos;
+        transform.rotation = preFinisherRot;
+
+        if (controller && ccWasEnabled) controller.enabled = true;
+
+        hasPreFinisherTransform = false;
+
+    }
     // PlayerInput events (New Input System)
     public void OnMove(InputAction.CallbackContext ctx) => moveInput = ctx.ReadValue<Vector2>();
     public void OnRun(InputAction.CallbackContext ctx) => shiftHeld = !ctx.canceled;
@@ -95,6 +147,142 @@ public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
         battleRoutine = StartCoroutine(BattleTimeout());
 
         animator?.SetTrigger(punchTrigger);
+    }
+
+    // Hook this action to F
+    public void OnFinisher(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed) return;
+        TryFinisher();
+    }
+
+    void TryFinisher()
+    {
+        if (isDodging || isFinishing) return;
+        if (Time.time < lastFinisherTime + finisherCooldown) return;
+
+        if (currentFinisherTarget == null)
+        {
+            Debug.Log("No finisher target in range.");
+            return;
+        }
+
+        StartCoroutine(FinisherRoutine(currentFinisherTarget));
+    }
+
+    IEnumerator AlignToAnchor(Transform anchor, float duration)
+    {
+        if (!anchor) yield break;
+
+        // Temporarily disable CharacterController while snapping (prevents ¡§fight¡¨)
+        bool ccWasEnabled = controller != null && controller.enabled;
+        if (controller) controller.enabled = false;
+
+        Vector3 startPos = transform.position;
+        Quaternion startRot = transform.rotation;
+
+        Vector3 endPos = anchor.position;
+        Quaternion endRot = anchor.rotation;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / Mathf.Max(duration, 0.0001f);
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+            transform.rotation = Quaternion.Slerp(startRot, endRot, t);
+            yield return null;
+        }
+
+        if (controller && ccWasEnabled) controller.enabled = true;
+    }
+
+    IEnumerator FinisherRoutine(EnemyFinisherTarget target)
+    {
+        isFinishing = true;
+        lastFinisherTime = Time.time;
+
+        SavePreFinisherTransform();
+
+        if (target.FinisherAnchor != null)
+            yield return AlignToAnchor(target.FinisherAnchor, 0.15f);
+
+        EnableFinisherCam(true);
+
+        target.PlayFinisherReact();
+
+        animator?.ResetTrigger(finisherTrigger);
+        animator?.SetTrigger(finisherTrigger);
+
+        // 1) Wait until we ENTER finisher state, but never forever
+        float enterTimeout = 1.0f;
+        float enterT = 0f;
+        while (enterT < enterTimeout)
+        {
+            if (animator && animator.GetCurrentAnimatorStateInfo(0).IsName(finisherStateName))
+                break;
+
+            enterT += Time.deltaTime;
+            yield return null;
+        }
+
+        // If never entered, unlock safely (state name mismatch or transition failed)
+        if (!(animator && animator.GetCurrentAnimatorStateInfo(0).IsName(finisherStateName)))
+        {
+            ForceUnlock();
+            yield break;
+        }
+
+        // 2) Wait until we LEAVE finisher state, but also never forever
+        float elapsed = 0f;
+        while (elapsed < maxFinisherTime)
+        {
+            if (animator && !animator.GetCurrentAnimatorStateInfo(0).IsName(finisherStateName))
+                break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        ForceUnlock();
+    }
+
+    void ForceUnlock()
+    {
+        // End finisher lock
+        isFinishing = false;
+
+        // Restore camera
+        EnableFinisherCam(false);
+
+        RestorePreFinisherTransform();
+
+    }
+
+    void EnableFinisherCam(bool on)
+    {
+        if (!finisherVCam) return;
+
+        if (!hasCachedFinisherCamPriority)
+        {
+            cachedFinisherCamPriority = finisherVCam.Priority;
+            hasCachedFinisherCamPriority = true;
+        }
+
+        finisherVCam.Priority = on ? finisherCamPriority : cachedFinisherCamPriority;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var zone = other.GetComponent<EnemyFinisherZone>();
+        if (zone != null && zone.target != null)
+            currentFinisherTarget = zone.target;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        var zone = other.GetComponent<EnemyFinisherZone>();
+        if (zone != null && zone.target == currentFinisherTarget)
+            currentFinisherTarget = null;
     }
 
     public void OnDodge(InputAction.CallbackContext ctx)
@@ -143,7 +331,7 @@ public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
             yield break;
         }
 
-        // Wait until we LEAVE the dodge state (this is the key fix)
+        // Wait until we LEAVE the dodge state
         while (animator && animator.GetCurrentAnimatorStateInfo(0).IsName(dodgeStateName))
             yield return null;
 
@@ -152,9 +340,9 @@ public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
 
     void Update()
     {
-        if (isDodging)
+        if (isDodging || isFinishing)
         {
-            // Freeze blend tree input while dodging
+            // Freeze blend tree input while dodging/finishing
             if (animator)
             {
                 animator.SetFloat(moveXParam, 0f, 0.08f, Time.deltaTime);
@@ -207,13 +395,11 @@ public class PlayerBlendTreeController_WithRootDodge : MonoBehaviour
 
         Vector3 moveDirWorld = camRight * input.x + camForward * input.y;
 
-        // If you're using root motion for dodge only, it's fine to still move via CC for locomotion.
-        // Stick to ground:
+        // Locomotion uses CharacterController. Root motion can still drive dodge/finisher animations.
         Vector3 velocity = moveDirWorld * speed;
         velocity.y = -2f;
         controller.Move(velocity * Time.deltaTime);
 
-        // Blend tree params (run region uses ¡Ó2 and 0,2 if you set it up that way)
         float blendMul = canRun ? 2f : 1f;
         if (animator)
         {
