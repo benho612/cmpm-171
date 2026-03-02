@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 public class CombatHandler : MonoBehaviour{
+    public List <ComboUnlock> _allCombos = new List<ComboUnlock>();
     public List <string> UnlockedCombos = new List<string>();
     private List<ComboUnlock> _unlockedComboData = new List<ComboUnlock>();
     private ElementType _activeElement;
@@ -20,7 +21,15 @@ public class CombatHandler : MonoBehaviour{
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
         _meta = MetaManager.Instance;
         _stats.ResetStats();
+        
+        foreach(var combo in _allCombos){
+            foreach(string part in combo.RequiredMoveParts){
+                UnlockCombo(null, part + "_None");
+            }
+            UnlockCombo(combo, combo.ComboID + "_None");
+        }
     }
+    
 
 //logic to unlock combos
     public void UnlockCombo(ComboUnlock comboSO, string comboID){
@@ -97,13 +106,26 @@ public class CombatHandler : MonoBehaviour{
     }
 
 //check call for parry/block
-    public void ToggleDefence(bool isBlocking){
-        if(isBlocking){
-            if(_combatSandBox.IsAttacking || _movement.IsDashing) return;
+    public void ProcessDefenceInput(bool isHoldingDefend)
+    {
+        if (isHoldingDefend)
+        {
+            // If we are doing something else, we can't start blocking yet
+            if (_combatSandBox.IsAttacking || _movement.IsDashing) return;
 
-            _combatSandBox.StartDefense();
-        } else{
-            _combatSandBox.StopDefense();
+            // If we are free, and NOT currently blocking, put the shield up!
+            if (!_combatSandBox.IsBlocking)
+            {
+                _combatSandBox.StartDefense();
+            }
+        }
+        else
+        {
+            // If we released the button, and we WERE blocking, put the shield down
+            if (_combatSandBox.IsBlocking)
+            {
+                _combatSandBox.StopDefense();
+            }
         }
     }
 

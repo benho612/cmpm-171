@@ -12007,6 +12007,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   currentHealth: 0
+  isBlocking: 0
   invincibilityDuration: 0.5
   _healthSlider: {fileID: 1230168787}
 --- !u!114 &711210734
@@ -12029,6 +12030,7 @@ MonoBehaviour:
   strafeTurnSpeed: 20
   gravity: -9.81
   gravityMultiplier: 2
+  _combat: {fileID: 1316113357}
 --- !u!143 &711210735
 CharacterController:
   m_ObjectHideFlags: 0
@@ -12078,6 +12080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45921405359c5d4ab07be7462c9ebf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatHandler
+  _allCombos: []
   UnlockedCombos: []
   _playerAnimator: {fileID: 711210736}
   _combatSandBox: {fileID: 1316113357}
@@ -22192,6 +22195,7 @@ MonoBehaviour:
   heavyAttackColor: {r: 1, g: 0, b: 0, a: 1}
   _combatHandler: {fileID: 711210738}
   _controller: {fileID: 711210735}
+  _playerHealth: {fileID: 711210733}
   punishWindowFrames: 1
 --- !u!1001 &1318770208
 PrefabInstance:
