@@ -35,6 +35,10 @@ public class MovementSandBox : MonoBehaviour
     private float _dashTimer;
     private Vector3 _dashDirection;
 
+    // Anchor Logic
+    private Vector3 _defenseAnchorPosition;
+    private bool _wasBlocking;
+
     
 
     private void Awake()
@@ -78,6 +82,27 @@ public class MovementSandBox : MonoBehaviour
             HandleDash();
             return;
         }
+
+        // bool isBlocking = _combat != null && _combat.IsBlocking;
+
+        // // ANCHOR SYSTEM - so that player doesnt get pushed around when blocking./
+        // if (isBlocking)
+        // {
+        //     // The exact frame block started, save foot position
+        //     if (!_wasBlocking)
+        //     {
+        //         _defenseAnchorPosition = transform.position;
+        //     }
+            
+        //     // Force our X and Z position to stay exactly where we planted our feet.
+        //     transform.position = new Vector3(_defenseAnchorPosition.x, transform.position.y, _defenseAnchorPosition.z);
+            
+        //     // Sync with Unity's physics engine so it doesn't get confused
+        //     Physics.SyncTransforms(); 
+        // }
+        
+        // // Remember state for the next frame
+        // _wasBlocking = isBlocking;
 
         // If Attacking, stop movement logic so Combat.cs controls rotation
         if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking))
