@@ -51,6 +51,7 @@ public class CombatSandBox : MonoBehaviour
     private PlayerControls _input;
     [SerializeField] private CombatHandler _combatHandler; 
     [SerializeField] private CharacterController _controller;
+    [SerializeField] private PlayerHealth _playerHealth;
     
     // States
     private bool _isAttacking;
@@ -75,6 +76,12 @@ public class CombatSandBox : MonoBehaviour
     {
         _input = new PlayerControls();
         CreateBlockVisual();
+
+        // Auto-grab the health component
+        if (_playerHealth == null) 
+        {
+            _playerHealth = GetComponent<PlayerHealth>();
+        }
     }
 
     private void OnEnable()
@@ -121,6 +128,9 @@ public class CombatSandBox : MonoBehaviour
     public void StartDefense()
     {
         _isBlocking = true;
+
+        if (_playerHealth != null) _playerHealth.isBlocking = true;
+
         _blockVisual.SetActive(true);
         _blockVisual.transform.localPosition = new Vector3(0, 1f, 0); 
         
@@ -137,6 +147,9 @@ public class CombatSandBox : MonoBehaviour
     {
         _isBlocking = false;
         _isParrying = false;
+
+        if (_playerHealth != null) _playerHealth.isBlocking = false;
+        
         _blockVisual.SetActive(false);
     }
 

@@ -9,6 +9,11 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
 
+    [Header("Defense & Posture")]
+    public bool isBlocking;
+    // [SerializeField] private float maxStunMeter = 100f;
+    // private float currentStunMeter = 0f;
+
     [Header("Invincibility")]
     [SerializeField] private float invincibilityDuration = 0.5f;
     private float invincibilityTimer;
@@ -49,6 +54,19 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(float damage)
     {
         if (IsDead || isInvincible) return;
+
+        if (isBlocking)
+        {
+            Debug.Log($"Player BLOCKED {damage} damage!");
+            
+            // FUTURE STUN LOGIC GOES HERE:
+            // currentStunMeter += damage;
+            // if (currentStunMeter >= maxStunMeter) {
+            //     BreakGuard();
+            // } 
+            
+            return; // 100% damage mitigation for now
+        }
 
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0);
