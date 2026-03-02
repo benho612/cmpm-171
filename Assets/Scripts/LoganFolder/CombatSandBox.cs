@@ -54,6 +54,7 @@ public class CombatSandBox : MonoBehaviour
     
     // States
     private bool _isAttacking;
+    private bool _canCancel = false;
     private bool _isBlocking;
     private bool _isParrying;
     private bool _isDodgingHigh;
@@ -85,11 +86,13 @@ public class CombatSandBox : MonoBehaviour
     {
         _input?.Disable();
     }
+    
 
     public bool ExecutePhysicalAttack(bool canInterrupt, float duration, Vector3 size, Color color, float damage){
         if(_isAttacking){
-            float timeSinceStart = Time.time - _attackStartTime;
-            if(timeSinceStart < MinCancelTime) return false;
+            if(!_canCancel) return false;
+            /*float timeSinceStart = Time.time - _attackStartTime;
+            if(timeSinceStart < MinCancelTime) return false;*/
 
             if(!canInterrupt) return false;
             Debug.Log("ExecutePhysicalAttackTest");
@@ -103,11 +106,13 @@ public class CombatSandBox : MonoBehaviour
         _damage = damage;
         _attackStartTime = Time.time;
         _isAttacking = true;
+        _canCancel = false;
         //_activeAttackRoutine = StartCoroutine(AttackRoutine(duration, size, color, damage));
         return true;
     }
 
     public void ExecuteAttackImpact(){
+        _canCancel = true;
         MagnetizeToTarget();
         _activeAttackRoutine = StartCoroutine(AttackRoutine(_duration, _size, _color, _damage));
 
@@ -310,7 +315,7 @@ public class CombatSandBox : MonoBehaviour
             // If an enemy is found in that direction, snap directly to them
             Vector3 targetDir = bestTarget.position - transform.position;
             targetDir.y = 0;
-            transform.rotation = Quaternion.LookRotation(targetDir.normalized);
+            _controller.transform.rotation = Quaternion.LookRotation(targetDir.normalized);
 
             float actualDistance = targetDir.magnitude;
             float distanceToMove = Mathf.Clamp(actualDistance - _stoppingDistance, 0, _maxAttackDistance);
@@ -322,7 +327,7 @@ public class CombatSandBox : MonoBehaviour
         else
         {
             // If no enemy is found, still rotate to face the intended input direction
-            transform.rotation = Quaternion.LookRotation(intendedDir);
+            _controller.transform.rotation = Quaternion.LookRotation(intendedDir);
         }
     }    
 }

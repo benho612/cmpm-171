@@ -24,8 +24,7 @@ public class MovementSandBox : MonoBehaviour
     private CharacterController _controller;
     private PlayerControls _input;
     private Transform _cameraTransform;
-    private CombatSandBox _combat; // Reference to Combat script
-    
+    [SerializeField] private CombatSandBox _combat;
     private Vector3 _velocity;
     private Vector2 _moveInput;
     private float _smoothSpeed;
@@ -36,10 +35,11 @@ public class MovementSandBox : MonoBehaviour
     private float _dashTimer;
     private Vector3 _dashDirection;
 
+    
+
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-        _combat = GetComponent<CombatSandBox>(); // Get the Combat component
         _cameraTransform = Camera.main.transform;
         
         _input = new PlayerControls();

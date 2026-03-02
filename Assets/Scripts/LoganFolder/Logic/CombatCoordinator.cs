@@ -16,12 +16,14 @@ public class CombatCoordinator : MonoBehaviour
         _input.Enable();
         _input.Gameplay.LightAttack.performed += ctx => RecordInput('L');
         _input.Gameplay.HeavyAttack.performed += ctx => RecordInput('H');
-        _input.Gameplay.Defend.started += ctx => _combatHandler.ToggleDefence(true);
-        _input.Gameplay.Defend.canceled += ctx => _combatHandler.ToggleDefence(false);
     }
 
     private void Update(){
         Vector2 moveInput = _input.Gameplay.Move.ReadValue<Vector2>();
+
+        bool isHoldingDefend = _input.Gameplay.Defend.IsPressed();
+        _combatHandler.ProcessDefenceInput(isHoldingDefend);
+        
         // Only allow a stationary dodge if blocking, not already dodging, and not dashing
         if (_combatHandler.IsBlocking && !_combatHandler.IsDodging && !_combatHandler.IsDashing)
         {
