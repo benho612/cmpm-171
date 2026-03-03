@@ -7,8 +7,12 @@ public class MovementSandBox : MonoBehaviour
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
     public float sprintSpeed = 9f;
+    
+    [Header("Dash Settings")]
     public float dashSpeed = 15f;
     public float dashDuration = 0.2f;
+    public float dashCooldown = 0.5f; // Time between dashes
+    public float dashIFrames = 0.15f; // How long you are invincible during the dash
     
     [Tooltip("How fast the character turns while sprinting")]
     public float rotationSpeed = 15f; 
@@ -29,11 +33,14 @@ public class MovementSandBox : MonoBehaviour
     private Vector2 _moveInput;
     private float _smoothSpeed;
     private float _targetSpeed;
+    private float _dashCooldownTimer;
+    private float _iFrameTimer;
     
     // Dash Logic
     private bool _isDashing;
     public bool IsDashing => _isDashing;
     private float _dashTimer;
+    public bool IsInvincibleViaDash => _iFrameTimer > 0;
     private Vector3 _dashDirection;
 
     // Anchor Logic
@@ -60,6 +67,9 @@ public class MovementSandBox : MonoBehaviour
 
     private void Update()
     {
+        if (_dashCooldownTimer > 0) _dashCooldownTimer -= Time.deltaTime;
+        if (_iFrameTimer > 0) _iFrameTimer -= Time.deltaTime;
+
         ApplyGravity();
 
         // Mouse Lock Toggle (Alt key)
@@ -157,11 +167,14 @@ public class MovementSandBox : MonoBehaviour
 
     private void AttemptDash()
     {
-        if (_isDashing) return;
-        if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking)) return; // Can't dash mid-attack
+        // Check cooldown and state
+        if (_isDashing || _dashCooldownTimer > 0) return;
+        if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking)) return;
 
         _isDashing = true;
         _dashTimer = dashDuration;
+        _iFrameTimer = dashIFrames; // Start I-Frames
+        _dashCooldownTimer = dashCooldown; // Start Cooldown
 
         if (_moveInput.magnitude > 0.1f)
         {

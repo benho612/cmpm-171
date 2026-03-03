@@ -23,6 +23,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Slider _healthSlider;
     [SerializeField] private CombatSandBox _combatSandBox;
     [SerializeField] private AnimationBridge _animationBridge;
+    [SerializeField] private MovementSandBox _movement;
 
     // Events for UI or other systems to subscribe to
     public event Action<float, float> OnHealthChanged; // currentHealth, maxHealth
@@ -69,6 +70,11 @@ public class PlayerHealth : MonoBehaviour
             
             return; // 100% damage mitigation for now
         }*/
+        if (_movement != null && _movement.IsInvincibleViaDash)
+        {
+            Debug.Log("Dodged damage via Dash I-Frames!");
+            return;
+        }
 
         if(_combatSandBox.IsParrying){ //check for parry first negate all damage
             Debug.Log("Player successfully PARRIED the attack!");

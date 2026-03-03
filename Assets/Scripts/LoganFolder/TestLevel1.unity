@@ -12012,6 +12012,7 @@ MonoBehaviour:
   _healthSlider: {fileID: 1230168787}
   _combatSandBox: {fileID: 1316113357}
   _animationBridge: {fileID: 711210736}
+  _movement: {fileID: 0}
 --- !u!114 &711210734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12025,9 +12026,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementSandBox
   walkSpeed: 5
-  sprintSpeed: 9
+  sprintSpeed: 12
   dashSpeed: 15
   dashDuration: 0.2
+  dashCooldown: 0.5
+  dashIFrames: 0.15
   rotationSpeed: 15
   strafeTurnSpeed: 20
   gravity: -9.81
