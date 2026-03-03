@@ -57,7 +57,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (IsDead || isInvincible) return;
 
-        if (isBlocking)
+        /*if (isBlocking)
         {
             Debug.Log($"Player BLOCKED {damage} damage!");
             
@@ -68,36 +68,31 @@ public class PlayerHealth : MonoBehaviour
             // } 
             
             return; // 100% damage mitigation for now
-        }
+        }*/
 
-        if(!_combatSandBox.IsParrying && !_combatSandBox.IsBlocking){
-            currentHealth -= damage;
-            currentHealth = Mathf.Max(currentHealth, 0);
-            _healthSlider.value = currentHealth;
-            Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
-            // Brief invincibility to prevent multiple hits from same attack
-            isInvincible = true;
-            invincibilityTimer = invincibilityDuration;
-
-            OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        }
-
-        if(_combatSandBox.IsParrying){
+        if(_combatSandBox.IsParrying){ //check for parry first negate all damage
             Debug.Log("Player successfully PARRIED the attack!");
             //input more parry logic here when stagger is in
-        }
-        if(_combatSandBox.IsBlocking){
-            //_animationBridge.PlayAttack("Block_Hit");
+        }else if(_combatSandBox.IsBlocking){
+            //_animationBridge.PlayAttack()
             currentHealth -= (damage * 0.1f);
-            currentHealth = Mathf.Max(currentHealth, 0);
-            _healthSlider.value = currentHealth;
-            Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
-            // Brief invincibility to prevent multiple hits from same attack
-            isInvincible = true;
-            invincibilityTimer = invincibilityDuration;
-
-            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            Debug.Log($"Player BLOCKED the attack but still took {damage * 0.1f} damage!");
+            //play block animation here when we have them
+            _animationBridge.PlayBlock(0.2f);
+        }else {
+            currentHealth -= damage;
+            //invoke hit reaction animation here when we have them
         }
+
+        currentHealth = Mathf.Max(currentHealth, 0);
+        _healthSlider.value = currentHealth;
+        //Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
+        // Brief invincibility to prevent multiple hits from same attack
+        isInvincible = true;
+        invincibilityTimer = invincibilityDuration;
+
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        
         if (currentHealth <= 0)
         {
             Die();

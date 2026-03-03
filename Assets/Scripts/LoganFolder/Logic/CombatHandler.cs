@@ -124,6 +124,7 @@ public class CombatHandler : MonoBehaviour{
             // If we released the button, and we WERE blocking, put the shield down
             if (_combatSandBox.IsBlocking)
             {
+                _playerAnimator.StopBlock();
                 _combatSandBox.StopDefense();
             }
         }

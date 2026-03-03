@@ -147,7 +147,6 @@ public class CombatSandBox : MonoBehaviour
     {
         _isBlocking = false;
         _isParrying = false;
-
         if (_playerHealth != null) _playerHealth.isBlocking = false;
         
         _blockVisual.SetActive(false);
