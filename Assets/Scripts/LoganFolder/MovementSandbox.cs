@@ -20,6 +20,11 @@ public class MovementSandBox : MonoBehaviour
     [Tooltip("How fast the character aligns with the camera while strafing")]
     public float strafeTurnSpeed = 20f; 
 
+    [Header("Buffering")]
+    public float bufferWindow = 0.2f; // How long to remember the dash input
+    private float _dashBufferTimer;
+    private bool _hasBufferedDash;
+
     [Header("Physics")]
     public float gravity = -9.81f;
     public float gravityMultiplier = 2.0f;
@@ -60,15 +65,45 @@ public class MovementSandBox : MonoBehaviour
         _input.Gameplay.Move.canceled += ctx => _moveInput = Vector2.zero;
         
         _input.Gameplay.Dash.performed += ctx => AttemptDash();
+        _input.Gameplay.Dash.performed += ctx => OnDashInput();
     }
 
     private void OnEnable() => _input.Enable();
     private void OnDisable() => _input.Disable();
 
+    private void OnDashInput()
+    {
+        // If we are in active frames, buffer the dash instead of failing
+        if (_combat != null && _combat.IsAttacking && _combat.IsInActiveFrames)
+        {
+            _hasBufferedDash = true;
+            _dashBufferTimer = bufferWindow;
+            Debug.Log("Dash Buffered!");
+        }
+        else
+        {
+            AttemptDash(); // Normal dash attempt
+        }
+    }
+
     private void Update()
     {
         if (_dashCooldownTimer > 0) _dashCooldownTimer -= Time.deltaTime;
         if (_iFrameTimer > 0) _iFrameTimer -= Time.deltaTime;
+
+        // Tick down buffer
+        if (_hasBufferedDash)
+        {
+            _dashBufferTimer -= Time.deltaTime;
+            if (_dashBufferTimer <= 0) _hasBufferedDash = false;
+
+            // If we are no longer in active frames, execute the buffered dash
+            if (_combat != null && !_combat.IsInActiveFrames)
+            {
+                _hasBufferedDash = false;
+                AttemptDash();
+            }
+        }
 
         ApplyGravity();
 
@@ -169,7 +204,16 @@ public class MovementSandBox : MonoBehaviour
     {
         // Check cooldown and state
         if (_isDashing || _dashCooldownTimer > 0) return;
-        if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking)) return;
+        if (_combat != null && _combat.IsAttacking)
+        {
+            // Double check: if still in active frames, we can't dash yet
+            if (_combat.IsInActiveFrames) return; 
+            
+            // If in recovery or windup, cancel it
+            _combat.CancelAttackForDash();
+        }
+        
+        _hasBufferedDash = false;
 
         _isDashing = true;
         _dashTimer = dashDuration;

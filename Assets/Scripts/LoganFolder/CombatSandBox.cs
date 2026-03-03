@@ -69,6 +69,7 @@ public class CombatSandBox : MonoBehaviour
     public bool IsBlocking => _isBlocking;
     public bool IsParrying => _isParrying;
     public bool IsDodging => _isDodgingHigh || _isDodgingLow;
+    public bool IsInActiveFrames => _currentHitBox != null;
 
     public int punishWindowFrames = 1;
 
@@ -119,6 +120,8 @@ public class CombatSandBox : MonoBehaviour
     }
 
     public void ExecuteAttackImpact(){
+
+        if (!_isAttacking) return;
         _canCancel = true;
         MagnetizeToTarget();
         _activeAttackRoutine = StartCoroutine(AttackRoutine(_duration, _size, _color, _damage));
@@ -341,5 +344,35 @@ public class CombatSandBox : MonoBehaviour
             // If no enemy is found, still rotate to face the intended input direction
             _controller.transform.rotation = Quaternion.LookRotation(intendedDir);
         }
-    }    
+    }
+
+    public void CancelAttackForDash()
+    {
+        // Stop the actual coroutine that moves/checks hits
+        if (_activeAttackRoutine != null)
+        {
+            StopCoroutine(_activeAttackRoutine);
+            _activeAttackRoutine = null;
+        }
+        
+        // Immediately nuke the physical cube
+        if (_currentHitBox != null) 
+        {
+            Destroy(_currentHitBox);
+        }
+
+        // Reset internal state so ExecuteAttackImpact() fails if it tries to run
+        _isAttacking = false;
+        _canCancel = false;
+
+        GetComponent<Animator>().Play("Idle");
+        
+        // Reset the "queued" attack data to prevent late triggers
+        _duration = 0;
+        _damage = 0;
+        _size = Vector3.zero;
+
+
+        Debug.Log("Combat System: Attack fully purged.");
+    }  
 }
