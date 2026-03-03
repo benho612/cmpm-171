@@ -12037,6 +12037,7 @@ MonoBehaviour:
   gravity: -9.81
   gravityMultiplier: 2
   _combat: {fileID: 1316113357}
+  _animator: {fileID: 711210736}
 --- !u!143 &711210735
 CharacterController:
   m_ObjectHideFlags: 0

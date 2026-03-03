@@ -37,4 +37,7 @@ public class AnimationBridge : MonoBehaviour
     public void StopBlock(){
         _animator.Play("EmptyState", 1, 0f);
     }
+    public void BackToLocomotion(){
+        _animator.Play("Locomotion", 0, 0f);
+    }
 }

@@ -33,7 +33,9 @@ public class MovementSandBox : MonoBehaviour
     private CharacterController _controller;
     private PlayerControls _input;
     private Transform _cameraTransform;
+    //references for combat and animation
     [SerializeField] private CombatSandBox _combat;
+    [SerializeField] private AnimationBridge _animator; 
     private Vector3 _velocity;
     private Vector2 _moveInput;
     private float _smoothSpeed;
@@ -208,8 +210,9 @@ public class MovementSandBox : MonoBehaviour
         {
             // Double check: if still in active frames, we can't dash yet
             if (_combat.IsInActiveFrames) return; 
-            
+            Debug.Log("Check");
             // If in recovery or windup, cancel it
+            _animator.BackToLocomotion();
             _combat.CancelAttackForDash();
         }
         
