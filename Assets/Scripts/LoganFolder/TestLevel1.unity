@@ -12010,6 +12010,8 @@ MonoBehaviour:
   isBlocking: 0
   invincibilityDuration: 0.5
   _healthSlider: {fileID: 1230168787}
+  _combatSandBox: {fileID: 1316113357}
+  _animationBridge: {fileID: 711210736}
 --- !u!114 &711210734
 MonoBehaviour:
   m_ObjectHideFlags: 0
