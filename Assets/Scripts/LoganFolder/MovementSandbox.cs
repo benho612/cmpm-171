@@ -28,6 +28,7 @@ public class MovementSandBox : MonoBehaviour
     private Vector3 _velocity;
     private Vector2 _moveInput;
     private float _smoothSpeed;
+    private float _targetSpeed;
     
     // Dash Logic
     private bool _isDashing;
@@ -107,6 +108,7 @@ public class MovementSandBox : MonoBehaviour
         // If Attacking, stop movement logic so Combat.cs controls rotation
         if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking))
         {
+
             _smoothSpeed = 0; // Rapidly decelerate to a stop
             return;
         }
@@ -147,8 +149,8 @@ public class MovementSandBox : MonoBehaviour
             }
         }
 
-        float targetSpeed = isSprinting ? sprintSpeed : walkSpeed;
-        _smoothSpeed = Mathf.Lerp(_smoothSpeed, targetSpeed, 10f * Time.deltaTime);
+        _targetSpeed = isSprinting ? sprintSpeed : walkSpeed;
+        _smoothSpeed = Mathf.Lerp(_smoothSpeed, _targetSpeed, 10f * Time.deltaTime);
         
         _controller.Move(moveDir * _smoothSpeed * Time.deltaTime);
     }

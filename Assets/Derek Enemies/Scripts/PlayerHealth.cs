@@ -19,8 +19,10 @@ public class PlayerHealth : MonoBehaviour
     private float invincibilityTimer;
     private bool isInvincible;
 
-    [Header("UI References")]
+    [Header("References")]
     [SerializeField] private Slider _healthSlider;
+    [SerializeField] private CombatSandBox _combatSandBox;
+    [SerializeField] private AnimationBridge _animationBridge;
 
     // Events for UI or other systems to subscribe to
     public event Action<float, float> OnHealthChanged; // currentHealth, maxHealth
@@ -68,18 +70,34 @@ public class PlayerHealth : MonoBehaviour
             return; // 100% damage mitigation for now
         }
 
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0);
+        if(!_combatSandBox.IsParrying && !_combatSandBox.IsBlocking){
+            currentHealth -= damage;
+            currentHealth = Mathf.Max(currentHealth, 0);
+            _healthSlider.value = currentHealth;
+            Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
+            // Brief invincibility to prevent multiple hits from same attack
+            isInvincible = true;
+            invincibilityTimer = invincibilityDuration;
 
-        _healthSlider.value = currentHealth;
-        Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        }
 
-        // Brief invincibility to prevent multiple hits from same attack
-        isInvincible = true;
-        invincibilityTimer = invincibilityDuration;
+        if(_combatSandBox.IsParrying){
+            Debug.Log("Player successfully PARRIED the attack!");
+            //input more parry logic here when stagger is in
+        }
+        if(_combatSandBox.IsBlocking){
+            //_animationBridge.PlayAttack("Block_Hit");
+            currentHealth -= (damage * 0.1f);
+            currentHealth = Mathf.Max(currentHealth, 0);
+            _healthSlider.value = currentHealth;
+            Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
+            // Brief invincibility to prevent multiple hits from same attack
+            isInvincible = true;
+            invincibilityTimer = invincibilityDuration;
 
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
-
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        }
         if (currentHealth <= 0)
         {
             Die();

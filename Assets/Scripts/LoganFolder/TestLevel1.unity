@@ -12080,7 +12080,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45921405359c5d4ab07be7462c9ebf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatHandler
-  _allCombos: []
+  _allCombos:
+  - {fileID: 11400000, guid: b45e88577d32175408922488f044cee5, type: 2}
+  - {fileID: 11400000, guid: 666d8f9f498ad6b469129edb64cd461a, type: 2}
+  - {fileID: 11400000, guid: 23f304f8da8a3444e94023b56b05ba70, type: 2}
   UnlockedCombos: []
   _playerAnimator: {fileID: 711210736}
   _combatSandBox: {fileID: 1316113357}
@@ -12190,7 +12193,7 @@ Transform:
   m_GameObject: {fileID: 711210731}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.1841653, z: -0, w: -0.9828953}
-  m_LocalPosition: {x: 2.0661638, y: 1.712, z: -3.2084858}
+  m_LocalPosition: {x: 65.2, y: 1.712, z: 60.9}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -19824,7 +19827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.0703714
+      value: 65.20421
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -19832,7 +19835,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.5984287
+      value: 58.51006
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -22183,8 +22186,8 @@ MonoBehaviour:
   dodgeDuration: 0.35
   dodgeHighColor: {r: 0, g: 1, b: 0, a: 0.5}
   dodgeLowColor: {r: 0.5, g: 0, b: 0.5, a: 0.5}
-  lightAttackDuration: 0.5
-  heavyAttackDuration: 1.2
+  lightAttackDuration: 0.35
+  heavyAttackDuration: 0.7
   MinCancelTime: 0.3
   _maxAttackDistance: 2
   _stoppingDistance: 1.2

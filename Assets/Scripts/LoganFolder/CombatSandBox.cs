@@ -28,7 +28,7 @@ public class CombatSandBox : MonoBehaviour
     
     [Header("Combat Settings")]
     public float lightAttackDuration = 0.5f;
-    public float heavyAttackDuration = 1.2f;
+    public float heavyAttackDuration = 0.9f;
     public float MinCancelTime = 0.3f;
     private float _attackStartTime;
     [SerializeField] private float _maxAttackDistance = 2.0f;
