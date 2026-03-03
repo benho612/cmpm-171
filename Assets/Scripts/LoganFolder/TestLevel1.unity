@@ -12033,6 +12033,7 @@ MonoBehaviour:
   dashIFrames: 0.15
   rotationSpeed: 15
   strafeTurnSpeed: 20
+  bufferWindow: 0.2
   gravity: -9.81
   gravityMultiplier: 2
   _combat: {fileID: 1316113357}
