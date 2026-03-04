@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 public class CombatSandBox : MonoBehaviour
 {
     private Coroutine _activeAttackRoutine;
+    private Coroutine _magnetizeRoutine;
     private GameObject _currentHitBox;
 
     [Header("Attack Magnetism")]
@@ -13,6 +14,7 @@ public class CombatSandBox : MonoBehaviour
     [Range(0, 360)]
     public float magnetizeAngle = 120f;  // The cone angle in front of the camera/player to detect enemies
     public float magnetizeRotationSpeed = 25f; // How fast the player rotates to the target
+    public float LungeDistance = 0.5f; // How much the player lunges forward if no target is found
 
     [Header("Defense & Parry Settings")]
     public float parryWindow = 0.2f;
@@ -31,11 +33,11 @@ public class CombatSandBox : MonoBehaviour
     public float heavyAttackDuration = 0.9f;
     public float MinCancelTime = 0.3f;
     private float _attackStartTime;
-    [SerializeField] private float _maxAttackDistance = 2.0f;
+    [SerializeField] private float _maxAttackDistance = 1.5f;
     [SerializeField] private float _stoppingDistance = 1.2f;
 
     [Header("Visual Feedback")]
-    public Vector3 hitboxOffset = new Vector3(0, 1.0f, 1.0f);
+    public Vector3 hitboxOffset = new Vector3(0, 1.0f, 1.3f);
     public Vector3 lightHitboxSize = new Vector3(1.5f, 1.5f, 1.5f);
     public Vector3 heavyHitboxSize = new Vector3(2.0f, 2.0f, 2.0f);
     public Color lightAttackColor = Color.yellow;
@@ -99,11 +101,10 @@ public class CombatSandBox : MonoBehaviour
     public bool ExecutePhysicalAttack(bool canInterrupt, float duration, Vector3 size, Color color, float damage){
         if(_isAttacking){
             if(!_canCancel) return false;
-            /*float timeSinceStart = Time.time - _attackStartTime;
-            if(timeSinceStart < MinCancelTime) return false;*/
 
             if(!canInterrupt) return false;
             Debug.Log("ExecutePhysicalAttackTest");
+            StopCoroutine(_magnetizeRoutine);
             StopCoroutine(_activeAttackRoutine);
             if(_currentHitBox != null) Destroy(_currentHitBox);
         }
@@ -115,7 +116,6 @@ public class CombatSandBox : MonoBehaviour
         _attackStartTime = Time.time;
         _isAttacking = true;
         _canCancel = false;
-        //_activeAttackRoutine = StartCoroutine(AttackRoutine(duration, size, color, damage));
         return true;
     }
 
@@ -123,7 +123,7 @@ public class CombatSandBox : MonoBehaviour
 
         if (!_isAttacking) return;
         _canCancel = true;
-        MagnetizeToTarget();
+        _magnetizeRoutine = StartCoroutine(MagnetizeToTarget());
         _activeAttackRoutine = StartCoroutine(AttackRoutine(_duration, _size, _color, _damage));
 
     }
@@ -279,11 +279,14 @@ public class CombatSandBox : MonoBehaviour
         _blockVisual.SetActive(false); 
     }
     
-    private void MagnetizeToTarget()
+    private IEnumerator MagnetizeToTarget()
     {
         // Determine the Intended Attack Direction
         Vector2 moveInput = _input.Gameplay.Move.ReadValue<Vector2>();
         Vector3 intendedDir = transform.forward; // Default to where the player is currently facing
+        
+        //make sure player controller is available
+        if(_controller == null) yield break;
 
         // If the player is pressing a direction, calculate that direction relative to the camera
         if (moveInput.sqrMagnitude > 0.01f) 
@@ -324,26 +327,43 @@ public class CombatSandBox : MonoBehaviour
             }
         }
 
+        //pre-calculations before the while
+        Quaternion initialRotation = _controller.transform.rotation;
+        Quaternion targetRotation;
+        Vector3 lungeDir;
+        float lungeDist;
+
         // Rotate the player
-        if (bestTarget != null && _controller != null)
+        if (bestTarget != null)
         {
             // If an enemy is found in that direction, snap directly to them
-            Vector3 targetDir = bestTarget.position - transform.position;
+            Vector3 targetDir = (bestTarget.position - transform.position).normalized;
             targetDir.y = 0;
-            _controller.transform.rotation = Quaternion.LookRotation(targetDir.normalized);
+            targetRotation = Quaternion.LookRotation(targetDir);
 
-            float actualDistance = targetDir.magnitude;
-            float distanceToMove = Mathf.Clamp(actualDistance - _stoppingDistance, 0, _maxAttackDistance);
-
-            if(distanceToMove > 0){
-                _controller.Move(targetDir.normalized * distanceToMove); //Slightly move the character towards the enemy
-            }
+            lungeDir = targetDir;
+            lungeDist = Mathf.Clamp(Vector3.Distance(transform.position, bestTarget.position) - _stoppingDistance, 0, _maxAttackDistance);
         }
         else
         {
             // If no enemy is found, still rotate to face the intended input direction
-            _controller.transform.rotation = Quaternion.LookRotation(intendedDir);
+            targetRotation = Quaternion.LookRotation(intendedDir);
+            lungeDir = intendedDir;
+            lungeDist = LungeDistance;
         }
+
+        float elapsed = 0f;
+        float duration = 0.1f;
+        while(elapsed < duration){//magnetize over duration
+            float t = elapsed / duration; //tracking where the rotation is
+            _controller.transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, t);
+
+            float frameMove = (lungeDist / duration) * Time.deltaTime;
+            _controller.Move(lungeDir * frameMove);
+            elapsed += Time.deltaTime;//update elapsed time
+            yield return null;
+        }
+        _controller.transform.rotation = targetRotation;//ensure we end exactly at the target rotation
     }
 
     public void CancelAttackForDash()
