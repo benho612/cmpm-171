@@ -181,6 +181,7 @@ public class CombatSandBox : MonoBehaviour
     private IEnumerator AttackRoutine(float duration, Vector3 size, Color color, float damage)
     {
         // Create visual hitbox
+       /*
         _currentHitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
         _currentHitBox.transform.SetParent(this.transform);
 
@@ -193,7 +194,7 @@ public class CombatSandBox : MonoBehaviour
 
         // Remove the default collider from the visual cube
         Destroy(_currentHitBox.GetComponent<BoxCollider>());
-
+*/
         // Detect enemies in the hitbox area
         Vector3 hitboxCenter = transform.TransformPoint(hitboxOffset);
         Collider[] hits = Physics.OverlapBox(hitboxCenter, size / 2f, transform.rotation);
@@ -203,7 +204,7 @@ public class CombatSandBox : MonoBehaviour
             BaseEnemy enemy = hit.GetComponent<BaseEnemy>();
             if (enemy != null && !enemy.IsDead())
             {
-                _combatHandler.ProcessHit(hit.gameObject, damage);
+                _combatHandler.ProcessHit(hit.gameObject, damage, hitboxCenter);
             }
         }
 

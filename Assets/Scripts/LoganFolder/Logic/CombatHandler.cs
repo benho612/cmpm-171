@@ -17,6 +17,9 @@ public class CombatHandler : MonoBehaviour{
     public bool IsBlocking => _combatSandBox.IsBlocking;
     public bool IsDodging => _combatSandBox.IsDodging;
     public bool IsDashing => _movement.IsDashing;
+
+    [Header("VFX Things")]
+    [SerializeField] private GameObject _hitEffectPrefab;
     
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
@@ -141,7 +144,7 @@ public class CombatHandler : MonoBehaviour{
 
 //brings all the damage logic together and sends the damage to the enemy hit
 //NOTE - Enemey has no status variable yet so majority of this doesn't work, but the structure is there for when it does
-    public void ProcessHit(GameObject enemy, float baseDamage){
+    public void ProcessHit(GameObject enemy, float baseDamage, Vector3 hitboxCenter){
         //not sure if this is actual enemy script but this should link enemy to the hit
         TempStatusScript enemyData = enemy.GetComponent<TempStatusScript>();
         BaseEnemy enemyScript = enemy.GetComponent<BaseEnemy>();
@@ -184,6 +187,7 @@ public class CombatHandler : MonoBehaviour{
         }*/
         //apply damage
         if(enemyScript != null && enemyAnim != null){
+            Instantiate(_hitEffectPrefab, hitboxCenter, Quaternion.identity);
             enemyScript.TakeDamage(finalDamage);
             StartCoroutine(HitStopRoutine(0.07f, enemyAnim));
         }
