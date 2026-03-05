@@ -12095,7 +12095,7 @@ MonoBehaviour:
   _playerAnimator: {fileID: 711210736}
   _combatSandBox: {fileID: 1316113357}
   _movement: {fileID: 711210734}
-  _hitEffectPrefab: {fileID: 3042519775331041172, guid: 841004c4c6a39e244abe2257394de913, type: 3}
+  _hitEffectPrefab: {fileID: 1936826520}
 --- !u!114 &711210739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31337,6 +31337,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
+--- !u!1 &1936826520 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3042519775331041172, guid: 841004c4c6a39e244abe2257394de913, type: 3}
+  m_PrefabInstance: {fileID: 1696049695}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1939902582
 PrefabInstance:
   m_ObjectHideFlags: 0
