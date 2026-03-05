@@ -9,6 +9,10 @@ public class CombatSandBox : MonoBehaviour
     private Coroutine _magnetizeRoutine;
     private GameObject _currentHitBox;
 
+    [Header("Input References")]
+    [Tooltip("Drag the 'Move' InputActionReference here")]
+    public InputActionReference moveAction;
+
     [Header("Attack Magnetism")]
     public float magnetizeRadius = 6.0f; // How far the player can detect an enemy to magnetize
     [Range(0, 360)]
@@ -18,16 +22,16 @@ public class CombatSandBox : MonoBehaviour
 
     [Header("Defense & Parry Settings")]
     public float parryWindow = 0.2f;
-    public Color blockColor = new Color(0f, 0f, 1f, 0.4f); 
-    public Color parryColor = new Color(0.6f, 0.8f, 1f, 0.8f); 
+    public Color blockColor = new Color(0f, 0f, 1f, 0.4f);
+    public Color parryColor = new Color(0.6f, 0.8f, 1f, 0.8f);
     public Vector3 blockVisualSize = new Vector3(1.2f, 2.0f, 1.2f);
-    public Material baseBlockMaterial; 
+    public Material baseBlockMaterial;
 
     [Header("Stationary Dodge Settings")]
     public float dodgeDuration = 0.35f;
-    public Color dodgeHighColor = new Color(0f, 1f, 0f, 0.5f); 
+    public Color dodgeHighColor = new Color(0f, 1f, 0f, 0.5f);
     public Color dodgeLowColor = new Color(0.5f, 0f, 0.5f, 0.5f);
-    
+
     [Header("Combat Settings")]
     public float lightAttackDuration = 0.5f;
     public float heavyAttackDuration = 0.9f;
@@ -50,11 +54,10 @@ public class CombatSandBox : MonoBehaviour
     private float _damage;
 
     // References
-    private PlayerControls _input;
-    [SerializeField] private CombatHandler _combatHandler; 
+    [SerializeField] private CombatHandler _combatHandler;
     [SerializeField] private CharacterController _controller;
     [SerializeField] private PlayerHealth _playerHealth;
-    
+
     // States
     private bool _isAttacking;
     private bool _canCancel = false;
@@ -62,7 +65,7 @@ public class CombatSandBox : MonoBehaviour
     private bool _isParrying;
     private bool _isDodgingHigh;
     private bool _isDodgingLow;
-    
+
     private GameObject _blockVisual;
     private Coroutine _parryCoroutine;
     private Coroutine _dodgeCoroutine;
@@ -77,11 +80,10 @@ public class CombatSandBox : MonoBehaviour
 
     private void Awake()
     {
-        _input = new PlayerControls();
         CreateBlockVisual();
 
         // Auto-grab the health component
-        if (_playerHealth == null) 
+        if (_playerHealth == null)
         {
             _playerHealth = GetComponent<PlayerHealth>();
         }
@@ -89,24 +91,26 @@ public class CombatSandBox : MonoBehaviour
 
     private void OnEnable()
     {
-        _input?.Enable();
+        moveAction?.action.Enable();
     }
 
     private void OnDisable()
     {
-        _input?.Disable();
+        moveAction?.action.Disable();
     }
-    
 
-    public bool ExecutePhysicalAttack(bool canInterrupt, float duration, Vector3 size, Color color, float damage){
-        if(_isAttacking){
-            if(!_canCancel) return false;
 
-            if(!canInterrupt) return false;
+    public bool ExecutePhysicalAttack(bool canInterrupt, float duration, Vector3 size, Color color, float damage)
+    {
+        if (_isAttacking)
+        {
+            if (!_canCancel) return false;
+
+            if (!canInterrupt) return false;
             Debug.Log("ExecutePhysicalAttackTest");
             StopCoroutine(_magnetizeRoutine);
             StopCoroutine(_activeAttackRoutine);
-            if(_currentHitBox != null) Destroy(_currentHitBox);
+            if (_currentHitBox != null) Destroy(_currentHitBox);
         }
         //assign variables for attackImpact animation event
         _duration = duration;
@@ -119,7 +123,8 @@ public class CombatSandBox : MonoBehaviour
         return true;
     }
 
-    public void ExecuteAttackImpact(){
+    public void ExecuteAttackImpact()
+    {
 
         if (!_isAttacking) return;
         _canCancel = true;
@@ -135,8 +140,8 @@ public class CombatSandBox : MonoBehaviour
         if (_playerHealth != null) _playerHealth.isBlocking = true;
 
         _blockVisual.SetActive(true);
-        _blockVisual.transform.localPosition = new Vector3(0, 1f, 0); 
-        
+        _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
+
         if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
         //_parryCoroutine = StartCoroutine(ParryRoutine());
     }
@@ -151,18 +156,23 @@ public class CombatSandBox : MonoBehaviour
         _isBlocking = false;
         _isParrying = false;
         if (_playerHealth != null) _playerHealth.isBlocking = false;
-        
+
         _blockVisual.SetActive(false);
     }
 
-    public void ExecuteStationaryDodge(bool isHigh){
-        if(_dodgeCoroutine != null) StopCoroutine(_dodgeCoroutine);
+    public void ExecuteStationaryDodge(bool isHigh)
+    {
+        if (_dodgeCoroutine != null) StopCoroutine(_dodgeCoroutine);
         _dodgeCoroutine = StartCoroutine(StationaryDodgeRoutine(isHigh));
     }
 
     private void RotateToInputDirection()
     {
-        Vector2 input = _input.Gameplay.Move.ReadValue<Vector2>();
+        Vector2 input = Vector2.zero;
+        if (moveAction != null)
+        {
+            input = moveAction.action.ReadValue<Vector2>();
+        }
 
         if (input.sqrMagnitude > 0.01f)
         {
@@ -180,21 +190,6 @@ public class CombatSandBox : MonoBehaviour
 
     private IEnumerator AttackRoutine(float duration, Vector3 size, Color color, float damage)
     {
-        // Create visual hitbox
-       /*
-        _currentHitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        _currentHitBox.transform.SetParent(this.transform);
-
-        _currentHitBox.transform.position = transform.TransformPoint(hitboxOffset);
-        _currentHitBox.transform.rotation = transform.rotation;
-        _currentHitBox.transform.localScale = size;
-
-        Renderer rend = _currentHitBox.GetComponent<Renderer>();
-        if (rend != null) rend.material.color = color;
-
-        // Remove the default collider from the visual cube
-        Destroy(_currentHitBox.GetComponent<BoxCollider>());
-*/
         // Detect enemies in the hitbox area
         Vector3 hitboxCenter = transform.TransformPoint(hitboxOffset);
         Collider[] hits = Physics.OverlapBox(hitboxCenter, size / 2f, transform.rotation);
@@ -210,87 +205,93 @@ public class CombatSandBox : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
-        if(_currentHitBox != null){
+        if (_currentHitBox != null)
+        {
             Destroy(_currentHitBox);
         }
         _isAttacking = false;
     }
 
     private IEnumerator StationaryDodgeRoutine(bool isHigh)
+    {
+        if (isHigh) _isDodgingHigh = true;
+        else _isDodgingLow = true;
+
+        Renderer rend = _blockVisual.GetComponent<Renderer>();
+        rend.material.color = isHigh ? dodgeHighColor : dodgeLowColor;
+        _blockVisual.transform.localPosition = new Vector3(0, isHigh ? 1.5f : 0.5f, 0);
+
+        yield return new WaitForSeconds(dodgeDuration);
+
+        _isDodgingHigh = false;
+        _isDodgingLow = false;
+
+        // Revert visuals back to standard block/parry if they are still holding the defend button
+        if (_isBlocking)
         {
-            if (isHigh) _isDodgingHigh = true;
-            else _isDodgingLow = true;
-
-            Renderer rend = _blockVisual.GetComponent<Renderer>();
-            rend.material.color = isHigh ? dodgeHighColor : dodgeLowColor;
-            _blockVisual.transform.localPosition = new Vector3(0, isHigh ? 1.5f : 0.5f, 0);
-
-            yield return new WaitForSeconds(dodgeDuration);
-
-            _isDodgingHigh = false;
-            _isDodgingLow = false;
-
-            // Revert visuals back to standard block/parry if they are still holding the defend button
-            if (_isBlocking)
-            {
-                rend.material.color = _isParrying ? parryColor : blockColor;
-                _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
-            }
+            rend.material.color = _isParrying ? parryColor : blockColor;
+            _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
         }
+    }
 
     private IEnumerator ParryRoutine()
     {
         for (int i = 0; i < punishWindowFrames; i++)
         {
-            yield return null; 
+            yield return null;
         }
         _isParrying = true;
         Renderer rend = _blockVisual.GetComponent<Renderer>();
         rend.material.color = parryColor;
-        
+
         yield return new WaitForSeconds(parryWindow);
-        
+
         _isParrying = false;
         if (!IsDodging) rend.material.color = blockColor;
-        FinishDefense(); 
+        FinishDefense();
     }
 
-//temp visual for blocking
+    //temp visual for blocking
     private void CreateBlockVisual()
     {
         _blockVisual = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        Destroy(_blockVisual.GetComponent<BoxCollider>()); 
-        
+        Destroy(_blockVisual.GetComponent<BoxCollider>());
+
         _blockVisual.transform.SetParent(transform);
-        _blockVisual.transform.localPosition = new Vector3(0, 1f, 0); 
+        _blockVisual.transform.localPosition = new Vector3(0, 1f, 0);
         _blockVisual.transform.localScale = blockVisualSize;
-        
+
         Renderer rend = _blockVisual.GetComponent<Renderer>();
 
         if (baseBlockMaterial != null)
         {
-            rend.material = new Material(baseBlockMaterial); 
+            rend.material = new Material(baseBlockMaterial);
         }
         else
         {
             Debug.LogWarning("Combat: Please assign a transparent Material to 'Base Block Material' in the Inspector!");
         }
-        
+
         rend.material.color = blockColor;
-        _blockVisual.SetActive(false); 
+        _blockVisual.SetActive(false);
     }
-    
+
     private IEnumerator MagnetizeToTarget()
     {
         // Determine the Intended Attack Direction
-        Vector2 moveInput = _input.Gameplay.Move.ReadValue<Vector2>();
+        Vector2 moveInput = Vector2.zero;
+        if (moveAction != null)
+        {
+            moveInput = moveAction.action.ReadValue<Vector2>();
+        }
+
         Vector3 intendedDir = transform.forward; // Default to where the player is currently facing
-        
+
         //make sure player controller is available
-        if(_controller == null) yield break;
+        if (_controller == null) yield break;
 
         // If the player is pressing a direction, calculate that direction relative to the camera
-        if (moveInput.sqrMagnitude > 0.01f) 
+        if (moveInput.sqrMagnitude > 0.01f)
         {
             Vector3 camForward = Camera.main.transform.forward;
             Vector3 camRight = Camera.main.transform.right;
@@ -313,12 +314,12 @@ public class CombatSandBox : MonoBehaviour
             if (enemy != null && !enemy.IsDead())
             {
                 Vector3 dirToEnemy = hit.transform.position - transform.position;
-                dirToEnemy.y = 0; 
-                
+                dirToEnemy.y = 0;
+
                 float distance = dirToEnemy.sqrMagnitude;
-                
+
                 // Check the angle between the enemy and intended direction
-                float angle = Vector3.Angle(intendedDir, dirToEnemy.normalized); 
+                float angle = Vector3.Angle(intendedDir, dirToEnemy.normalized);
 
                 if (angle <= magnetizeAngle / 2f && distance < closestDistance)
                 {
@@ -355,7 +356,8 @@ public class CombatSandBox : MonoBehaviour
 
         float elapsed = 0f;
         float duration = 0.1f;
-        while(elapsed < duration){//magnetize over duration
+        while (elapsed < duration)
+        {//magnetize over duration
             float t = elapsed / duration; //tracking where the rotation is
             _controller.transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, t);
 
@@ -375,9 +377,9 @@ public class CombatSandBox : MonoBehaviour
             StopCoroutine(_activeAttackRoutine);
             _activeAttackRoutine = null;
         }
-        
+
         // Immediately nuke the physical cube
-        if (_currentHitBox != null) 
+        if (_currentHitBox != null)
         {
             Destroy(_currentHitBox);
         }
@@ -387,13 +389,12 @@ public class CombatSandBox : MonoBehaviour
         _canCancel = false;
 
         GetComponent<Animator>().Play("Idle");
-        
+
         // Reset the "queued" attack data to prevent late triggers
         _duration = 0;
         _damage = 0;
         _size = Vector3.zero;
 
-
         Debug.Log("Combat System: Attack fully purged.");
-    }  
+    }
 }

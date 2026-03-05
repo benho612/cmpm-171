@@ -14,10 +14,6 @@ public class RebindActionUI : MonoBehaviour
     public Button rebindButton;
     public Button resetButton;
 
-    [Header("Optional UX")]
-    public GameObject listeningOverlay;          // e.g. "Press a key..." panel
-    public TextMeshProUGUI listeningText;
-
     private InputActionRebindingExtensions.RebindingOperation _rebindOp;
 
     void OnEnable()
@@ -53,6 +49,7 @@ public class RebindActionUI : MonoBehaviour
 
         if (bindingText)
         {
+            // This safely grabs the visual string for the current key (e.g., "Space", "W", "LMB")
             bindingText.text = action.GetBindingDisplayString(bindingIndex);
         }
     }
@@ -66,9 +63,11 @@ public class RebindActionUI : MonoBehaviour
         // Disable action while rebinding to avoid triggering gameplay
         action.Disable();
 
-        // UI feedback
-        if (listeningOverlay) listeningOverlay.SetActive(true);
-        if (listeningText) listeningText.text = "Press a key... (Esc to cancel)";
+        // Change the button text directly to show it is listening
+        if (bindingText)
+        {
+            bindingText.text = "Press any key...";
+        }
 
         // Start rebinding only this specific binding index
         _rebindOp = action.PerformInteractiveRebinding(bindingIndex)
@@ -108,10 +107,8 @@ public class RebindActionUI : MonoBehaviour
         _rebindOp?.Dispose();
         _rebindOp = null;
 
-        if (listeningOverlay) listeningOverlay.SetActive(false);
-
         action.Enable();
-        RefreshUI();
+        RefreshUI(); // This will automatically change the text from "Press any key..." to the newly bound key!
     }
 
     private void CancelRebindIfActive()
