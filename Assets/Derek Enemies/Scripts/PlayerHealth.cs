@@ -58,32 +58,33 @@ public class PlayerHealth : MonoBehaviour
     {
         if (IsDead || isInvincible) return;
 
-        /*if (isBlocking)
-        {
-            Debug.Log($"Player BLOCKED {damage} damage!");
-            
-            // FUTURE STUN LOGIC GOES HERE:
-            // currentStunMeter += damage;
-            // if (currentStunMeter >= maxStunMeter) {
-            //     BreakGuard();
-            // } 
-            
-            return; // 100% damage mitigation for now
-        }*/
         if (_movement != null && _movement.IsInvincibleViaDash)
         {
             Debug.Log("Dodged damage via Dash I-Frames!");
             return;
         }
 
-        if(_combatSandBox.IsParrying){ //check for parry first negate all damage
+        if (_combatSandBox.IsParrying)
+        { 
             Debug.Log("Player successfully PARRIED the attack!");
-            //input more parry logic here when stagger is in
+            
+            // TODO: Play a cool Parry *CLANG* sound and VFX here
+            
+            return; //Stops the damage AND stops standard hit I-frames
         }else if(_combatSandBox.IsBlocking){
             //_animationBridge.PlayAttack()
+
+            // FUTURE STUN LOGIC GOES HERE:
+            // currentStunMeter += damage;
+            // if (currentStunMeter >= maxStunMeter) {
+            //     BreakGuard();
+            // }
+
             currentHealth -= (damage * 0.1f);
             Debug.Log($"Player BLOCKED the attack but still took {damage * 0.1f} damage!");
             //play block animation here when we have them
+            
+
             _animationBridge.PlayBlock(0.2f);
         }else {
             currentHealth -= damage;

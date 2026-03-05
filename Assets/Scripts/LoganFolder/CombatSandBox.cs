@@ -240,18 +240,19 @@ public class CombatSandBox : MonoBehaviour
 
     private IEnumerator ParryRoutine()
     {
+        //optional start up frames before parry is active
         for (int i = 0; i < punishWindowFrames; i++)
         {
             yield return null; 
         }
-        _isParrying = true;
+        _isParrying = true; //parry window opens
         Renderer rend = _blockVisual.GetComponent<Renderer>();
         rend.material.color = parryColor;
         
         yield return new WaitForSeconds(parryWindow);
         
-        _isParrying = false;
-        if (!IsDodging) rend.material.color = blockColor;
+        _isParrying = false; // parry window closes
+        // if (!IsDodging) rend.material.color = blockColor;
         FinishDefense(); 
     }
 
