@@ -8,6 +8,12 @@ public class PlayerHealth : MonoBehaviour
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
+    [Tooltip("How much health recovers per second after the delay.")]
+    [SerializeField] private float healthRecoveryRate = 1f; // 1 HP per second = REAL slow
+    
+    [Tooltip("How long to wait after taking damage before health starts recovering.")]
+    [SerializeField] private float healthRecoveryDelay = 5.0f; // 5 seconds of safety needed
+    private float healthRecoveryTimer = 0f;
 
     [Header("Defense & Posture")]
     public bool isBlocking;
@@ -80,6 +86,25 @@ public class PlayerHealth : MonoBehaviour
                 if (_stunSlider != null) _stunSlider.value = currentStunMeter;
             }
         }
+
+        if (currentHealth < maxHealth && !IsDead)
+        {
+            // tick down the delay timer first
+            if (healthRecoveryTimer > 0)
+            {
+                healthRecoveryTimer -= Time.deltaTime;
+            }
+            // once the delay is over, slowly recover health
+            else
+            {
+                currentHealth += healthRecoveryRate * Time.deltaTime;
+                currentHealth = Mathf.Min(currentHealth, maxHealth); // Don't heal past Max HP
+                
+                // update ui and trigger events
+                if (_healthSlider != null) _healthSlider.value = currentHealth;
+                OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            }
+        }
     }
 
     public void TakeDamage(float damage)
@@ -103,11 +128,11 @@ public class PlayerHealth : MonoBehaviour
             //_animationBridge.PlayAttack()
             
             currentHealth -= (damage * 0.1f);
-
             currentStunMeter += damage;
             
             // reset the recovery delay timer everytime you get hit
-            stunRecoveryTimer = stunRecoveryDelay; 
+            stunRecoveryTimer = stunRecoveryDelay;
+            healthRecoveryTimer = healthRecoveryDelay;
 
             Debug.Log($"Hit! Damage: {damage}. Stun Meter is now: {currentStunMeter} / {maxStunMeter}");
             
@@ -125,6 +150,8 @@ public class PlayerHealth : MonoBehaviour
             _animationBridge.PlayBlock(0.2f);
         }else {
             currentHealth -= damage;
+            healthRecoveryTimer = healthRecoveryDelay;
+            stunRecoveryTimer = stunRecoveryDelay;
             //invoke hit reaction animation here when we have them
         }
 

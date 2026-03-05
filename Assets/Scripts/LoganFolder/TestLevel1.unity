@@ -12117,7 +12117,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
-  currentHealth: 0
+  currentHealth: 1
+  healthRecoveryRate: 1
+  healthRecoveryDelay: 5
   isBlocking: 0
   maxStunMeter: 100
   stunRecoveryRate: 5
