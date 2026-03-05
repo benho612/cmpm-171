@@ -15,5 +15,5 @@ EditorBuildSettings:
     path: Assets/Scenes/LoganBranchScene.unity
     guid: e82ff8bbbf51c8d4886626609befb648
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
   m_UseUCBPForAssetBundles: 0
