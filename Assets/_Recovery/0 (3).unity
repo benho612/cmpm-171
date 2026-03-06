@@ -20400,7 +20400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   basicEnemyPrefab: {fileID: 8709935683431744970, guid: 3a263926772f426428d99aef77e3d1dc, type: 3}
-  eliteEnemyPrefab: {fileID: 8262436188853443978, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+  eliteEnemyPrefab: {fileID: 0}
   basicEnemySpawnContainer: {fileID: 2106058943}
   eliteEnemySpawnContainer: {fileID: 0}
   spawnOnStart: 1
@@ -29783,14 +29783,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1061193783291791312, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1061193783291791312, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 3401246943687666865, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e6f6e91c1cbe6d74d864f200cdcd2e23, type: 2}
     - target: {fileID: 8262436188853443978, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_Name
       value: Demon-Elite

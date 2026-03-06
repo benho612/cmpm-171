@@ -81,8 +81,8 @@ public class EnemyCombatManager : MonoBehaviour
         if (!registeredEnemies.Contains(enemy))
         {
             registeredEnemies.Add(enemy);
-            if (showDebugLogs)
-                Debug.Log($"[CombatManager] Registered: {enemy.name} (Total: {registeredEnemies.Count})");
+            //if (showDebugLogs)
+            //    Debug.Log($"[CombatManager] Registered: {enemy.name} (Total: {registeredEnemies.Count})");
         }
     }
 

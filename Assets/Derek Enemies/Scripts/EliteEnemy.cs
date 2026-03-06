@@ -10,8 +10,10 @@ public class EliteEnemy : BaseEnemy
     [Header("Elite AI Settings")]
     [SerializeField] private float attackDistance = 3f;
     [SerializeField] private float chargeDistance = 10f;
-    [SerializeField][Range(0f, 1f)] private float blockChance = 0.3f;
     [SerializeField][Range(0f, 1f)] private float chargeChance = 0.4f;
+
+    [Header("Sword Hitbox")]
+    [SerializeField] private SwordHitbox swordHitbox;
 
     // Animation hashes for elite attacks
     protected static readonly int AnimSwordSwing = Animator.StringToHash("SwordSwing");
@@ -26,21 +28,17 @@ public class EliteEnemy : BaseEnemy
     {
         base.Update();
 
-        // Don't continue if dead, stunned, in hit stun, or dashing back
+        // Don't continue if dead, stunned, or in hit stun
         if (IsDead() || isStunned || isInHitStun) return;
+
+        // Don't make decisions until engaged and opener is done
+        if (!isEngaged || !hasOpenedWithCharge || isCharging || isAttacking) return;
 
         aiDecisionTimer -= Time.deltaTime;
         if (aiDecisionTimer <= 0f)
         {
             aiDecisionTimer = aiDecisionInterval + Random.Range(-0.1f, 0.1f);
             MakeDecision();
-        }
-
-        // Default behavior: chase & face unless doing something else
-        if (!isAttacking && !isBlocking)
-        {
-            ChasePlayer();
-            FacePlayer();
         }
     }
 
@@ -55,34 +53,37 @@ public class EliteEnemy : BaseEnemy
         {
             float roll = Random.value;
 
-            if (roll < blockChance)
-            {
-                StartBlock();
-                float blockTime = Random.Range(0.3f, 1f);
-                Invoke(nameof(StopBlock), blockTime);
-            }
-            else if (roll < 0.35f)
-            {
-                //SimplePunch();
-            }
-            else if (roll < 0.5f)
-            {
-                //Shove();
-            }
-            else if (roll < 0.7f)
+            // BLOCKING DISABLED FOR TESTING
+            // if (roll < blockChance)
+            // {
+            //     StartBlock();
+            //     float blockTime = Random.Range(0.3f, 1f);
+            //     Invoke(nameof(StopBlock), blockTime);
+            // }
+            // else if (roll < 0.35f)
+            // {
+            //     //SimplePunch();
+            // }
+            // else if (roll < 0.5f)
+            // {
+            //     //Shove();
+            // }
+            // else if (roll < 0.7f)
+
+            if (roll < 0.4f)
             {
                 UnblockableSwordSwing();
             }
-            else if (roll < 0.85f)
+            else if (roll < 0.7f)
             {
                 LegSweep();
             }
             else
             {
-                SwordSlam(); // Standalone powerful attack
+                SwordSlam();
             }
         }
-        // Medium distance ? chance to charge
+        // Medium distance - chance to charge
         else if (distance <= chargeDistance && distance > attackDistance + 1.5f)
         {
             if (Random.value < chargeChance)
@@ -90,7 +91,42 @@ public class EliteEnemy : BaseEnemy
                 ChargeAttack();
             }
         }
-        // Otherwise keep chasing (handled in Update)
+    }
+
+    /// <summary>
+    /// Override charge to use the Elite's sword slam as the charge finisher
+    /// </summary>
+    protected override void UpdateChargeAttack()
+    {
+        if (player == null)
+        {
+            EndCharge();
+            return;
+        }
+
+        float distanceToPlayer = GetDistanceToPlayer();
+
+        if (distanceToPlayer <= chargeStopDistance)
+        {
+            navAgent.isStopped = true;
+            navAgent.velocity = Vector3.zero;
+            navAgent.ResetPath();
+
+            isCharging = false;
+            isAttacking = true;
+
+            FacePlayerImmediate();
+
+            // Elite uses SwordSlam as the charge finisher
+            Debug.Log($"{gameObject.name}: Charge reached player, triggering SwordSlam!");
+            animator?.SetTrigger(AnimChargeAttack);
+        }
+        else
+        {
+            navAgent.speed = chargeSpeed;
+            navAgent.isStopped = false;
+            navAgent.SetDestination(player.position);
+        }
     }
 
     #region Elite Attacks
@@ -139,22 +175,39 @@ public class EliteEnemy : BaseEnemy
     }
     #endregion
 
-    #region Animation Events for Elite Attacks
-    /// <summary>
-    /// Call during sword swing at impact - unblockable
-    /// </summary>
-    public void OnSwordSwingHit()
+    #region Animation Events — Sword Hitbox Enable/Disable
+    // Call these from animation events to toggle the sword collider.
+    // Use EnableSwordSwingHitbox / EnableSwordSlamHitbox / EnableLegSweepHitbox
+    // at the start of the active frames, and DisableSwordHitbox at the end.
+
+    public void EnableSwordSwingHitbox()
     {
-        TryDamagePlayer(swordSwingDamage, attackRange * 1.5f);
-        // Note: Make player TakeDamage unblockable for this attack (implement in PlayerHealth)
-        Debug.Log("UNBLOCKABLE sword swing hit!");
+        swordHitbox?.EnableHitbox(swordSwingDamage);
     }
 
+    public void EnableSwordSlamHitbox()
+    {
+        swordHitbox?.EnableHitbox(swordSlamDamage);
+    }
+
+    public void EnableLegSweepHitbox()
+    {
+        swordHitbox?.EnableHitbox(legSweepDamage);
+    }
+
+    public void DisableSwordHitbox()
+    {
+        swordHitbox?.DisableHitbox();
+    }
+    #endregion
+
+    #region Animation Events — Attack End
     /// <summary>
     /// Call at end of sword swing animation
     /// </summary>
     public void OnSwordSwingEnd()
     {
+        DisableSwordHitbox();
         OnAttackEnd();
     }
 
@@ -163,10 +216,10 @@ public class EliteEnemy : BaseEnemy
     /// </summary>
     public void OnLegSweepHit()
     {
+        // Leg sweep still uses range check since it's a foot, not the sword
         if (TryDamagePlayer(legSweepDamage, attackRange))
         {
             legSweepHit = true;
-            // TODO: Knock player down / brief stun / ragdoll
             Debug.Log("Leg sweep connected! Combo incoming...");
         }
     }
@@ -196,18 +249,11 @@ public class EliteEnemy : BaseEnemy
     }
 
     /// <summary>
-    /// Call during sword slam at impact (standalone or combo)
-    /// </summary>
-    public void OnSwordSlamHit()
-    {
-        TryDamagePlayer(swordSlamDamage, attackRange * 1.2f);
-    }
-
-    /// <summary>
     /// Call at end of sword slam animation
     /// </summary>
     public void OnSwordSlamEnd()
     {
+        DisableSwordHitbox();
         OnAttackEnd();
     }
     #endregion

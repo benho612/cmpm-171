@@ -27,10 +27,10 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("check1");
+        //Debug.Log("check1");
         if (spawnOnStart)
         {
-            Debug.Log("check2");
+            //Debug.Log("check2");
             if (spawnDelay > 0)
             {
                 Invoke(nameof(SpawnAllEnemies), spawnDelay);

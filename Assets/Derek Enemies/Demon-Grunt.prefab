@@ -361,7 +361,7 @@ MonoBehaviour:
   hideWhenFull: 1
   hideDelay: 2
   alwaysFaceCamera: 1
-  debugMode: 1
+  debugMode: 0
   healthyColor: {r: 0, g: 1, b: 0, a: 1}
   damagedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   criticalColor: {r: 1, g: 0, b: 0, a: 1}
@@ -426,7 +426,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 56.999
+      value: 39.75
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -434,7 +434,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 58.074028
+      value: 17.89
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -546,10 +546,8 @@ MonoBehaviour:
   attackRange: 2
   chargeSpeed: 5
   chargeStopDistance: 2
-  dashBackDistance: 3
-  dashBackSpeed: 8
-  awarenessRange: 25
-  engagementRange: 15
+  awarenessRange: 15
+  engagementRange: 10
   lightAttackDamage: 10
   heavyAttackDamage: 25
   chargeAttackDamage: 20
@@ -557,6 +555,7 @@ MonoBehaviour:
   attackCooldown: 1.5
   maxHitStunDuration: 5
   hitStunResetTime: 1
+  hitImmunityDuration: 5
   maxStunMeter: 100
   stunDecayRate: 10
   hitRecoveryTime: 0.5

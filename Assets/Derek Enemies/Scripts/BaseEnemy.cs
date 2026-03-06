@@ -186,7 +186,7 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             CheckAwareness();
         }
-        else if (!isEngaged)
+        else if (!isEngaged || !hasOpenedWithCharge)
         {
             CheckEngagement();
         }
@@ -313,17 +313,26 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             isEngaged = true;
 
-            if (CanPerformAction())
+            // Keep retrying the opener charge until it actually fires
+            if (!hasOpenedWithCharge)
             {
-                if (EnemyCombatManager.Instance == null ||
-                    EnemyCombatManager.Instance.RequestAttackPermission(this))
+                if (CanPerformAction())
                 {
-                    ChargeAttack();
-                    hasOpenedWithCharge = true;
+                    if (EnemyCombatManager.Instance == null ||
+                        EnemyCombatManager.Instance.RequestAttackPermission(this))
+                    {
+                        Debug.Log($"{gameObject.name}: OPENER CHARGE FIRED! Distance: {distance:F2}");
+                        ChargeAttack();
+                        hasOpenedWithCharge = true;
+                    }
+                    else
+                    {
+                        Debug.Log($"{gameObject.name}: Opener charge DENIED by CombatManager");
+                    }
                 }
                 else
                 {
-                    hasOpenedWithCharge = true;
+                    Debug.Log($"{gameObject.name}: Can't perform action yet - cooldown: {attackCooldownTimer:F2}, attacking: {isAttacking}, charging: {isCharging}");
                 }
             }
         }
@@ -342,6 +351,7 @@ public abstract class BaseEnemy : MonoBehaviour
     public bool IsAware() => isAware;
     public bool IsEngaged() => isEngaged;
     public bool IsInHitStun() => isInHitStun;
+    public bool IsAttacking() => isAttacking;
 
     #region Movement
     protected virtual void ChasePlayer()
@@ -384,7 +394,7 @@ public abstract class BaseEnemy : MonoBehaviour
         navAgent.isStopped = true;
         navAgent.velocity = Vector3.zero;
 
-        int randomIndex = Random.Range(0, 3);
+        float randomIndex = Random.Range(0, 2);// Produces 0, 0.5, or 1
         animator?.SetFloat(AnimLightRandom, randomIndex);
         animator?.SetTrigger(AnimLightAttack);
     }
@@ -418,8 +428,13 @@ public abstract class BaseEnemy : MonoBehaviour
 
     public virtual void ChargeAttack()
     {
-        if (!CanPerformAction() || player == null) return;
-
+        Debug.Log($"{gameObject.name}: Attempting to start charge attack");
+        if (!CanPerformAction() || player == null)
+        {
+            Debug.Log($"{gameObject.name}: Cannot start charge attack - CanPerformAction: {CanPerformAction()}, Player null: {player == null}");
+            return;
+        }
+        Debug.Log($"{gameObject.name}: Starting charge attack towards player at {player.position}");
         isCharging = true;
         attackCooldownTimer = attackCooldown * 1.8f;
 
@@ -431,9 +446,11 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual void UpdateChargeAttack()
     {
+        Debug.Log($"{gameObject.name}: Updating charge attack");
         if (player == null)
         {
             EndCharge();
+            Debug.LogWarning($"{gameObject.name}: Player lost during charge - ending charge");
             return;
         }
 
@@ -441,6 +458,7 @@ public abstract class BaseEnemy : MonoBehaviour
 
         if (distanceToPlayer <= chargeStopDistance)
         {
+            Debug.Log($"{gameObject.name}: Charge reached player - stopping and triggering attack! Distance: {distanceToPlayer:F2}");
             navAgent.isStopped = true;
             navAgent.velocity = Vector3.zero;
             navAgent.ResetPath();
@@ -449,10 +467,12 @@ public abstract class BaseEnemy : MonoBehaviour
             isAttacking = true;
 
             FacePlayerImmediate();
+            Debug.Log($"{gameObject.name}: Charge reached player, triggering attack! Distance: {distanceToPlayer:F2}");
             animator?.SetTrigger(AnimChargeAttack);
         }
         else
         {
+            Debug.Log($"{gameObject.name}: Charging towards player - Distance: {distanceToPlayer:F2}");
             navAgent.speed = chargeSpeed;
             navAgent.isStopped = false;
             navAgent.SetDestination(player.position);
@@ -474,6 +494,7 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected void EndCharge()
     {
+        Debug.Log($"{gameObject.name}: Ending charge - player lost or invalid");
         isCharging = false;
         navAgent.velocity = Vector3.zero;
         navAgent.speed = chaseSpeed;
@@ -622,6 +643,8 @@ public abstract class BaseEnemy : MonoBehaviour
     #region Animation Events
     public void OnAttackEnd()
     {
+        Debug.Log($"{gameObject.name}: OnAttackEnd called! isCharging was: {isCharging}, isAttacking was: {isAttacking}");
+
         isAttacking = false;
         isCharging = false;
 
