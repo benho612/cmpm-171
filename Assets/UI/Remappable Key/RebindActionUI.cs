@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class RebindActionUI : MonoBehaviour
 {
     [Header("References")]
-    public InputActionReference actionReference; // drag the action here
-    public int bindingIndex = 0;                 // which binding to rebind (0,1,2...)
+    public InputActionReference actionReference;
+    public int bindingIndex = 0;
     public TextMeshProUGUI actionNameText;
     public TextMeshProUGUI bindingText;
     public Button rebindButton;
@@ -35,21 +35,18 @@ public class RebindActionUI : MonoBehaviour
     public void RefreshUI()
     {
         var action = actionReference.action;
-
-        // binding info
         var binding = action.bindings[bindingIndex];
 
         if (actionNameText)
         {
             if (binding.isPartOfComposite && !string.IsNullOrEmpty(binding.name))
-                actionNameText.text = $"{action.name} {binding.name}";   // "Move Up"
+                actionNameText.text = $"{action.name} {binding.name}";
             else
-                actionNameText.text = action.name;                        // "Jump"
+                actionNameText.text = action.name;
         }
 
         if (bindingText)
         {
-            // This safely grabs the visual string for the current key (e.g., "Space", "W", "LMB")
             bindingText.text = action.GetBindingDisplayString(bindingIndex);
         }
     }
@@ -59,34 +56,42 @@ public class RebindActionUI : MonoBehaviour
         CancelRebindIfActive();
 
         var action = actionReference.action;
-
-        // Disable action while rebinding to avoid triggering gameplay
         action.Disable();
 
-        // Change the button text directly to show it is listening
         if (bindingText)
         {
             bindingText.text = "Press any key...";
         }
 
-        // Start rebinding only this specific binding index
         _rebindOp = action.PerformInteractiveRebinding(bindingIndex)
             .WithCancelingThrough("<Keyboard>/escape")
-            // Optional: avoid binding mouse movement, etc.
             .WithControlsExcluding("<Mouse>/position")
             .WithControlsExcluding("<Mouse>/delta")
             .OnMatchWaitForAnother(0.1f)
             .OnCancel(op =>
             {
                 CleanupAfterRebind(action);
+                RefreshUI(); // Reverts back to the original key text
             })
             .OnComplete(op =>
             {
+                // --- DUPLICATE CHECK LOGIC ---
+                if (IsDuplicateBinding(action, bindingIndex))
+                {
+                    action.RemoveBindingOverride(bindingIndex); // Throw away the duplicate input
+                    CleanupAfterRebind(action);
+
+                    if (bindingText)
+                    {
+                        // Show a red warning directly on the button!
+                        bindingText.text = "<color=red>Already Used</color>";
+                    }
+                    return;
+                }
+
+                // If it's a unique key, save it and update the UI normally
                 CleanupAfterRebind(action);
-
-                // Save after a successful rebind
                 RebindSaveLoad.SaveAllBindings(action.actionMap.asset);
-
                 RefreshUI();
             });
 
@@ -106,9 +111,7 @@ public class RebindActionUI : MonoBehaviour
     {
         _rebindOp?.Dispose();
         _rebindOp = null;
-
         action.Enable();
-        RefreshUI(); // This will automatically change the text from "Press any key..." to the newly bound key!
     }
 
     private void CancelRebindIfActive()
@@ -119,5 +122,26 @@ public class RebindActionUI : MonoBehaviour
             _rebindOp.Dispose();
             _rebindOp = null;
         }
+    }
+
+    // --- NEW METHOD ---
+    private bool IsDuplicateBinding(InputAction action, int mappedBindingIndex)
+    {
+        InputBinding newBinding = action.bindings[mappedBindingIndex];
+
+        // Look through every single binding in the entire Action Map
+        foreach (InputBinding existingBinding in action.actionMap.bindings)
+        {
+            // Don't compare the binding against itself
+            if (existingBinding.action == newBinding.action && existingBinding.id == newBinding.id)
+                continue;
+
+            // If the literal hardware path (e.g., "<Keyboard>/space") matches another action's path
+            if (existingBinding.effectivePath == newBinding.effectivePath)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
