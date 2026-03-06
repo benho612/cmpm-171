@@ -20371,7 +20371,7 @@ MonoBehaviour:
   circleRadius: 4
   maxAttackDuration: 5
   player: {fileID: 0}
-  showDebugLogs: 1
+  showDebugLogs: 0
 --- !u!4 &1200869110
 Transform:
   m_ObjectHideFlags: 0
@@ -29791,13 +29791,33 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: attackDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: awarenessRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: engagementRange
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: chargeStopDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7082481262916186613, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8262436188853443978, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_Name
       value: Demon-Elite
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60.098587
+      value: 55.83
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalPosition.y
@@ -29805,7 +29825,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 57.521683
+      value: 48.94
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalRotation.w
@@ -33855,6 +33875,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1053518372535485829, guid: 3a263926772f426428d99aef77e3d1dc, type: 3}
+      propertyPath: heavyAttackChance
+      value: 0.299
+      objectReference: {fileID: 0}
     - target: {fileID: 2244605879395983623, guid: 3a263926772f426428d99aef77e3d1dc, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -34094,7 +34118,6 @@ SceneRoots:
   - {fileID: 166479870}
   - {fileID: 711210743}
   - {fileID: 1200869110}
-  - {fileID: 4501867434355372715}
   - {fileID: 1001573892}
   - {fileID: 1005202499}
   - {fileID: 1576202265}
@@ -34112,4 +34135,5 @@ SceneRoots:
   - {fileID: 212920472}
   - {fileID: 1568537458}
   - {fileID: 461820966}
+  - {fileID: 4501867434355372715}
   - {fileID: 1843860359}

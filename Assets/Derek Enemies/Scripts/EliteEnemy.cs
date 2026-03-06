@@ -42,9 +42,38 @@ public class EliteEnemy : BaseEnemy
         }
     }
 
+    /// <summary>
+    /// Override so the base class doesn't fire LightAttack over our elite attacks.
+    /// Lets MakeDecision() handle all attack choices for the Elite.
+    /// </summary>
+    protected override void ContinueCombat()
+    {
+        if (isAttacking || isBlocking || isCharging || isStunned || isInHitStun) return;
+
+        float distance = GetDistanceToPlayer();
+
+        if (distance > attackDistance)
+        {
+            ChasePlayer();
+            FacePlayer();
+        }
+        else
+        {
+            navAgent.isStopped = true;
+            FacePlayer();
+        }
+    }
+
     private void MakeDecision()
     {
         if (isAttacking || isBlocking || isStunned) return;
+
+        // Must have attack permission from the combat manager
+        if (EnemyCombatManager.Instance != null &&
+            !EnemyCombatManager.Instance.RequestAttackPermission(this))
+        {
+            return;
+        }
 
         float distance = GetDistanceToPlayer();
 
@@ -53,28 +82,15 @@ public class EliteEnemy : BaseEnemy
         {
             float roll = Random.value;
 
-            // BLOCKING DISABLED FOR TESTING
-            // if (roll < blockChance)
-            // {
-            //     StartBlock();
-            //     float blockTime = Random.Range(0.3f, 1f);
-            //     Invoke(nameof(StopBlock), blockTime);
-            // }
-            // else if (roll < 0.35f)
-            // {
-            //     //SimplePunch();
-            // }
-            // else if (roll < 0.5f)
-            // {
-            //     //Shove();
-            // }
-            // else if (roll < 0.7f)
-
-            if (roll < 0.4f)
+            if (roll < 0.25f)
+            {
+                LightAttack();
+            }
+            else if (roll < 0.5f)
             {
                 UnblockableSwordSwing();
             }
-            else if (roll < 0.7f)
+            else if (roll < 0.75f)
             {
                 LegSweep();
             }
@@ -114,6 +130,7 @@ public class EliteEnemy : BaseEnemy
 
             isCharging = false;
             isAttacking = true;
+            attackCooldownTimer = attackCooldown * 2f;
 
             FacePlayerImmediate();
 
@@ -142,7 +159,7 @@ public class EliteEnemy : BaseEnemy
         navAgent.isStopped = true;
 
         // Visual/audio warning for player (optional: red flash, wind-up sound)
-        animator?.SetTrigger(AnimSwordSwing);
+        animator?.SetTrigger(AnimLightAttack);
     }
 
     /// <summary>
