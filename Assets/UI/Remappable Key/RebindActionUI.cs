@@ -37,13 +37,13 @@ public class RebindActionUI : MonoBehaviour
         var action = actionReference.action;
         var binding = action.bindings[bindingIndex];
 
-        if (actionNameText)
+        /*if (actionNameText)
         {
             if (binding.isPartOfComposite && !string.IsNullOrEmpty(binding.name))
                 actionNameText.text = $"{action.name} {binding.name}";
             else
                 actionNameText.text = action.name;
-        }
+        }*/
 
         if (bindingText)
         {

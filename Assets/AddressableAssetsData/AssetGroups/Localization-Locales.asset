@@ -15,14 +15,20 @@ MonoBehaviour:
   m_GroupName: Localization-Locales
   m_GUID: d396646d07315bd47bfad06e25308715
   m_SerializeEntries:
+  - m_GUID: 4bdf44ecdcd96214cab651d8604eff8a
+    m_Address: Arabic (ar)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bde6cc46838ca24cb557ab185e1c788
     m_Address: English (en)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d55925ba258cd214f94bbd369c60bbc6
-    m_Address: Arabic (ar)
+  - m_GUID: d530a96c602166f4b9f04dac9f7c5762
+    m_Address: Japanese (Japan) (ja-JP)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
