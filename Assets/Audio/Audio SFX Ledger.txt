@@ -1,0 +1,68 @@
+Sounds FX
+(DONE) player movement/walking
+(DONE) player take damage
+(DONE) player block damage (fist)
+(DONE) player block damage (Sword)
+(DONE) player punching (Hitting flesh)
+(DONE) player hitting (Hitting armor)
+(DONE) player death sound
+enemy idle noises
+(DONE) enemy aggro
+(DONE) enemy getting hit
+(DONE) enemy Death
+(DONE) sword/fist like a swoosh?
+
+(New Name) Player_Blocking_Sword
+(Original Name) Armor impact from Sword
+(Creator) by DRAGON-STUDIO on pixabay.com
+(Link) https://pixabay.com/sound-effects/film-special-effects-armor-impact-from-sword-393843/
+
+(New Name) Swoosh
+(Original Name) Swing Whoosh Metal Hit 19
+(Creator) by floraphonic on pixabay.com
+(Link) https://pixabay.com/sound-effects/film-special-effects-swing-whoosh-metal-hit-19-234636/
+
+(New Name) Player_Punching_Metal
+(Original Name) Swing Whoosh Metal Hit 10
+(Creator) by floraphonic on pixabay.com
+(Link) https://pixabay.com/sound-effects/film-special-effects-swing-whoosh-metal-hit-10-234626/
+
+(New Name) Player_Blocking_Punch
+(Original Name) Punch
+(Creator) by blwuens (Freesound) on pixabay.com
+(Link) https://pixabay.com/sound-effects/film-special-effects-punch-41105/
+
+(New Name) Player_Punch
+(New Name) Player_Punch_1
+(New Name) Player_Punch_1
+(New Name) Player_Heavy_Punch
+(Original Name) Punch and Hits
+(Creator) by storegraphic on pixabay.com
+(Link) https://pixabay.com/sound-effects/film-special-effects-punch-and-hits-310521/
+
+(New Name) Player_Death_Sound
+(New Name 1) Player_Hit
+(New Name 2) Player_Hit_1
+(New Name 2) Player_Hit_2
+(New Name 2) Player_Hit_3
+(Original Name) grunts
+(Creator) by mattgarkusha (Freesound) on pixabay.com
+(Link) https://pixabay.com/sound-effects/people-grunts-33249/
+
+(New Name) Elite_Enemy_Aggro
+(New Name) Elite_Enemy_Aggro_1
+(New Name) Elite_Enemy_Death
+(New Name) Elite_Enemy_Hit
+(New Name) Basic_Enemy_Aggro
+(New Name) Basic_Enemy_Aggro_1
+(New Name) Basic_Enemy_Death
+(New Name) Basic_Enemy_Hit
+(Original Name) Monster Grunts
+(Creator) by VoiceBosch on pixabay.com
+(Link) https://pixabay.com/sound-effects/horror-monster-grunts-174559/
+
+(New Name) Player_Running
+(New Name) Player_Walking
+(Original Name) Metal Footsteps
+(Creator) by mypantsfelldown (Freesound) on pixabay.com
+(Link) https://pixabay.com/sound-effects/household-metal-footsteps-14727/
