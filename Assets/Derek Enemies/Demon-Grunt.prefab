@@ -426,7 +426,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 39.75
+      value: 57.03
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -434,7 +434,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 17.89
+      value: 50.11
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13e0fc4eaf3cbfd4f8ab1b318060cca3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -564,7 +564,7 @@ MonoBehaviour:
   attackDistance: 2.5
   chargeDistance: 8
   blockChance: 0.25
-  heavyAttackChance: 0.3
+  heavyAttackChance: 0.299
   chargeChance: 0.35
 --- !u!136 &4208100376101492253
 CapsuleCollider:

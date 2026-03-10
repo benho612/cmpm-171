@@ -580,7 +580,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60.098587
+      value: 34.93
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -588,7 +588,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 57.521683
+      value: 10.58
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -693,7 +693,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8262436188853443978}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
+  m_Radius: 0.5
   m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50
@@ -723,9 +723,9 @@ MonoBehaviour:
   circleSpeed: 2
   attackRange: 4
   chargeSpeed: 5
-  chargeStopDistance: 5
-  awarenessRange: 25
-  engagementRange: 15
+  chargeStopDistance: 2
+  awarenessRange: 15
+  engagementRange: 10
   lightAttackDamage: 10
   heavyAttackDamage: 25
   chargeAttackDamage: 20
@@ -742,7 +742,7 @@ MonoBehaviour:
   swordSwingDamage: 35
   legSweepDamage: 15
   swordSlamDamage: 50
-  attackDistance: 5
+  attackDistance: 2
   chargeDistance: 10
   chargeChance: 1
   swordHitbox: {fileID: 8807914873845759311}

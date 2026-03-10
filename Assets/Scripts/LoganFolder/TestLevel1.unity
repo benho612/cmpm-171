@@ -12200,7 +12200,7 @@ Transform:
   m_GameObject: {fileID: 711210731}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.1841653, z: -0, w: -0.9828953}
-  m_LocalPosition: {x: 65.2, y: 1.712, z: 60.9}
+  m_LocalPosition: {x: 24.48, y: 1.712, z: -57.02}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -19834,7 +19834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 65.20421
+      value: 24.484207
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -19842,7 +19842,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 58.51006
+      value: -59.409943
       objectReference: {fileID: 0}
     - target: {fileID: 8424626135305506581, guid: a7b0e6ad725d0894ea72a2ee9826abe2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -29800,8 +29800,28 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: legSweepChance
+      value: 0.103
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: dodgeBackChance
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: engagementRange
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: swordSwingChance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: heavyAttackChance
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
+      propertyPath: lightAttackChance
+      value: 0.504
       objectReference: {fileID: 0}
     - target: {fileID: 6355393716881731224, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: chargeStopDistance
@@ -29817,7 +29837,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 55.83
+      value: 34.93
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalPosition.y
@@ -29825,7 +29845,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 48.94
+      value: 10.58
       objectReference: {fileID: 0}
     - target: {fileID: 8782513243554924336, guid: d6f4b39a39dd96a44addac3e3e934b94, type: 3}
       propertyPath: m_LocalRotation.w
@@ -33889,7 +33909,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8328344247673724784, guid: 3a263926772f426428d99aef77e3d1dc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 39.75
+      value: 57.03
       objectReference: {fileID: 0}
     - target: {fileID: 8328344247673724784, guid: 3a263926772f426428d99aef77e3d1dc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -33897,7 +33917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8328344247673724784, guid: 3a263926772f426428d99aef77e3d1dc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 17.89
+      value: 50.11
       objectReference: {fileID: 0}
     - target: {fileID: 8328344247673724784, guid: 3a263926772f426428d99aef77e3d1dc, type: 3}
       propertyPath: m_LocalRotation.w
