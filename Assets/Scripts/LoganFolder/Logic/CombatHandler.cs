@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 public class CombatHandler : MonoBehaviour{
     public List <ComboUnlock> _allCombos = new List<ComboUnlock>();
@@ -12,11 +13,14 @@ public class CombatHandler : MonoBehaviour{
     [SerializeField] private CombatSandBox _combatSandBox;
     [SerializeField] private MovementSandBox _movement;
 
-//exposing these for the CombatCoordinator so it doesn't read inputs while these are happening
+    //exposing these for the CombatCoordinator so it doesn't read inputs while these are happening
     public bool IsBlocking => _combatSandBox.IsBlocking;
     public bool IsDodging => _combatSandBox.IsDodging;
     public bool IsDashing => _movement.IsDashing;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    [Header("VFX Things")]
+    [SerializeField] private GameObject _hitEffectPrefab;
+    
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
         _meta = MetaManager.Instance;
@@ -140,10 +144,11 @@ public class CombatHandler : MonoBehaviour{
 
 //brings all the damage logic together and sends the damage to the enemy hit
 //NOTE - Enemey has no status variable yet so majority of this doesn't work, but the structure is there for when it does
-    public void ProcessHit(GameObject enemy, float baseDamage){
+    public void ProcessHit(GameObject enemy, float baseDamage, Vector3 hitboxCenter){
         //not sure if this is actual enemy script but this should link enemy to the hit
         TempStatusScript enemyData = enemy.GetComponent<TempStatusScript>();
         BaseEnemy enemyScript = enemy.GetComponent<BaseEnemy>();
+        Animator enemyAnim = enemy.GetComponent<Animator>();
         if(enemyScript == null) {
             Debug.Log("enemyScript = null");
             return;
@@ -181,7 +186,12 @@ public class CombatHandler : MonoBehaviour{
             enemyData.CurrentStatus = newStatus;
         }*/
         //apply damage
-        enemyScript.TakeDamage(finalDamage);
+        if(enemyScript != null && enemyAnim != null){
+            Instantiate(_hitEffectPrefab, hitboxCenter, Quaternion.identity);
+            enemyScript.TakeDamage(finalDamage);
+            StartCoroutine(HitStopRoutine(0.07f, enemyAnim));
+        }
+
         Debug.Log($"Processed hit on {enemy.name} for {finalDamage} total damage!");
         //enemy.TakeStagger(finalStagger);
 
@@ -194,6 +204,15 @@ public class CombatHandler : MonoBehaviour{
             //apply Stone Armor
         }
         */
+    }
+
+    private IEnumerator HitStopRoutine(float duration, Animator enemyAnim){
+        float eSpeed = enemyAnim.speed;
+        enemyAnim.speed = 0f;
+        _playerAnimator.HitStopAnim();
+        yield return new WaitForSeconds(duration);
+        enemyAnim.speed = eSpeed;
+        _playerAnimator.ResumeAnim();
     }
 
     private StatusEffect GetStatusFromElement(ElementType element){

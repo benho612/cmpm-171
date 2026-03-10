@@ -90,6 +90,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stone_006 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1535100644646989243, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -151,6 +155,10 @@ PrefabInstance:
     - target: {fileID: 1030543210910813294, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
       propertyPath: m_Name
       value: Stone_006
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535100644646989243, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -222,6 +230,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 7.955
       objectReference: {fileID: 0}
+    - target: {fileID: 8932842483239520911, guid: de679419d4d4947458c372b5b9cdeff6, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -240,6 +252,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5684410579998868592}
     m_Modifications:
+    - target: {fileID: 7233482312597430287, guid: 3a7d37c9d478d364492cdfdb40489610, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8370310486363675488, guid: 3a7d37c9d478d364492cdfdb40489610, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.4528
@@ -354,6 +370,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stone_006 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1535100644646989243, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -415,6 +435,10 @@ PrefabInstance:
     - target: {fileID: 1030543210910813294, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
       propertyPath: m_Name
       value: Stone_006 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535100644646989243, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -485,6 +509,10 @@ PrefabInstance:
     - target: {fileID: 5471899685099740717, guid: 2695a01f49f55514cb704e378e41ab83, type: 3}
       propertyPath: m_Name
       value: Stone_005
+      objectReference: {fileID: 0}
+    - target: {fileID: 5832420682320756728, guid: 2695a01f49f55514cb704e378e41ab83, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

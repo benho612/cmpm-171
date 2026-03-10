@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: TextLocalization Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: TextLocalization
+  m_TableCollectionNameGuidString: 0c059a2e5041f33499d333575d47d09b
+  m_Entries:
+  - m_Id: 17855766528
+    m_Key: Title_Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3370723663872
+    m_Key: Title/Pause_Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3395222593536
+    m_Key: Title_Credits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3473723187200
+    m_Key: Title/Pause_Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3978918715392
+    m_Key: Pause_Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4269353295872
+    m_Key: Pause_General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4304426065920
+    m_Key: Pause_KeyBinds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4402304344064
+    m_Key: Pause_HighContrastMode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4470948323328
+    m_Key: KeyBinds_MoveForward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4644051443712
+    m_Key: KeyBinds_MoveLeft
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4789996445696
+    m_Key: KeyBinds_MoveRight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4857403105280
+    m_Key: KeyBinds_MoveBack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4933508751360
+    m_Key: KeyBinds_LightAttack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5000621809664
+    m_Key: KeyBinds_HeavyAttack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7797492768768
+    m_Key: KeyBinds_Block/Parry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7852584951808
+    m_Key: KeyBinds_Dash/Run
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 872967351464361984
+  references:
+    version: 2
+    RefIds:
+    - rid: 872967351464361984
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1772995875858

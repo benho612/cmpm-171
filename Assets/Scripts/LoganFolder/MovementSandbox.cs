@@ -4,21 +4,27 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class MovementSandBox : MonoBehaviour
 {
+    [Header("Input References")]
+    [Tooltip("Drag the 'Move' InputActionReference here")]
+    public InputActionReference moveAction;
+    [Tooltip("Drag the 'Dash' InputActionReference here")]
+    public InputActionReference dashAction;
+
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
     public float sprintSpeed = 9f;
-    
+
     [Header("Dash Settings")]
     public float dashSpeed = 15f;
     public float dashDuration = 0.2f;
     public float dashCooldown = 0.5f; // Time between dashes
     public float dashIFrames = 0.15f; // How long you are invincible during the dash
-    
+
     [Tooltip("How fast the character turns while sprinting")]
-    public float rotationSpeed = 15f; 
-    
+    public float rotationSpeed = 15f;
+
     [Tooltip("How fast the character aligns with the camera while strafing")]
-    public float strafeTurnSpeed = 20f; 
+    public float strafeTurnSpeed = 20f;
 
     [Header("Buffering")]
     public float bufferWindow = 0.2f; // How long to remember the dash input
@@ -31,18 +37,19 @@ public class MovementSandBox : MonoBehaviour
 
     // Internal Variables
     private CharacterController _controller;
-    private PlayerControls _input;
     private Transform _cameraTransform;
-    //references for combat and animation
+
+    // References for combat and animation
     [SerializeField] private CombatSandBox _combat;
-    [SerializeField] private AnimationBridge _animator; 
+    [SerializeField] private AnimationBridge _animator;
+
     private Vector3 _velocity;
     private Vector2 _moveInput;
     private float _smoothSpeed;
     private float _targetSpeed;
     private float _dashCooldownTimer;
     private float _iFrameTimer;
-    
+
     // Dash Logic
     private bool _isDashing;
     public bool IsDashing => _isDashing;
@@ -54,24 +61,37 @@ public class MovementSandBox : MonoBehaviour
     private Vector3 _defenseAnchorPosition;
     private bool _wasBlocking;
 
-    
-
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
         _cameraTransform = Camera.main.transform;
-        
-        _input = new PlayerControls();
-        
-        _input.Gameplay.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
-        _input.Gameplay.Move.canceled += ctx => _moveInput = Vector2.zero;
-        
-        _input.Gameplay.Dash.performed += ctx => AttemptDash();
-        _input.Gameplay.Dash.performed += ctx => OnDashInput();
+
+        // Subscribe to input events using the Action References
+        if (moveAction != null)
+        {
+            moveAction.action.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
+            moveAction.action.canceled += ctx => _moveInput = Vector2.zero;
+        }
+
+        if (dashAction != null)
+        {
+            // Note: In your original script, you subscribed twice (AttemptDash and OnDashInput).
+            // OnDashInput already calls AttemptDash, so we only need to subscribe to OnDashInput here to prevent duplicate calls.
+            dashAction.action.performed += ctx => OnDashInput();
+        }
     }
 
-    private void OnEnable() => _input.Enable();
-    private void OnDisable() => _input.Disable();
+    private void OnEnable()
+    {
+        moveAction?.action.Enable();
+        dashAction?.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction?.action.Disable();
+        dashAction?.action.Disable();
+    }
 
     private void OnDashInput()
     {
@@ -109,7 +129,7 @@ public class MovementSandBox : MonoBehaviour
 
         ApplyGravity();
 
-        // Mouse Lock Toggle (Alt key)
+        // Mouse Lock Toggle (Alt key) - Keeping this as a direct hardware poll for debug purposes
         if (Keyboard.current.leftAltKey.wasPressedThisFrame)
         {
             if (Cursor.lockState == CursorLockMode.Locked)
@@ -123,7 +143,7 @@ public class MovementSandBox : MonoBehaviour
                 Cursor.visible = false;
             }
         }
-        
+
         // If Dashing, override everything
         if (_isDashing)
         {
@@ -131,31 +151,9 @@ public class MovementSandBox : MonoBehaviour
             return;
         }
 
-        // bool isBlocking = _combat != null && _combat.IsBlocking;
-
-        // // ANCHOR SYSTEM - so that player doesnt get pushed around when blocking./
-        // if (isBlocking)
-        // {
-        //     // The exact frame block started, save foot position
-        //     if (!_wasBlocking)
-        //     {
-        //         _defenseAnchorPosition = transform.position;
-        //     }
-            
-        //     // Force our X and Z position to stay exactly where we planted our feet.
-        //     transform.position = new Vector3(_defenseAnchorPosition.x, transform.position.y, _defenseAnchorPosition.z);
-            
-        //     // Sync with Unity's physics engine so it doesn't get confused
-        //     Physics.SyncTransforms(); 
-        // }
-        
-        // // Remember state for the next frame
-        // _wasBlocking = isBlocking;
-
         // If Attacking, stop movement logic so Combat.cs controls rotation
         if (_combat != null && (_combat.IsAttacking || _combat.IsDodging || _combat.IsBlocking))
         {
-
             _smoothSpeed = 0; // Rapidly decelerate to a stop
             return;
         }
@@ -168,9 +166,10 @@ public class MovementSandBox : MonoBehaviour
     {
         if (_moveInput.magnitude < 0.1f) return;
 
-        bool isSprinting = _input.Gameplay.Dash.IsPressed();
+        // Using the new reference to check if the button is held
+        bool isSprinting = dashAction != null && dashAction.action.IsPressed();
 
-        //Calculate World Direction relative to Camera
+        // Calculate World Direction relative to Camera
         Vector3 camForward = _cameraTransform.forward;
         Vector3 camRight = _cameraTransform.right;
         camForward.y = 0;
@@ -198,7 +197,7 @@ public class MovementSandBox : MonoBehaviour
 
         _targetSpeed = isSprinting ? sprintSpeed : walkSpeed;
         _smoothSpeed = Mathf.Lerp(_smoothSpeed, _targetSpeed, 10f * Time.deltaTime);
-        
+
         _controller.Move(moveDir * _smoothSpeed * Time.deltaTime);
     }
 
@@ -209,13 +208,13 @@ public class MovementSandBox : MonoBehaviour
         if (_combat != null && _combat.IsAttacking)
         {
             // Double check: if still in active frames, we can't dash yet
-            if (_combat.IsInActiveFrames) return; 
-            Debug.Log("Check");
+            if (_combat.IsInActiveFrames) return;
+
             // If in recovery or windup, cancel it
             _animator.BackToLocomotion();
             _combat.CancelAttackForDash();
         }
-        
+
         _hasBufferedDash = false;
 
         _isDashing = true;
@@ -227,7 +226,7 @@ public class MovementSandBox : MonoBehaviour
         {
             Vector3 camForward = _cameraTransform.forward;
             Vector3 camRight = _cameraTransform.right;
-            camForward.y = 0; 
+            camForward.y = 0;
             camRight.y = 0;
             _dashDirection = (camForward * _moveInput.y + camRight * _moveInput.x).normalized;
         }
