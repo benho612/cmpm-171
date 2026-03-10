@@ -144,6 +144,12 @@ public class MovementSandBox : MonoBehaviour
             }
         }
 
+        if (_combat != null && _combat.IsStunned)
+        {
+            _smoothSpeed = 0f; // Rapidly decelerate
+            return;
+        }
+
         // If Dashing, override everything
         if (_isDashing)
         {
@@ -205,6 +211,8 @@ public class MovementSandBox : MonoBehaviour
     {
         // Check cooldown and state
         if (_isDashing || _dashCooldownTimer > 0) return;
+        if (_combat != null && _combat.IsStunned) return;
+
         if (_combat != null && _combat.IsAttacking)
         {
             // Double check: if still in active frames, we can't dash yet

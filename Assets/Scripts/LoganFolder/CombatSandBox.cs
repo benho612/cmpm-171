@@ -75,6 +75,7 @@ public class CombatSandBox : MonoBehaviour
     public bool IsParrying => _isParrying;
     public bool IsDodging => _isDodgingHigh || _isDodgingLow;
     public bool IsInActiveFrames => _currentHitBox != null;
+    public bool IsStunned { get; private set; }
 
     public int punishWindowFrames = 1;
 
@@ -102,6 +103,7 @@ public class CombatSandBox : MonoBehaviour
 
     public bool ExecutePhysicalAttack(bool canInterrupt, float duration, Vector3 size, Color color, float damage)
     {
+        if (IsStunned) return false;
         if (_isAttacking)
         {
             if (!_canCancel) return false;
@@ -135,6 +137,7 @@ public class CombatSandBox : MonoBehaviour
 
     public void StartDefense()
     {
+        if (IsStunned) return;
         _isBlocking = true;
 
         if (_playerHealth != null) _playerHealth.isBlocking = true;
@@ -162,6 +165,7 @@ public class CombatSandBox : MonoBehaviour
 
     public void ExecuteStationaryDodge(bool isHigh)
     {
+        if (IsStunned) return;
         if (_dodgeCoroutine != null) StopCoroutine(_dodgeCoroutine);
         _dodgeCoroutine = StartCoroutine(StationaryDodgeRoutine(isHigh));
     }
@@ -396,5 +400,33 @@ public class CombatSandBox : MonoBehaviour
         _size = Vector3.zero;
 
         Debug.Log("Combat System: Attack fully purged.");
+    }
+    public void TriggerGuardBreak(float duration)
+    {
+        StartCoroutine(GuardBreakRoutine(duration));
+    }
+
+    private IEnumerator GuardBreakRoutine(float duration)
+    {
+        IsStunned = true;
+
+        // Forcibly drop the block/parry
+        if (_isBlocking)
+        {
+            if (_parryCoroutine != null) StopCoroutine(_parryCoroutine);
+            FinishDefense();
+        }
+
+        // Forcibly cancel any ongoing attacks
+        if (_isAttacking)
+        {
+            CancelAttackForDash(); 
+        }
+
+        // Wait for the stun to finish
+        yield return new WaitForSeconds(duration);
+
+        // Release the lock
+        IsStunned = false;
     }
 }
