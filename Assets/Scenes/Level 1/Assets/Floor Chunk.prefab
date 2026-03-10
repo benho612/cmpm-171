@@ -43,6 +43,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7435049256966090371}
     m_Modifications:
+    - target: {fileID: 1342647162463475876, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1726981136521227150, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2108073221814027291, guid: 6c626876453d9e54586741142c142d50, type: 3}
       propertyPath: m_Name
       value: Cave Flooring (3)
@@ -87,6 +95,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4041569100656630307, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7084041623318181956, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7227613623195519289, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -105,6 +125,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7435049256966090371}
     m_Modifications:
+    - target: {fileID: 1342647162463475876, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1726981136521227150, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2108073221814027291, guid: 6c626876453d9e54586741142c142d50, type: 3}
       propertyPath: m_Name
       value: Cave Flooring (1)
@@ -149,6 +177,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4041569100656630307, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7084041623318181956, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7227613623195519289, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -167,6 +207,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7435049256966090371}
     m_Modifications:
+    - target: {fileID: 1342647162463475876, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1726981136521227150, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2108073221814027291, guid: 6c626876453d9e54586741142c142d50, type: 3}
       propertyPath: m_Name
       value: Cave Flooring
@@ -211,6 +259,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4041569100656630307, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7084041623318181956, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7227613623195519289, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -229,6 +289,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7435049256966090371}
     m_Modifications:
+    - target: {fileID: 1342647162463475876, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1726981136521227150, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2108073221814027291, guid: 6c626876453d9e54586741142c142d50, type: 3}
       propertyPath: m_Name
       value: Cave Flooring (2)
@@ -271,6 +339,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3750354392894662814, guid: 6c626876453d9e54586741142c142d50, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041569100656630307, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7084041623318181956, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7227613623195519289, guid: 6c626876453d9e54586741142c142d50, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

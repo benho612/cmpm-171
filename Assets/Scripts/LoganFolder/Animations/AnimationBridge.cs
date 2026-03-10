@@ -31,4 +31,19 @@ public class AnimationBridge : MonoBehaviour
     public void PlayAttack(string moveName){
         _animator.CrossFadeInFixedTime(moveName, 0.15f);
     }
+    public void PlayBlock(float animPoint){
+        _animator.Play("Standing Block", 1, animPoint);
+    }
+    public void StopBlock(){
+        _animator.Play("EmptyState", 1, 0f);
+    }
+    public void BackToLocomotion(){
+        _animator.Play("Locomotion", 0, 0f);
+    }
+    public void HitStopAnim(){
+        _animator.speed = 0;
+    }
+    public void ResumeAnim(){
+        _animator.speed = 1;
+    }
 }

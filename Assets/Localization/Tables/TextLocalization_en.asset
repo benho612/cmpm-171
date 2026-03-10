@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: TextLocalization_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 0c059a2e5041f33499d333575d47d09b, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 17855766528
+    m_Localized: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3370723663872
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3395222593536
+    m_Localized: Credits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3473723187200
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3978918715392
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4269353295872
+    m_Localized: General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4304426065920
+    m_Localized: Key Binds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4402304344064
+    m_Localized: High Contrast Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4470948323328
+    m_Localized: Move Forward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4644051443712
+    m_Localized: Move Left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4789996445696
+    m_Localized: Move Right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4857403105280
+    m_Localized: Move Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4933508751360
+    m_Localized: LightAttack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5000621809664
+    m_Localized: Heavy Attack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7797492768768
+    m_Localized: Block/Parry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7852584951808
+    m_Localized: Dash/Run
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -14,8 +14,8 @@ TagManager:
   - Player
   - Ground
   - Walls
-  - 
-  - 
+  - HC_Player
+  - HC_Enemy
   - 
   - 
   - 
