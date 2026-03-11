@@ -20,7 +20,7 @@ public class CombatHandler : MonoBehaviour{
 
     [Header("VFX Things")]
     [SerializeField] private GameObject _hitEffectPrefab;
-    
+
     void Start(){
         _stats = GameManager.Instance.PlayerInstance.PlayerRunData;
         _meta = MetaManager.Instance;
@@ -87,7 +87,9 @@ public class CombatHandler : MonoBehaviour{
         if(attackStarted){
             _playerAnimator.PlayAttack(animationToPlay);
 
-            if(IsFinisher(moveID)){
+            AudioManager.Instance.Play("Swoosh");
+
+            if (IsFinisher(moveID)){
             _activeElement = (ElementType)System.Enum.Parse(typeof(ElementType), parts[1]);
             //Later implementation of VFX script 
             // VFXManager.Instance.PlayEffect(_activeElement, transform.position);
@@ -189,6 +191,18 @@ public class CombatHandler : MonoBehaviour{
         if(enemyScript != null && enemyAnim != null){
             Instantiate(_hitEffectPrefab, hitboxCenter, Quaternion.identity);
             enemyScript.TakeDamage(finalDamage);
+
+            // We need to add tags to the enemies for this to work.
+            // Will probably be easier to do it only for the basic enemies in which case we just swap these around.
+            if (enemy.CompareTag("ArmorEnemy"))
+            {
+                AudioManager.Instance.Play("Player_Punching_Metal");
+            }
+            else
+            {
+                AudioManager.Instance.Play("Player_Punch");
+            }
+
             StartCoroutine(HitStopRoutine(0.07f, enemyAnim));
         }
 
