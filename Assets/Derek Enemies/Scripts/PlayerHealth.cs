@@ -107,7 +107,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, GameObject attacker = null)
     {
         if (IsDead || isInvincible) return;
 
@@ -134,6 +134,18 @@ public class PlayerHealth : MonoBehaviour
             stunRecoveryTimer = stunRecoveryDelay;
             healthRecoveryTimer = healthRecoveryDelay;
 
+            // AUDIO LOGIC: Check the attacker's tag for the right block sound
+            if (attacker != null && !attacker.CompareTag("BasicEnemy"))
+            {
+                // If there is an attacker, and they are NOT a BasicEnemy (e.g., Elite or Boss)
+                AudioManager.Instance.Play("Player_Blocking_Sword");
+            }
+            else
+            {
+                // If it IS a BasicEnemy, or if the attacker is somehow null
+                AudioManager.Instance.Play("Player_Blocking_Punch");
+            }
+
             Debug.Log($"Hit! Damage: {damage}. Stun Meter is now: {currentStunMeter} / {maxStunMeter}");
             
             if (_stunSlider != null) _stunSlider.value = currentStunMeter;
@@ -152,6 +164,20 @@ public class PlayerHealth : MonoBehaviour
             currentHealth -= damage;
             healthRecoveryTimer = healthRecoveryDelay;
             stunRecoveryTimer = stunRecoveryDelay;
+
+            // AUDIO: Randomly pick between 0 and 1
+            int randomSound = UnityEngine.Random.Range(0, 2);
+
+            // So we don't have the same hit sound so it's not too repetitive.
+            if (randomSound == 0)
+            {
+                AudioManager.Instance.Play("Player_Hit");
+            }
+            else
+            {
+                AudioManager.Instance.Play("Player_Hit_1");
+            }
+
             //invoke hit reaction animation here when we have them
         }
 
@@ -209,6 +235,10 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died!");
+
+        // AUDIO: Play the death sound
+        AudioManager.Instance.Play("Player_Death");
+
         //OnPlayerDeath?.Invoke();
         // TODO: Add death logic (respawn, game over screen, etc.)
         Time.timeScale = 1f;

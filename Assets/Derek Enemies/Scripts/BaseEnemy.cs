@@ -300,6 +300,16 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             isAware = true;
             navAgent.isStopped = false;
+
+            // AUDIO: Play Aggro sound when spotting the player
+            if (gameObject.CompareTag("EliteEnemy"))
+            {
+                AudioManager.Instance.Play("Elite_Enemy_Aggro");
+            }
+            else
+            {
+                AudioManager.Instance.Play("Basic_Enemy_Aggro");
+            }
         }
     }
 
@@ -518,6 +528,16 @@ public abstract class BaseEnemy : MonoBehaviour
         {
             isAware = true;
             navAgent.isStopped = false;
+
+            // AUDIO: Play Aggro sound if ambushed by the player!
+            if (gameObject.CompareTag("EliteEnemy"))
+            {
+                AudioManager.Instance.Play("Elite_Enemy_Aggro");
+            }
+            else
+            {
+                AudioManager.Instance.Play("Basic_Enemy_Aggro");
+            }
         }
         if (!isEngaged)
         {
@@ -544,6 +564,16 @@ public abstract class BaseEnemy : MonoBehaviour
         // Take damage (always take damage, even if immune to stagger)
         currentHealth -= damage;
         Debug.Log($"{gameObject.name}: Health now {currentHealth}/{maxHealth}");
+
+        // AUDIO: Enemy vocalization for taking damage
+        if (gameObject.CompareTag("EliteEnemy"))
+        {
+            AudioManager.Instance.Play("Elite_Enemy_Hit");
+        }
+        else
+        {
+            AudioManager.Instance.Play("Basic_Enemy_Hit");
+        }
 
         // Show health bar when damaged
         var healthBar = GetComponentInChildren<EnemyHealthBar>();
@@ -593,6 +623,17 @@ public abstract class BaseEnemy : MonoBehaviour
 
     protected virtual void Die()
     {
+        // AUDIO: Check the tag and play the correct death sound
+        if (gameObject.CompareTag("EliteEnemy"))
+        {
+            AudioManager.Instance.Play("Elite_Enemy_Death");
+        }
+        else
+        {
+            // Defaults to the basic enemy death sound
+            AudioManager.Instance.Play("Basic_Enemy_Death");
+        }
+
         // Stop all coroutines to prevent any ongoing routines
         StopAllCoroutines();
 

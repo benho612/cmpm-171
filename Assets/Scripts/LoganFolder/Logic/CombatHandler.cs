@@ -6,7 +6,10 @@ public class CombatHandler : MonoBehaviour{
     public List <string> UnlockedCombos = new List<string>();
     private List<ComboUnlock> _unlockedComboData = new List<ComboUnlock>();
     private ElementType _activeElement;
-    
+
+    // To remember the attack type for the impact sound
+    private bool _isCurrentAttackHeavy;
+
     private RunData _stats;
     private MetaManager _meta;
     [SerializeField] private AnimationBridge _playerAnimator;
@@ -87,7 +90,10 @@ public class CombatHandler : MonoBehaviour{
         if(attackStarted){
             _playerAnimator.PlayAttack(animationToPlay);
 
-            //AudioManager.Instance.Play("Swoosh");     NEW AUDIO STUFF NEEDED TO BE COMMENTED OUT
+            AudioManager.Instance.Play("Swoosh");
+
+            // Remembers if this is a heavy attack for when the hit connects
+            _isCurrentAttackHeavy = (lastInput == 'H');
 
             if (IsFinisher(moveID)){
             _activeElement = (ElementType)System.Enum.Parse(typeof(ElementType), parts[1]);
@@ -192,16 +198,25 @@ public class CombatHandler : MonoBehaviour{
             Instantiate(_hitEffectPrefab, hitboxCenter, Quaternion.identity);
             enemyScript.TakeDamage(finalDamage);
 
-            // We need to add tags to the enemies for this to work.
-            // Will probably be easier to do it only for the basic enemies in which case we just swap these around.
-            /*if (enemy.CompareTag("ArmorEnemy"))     NEW AUDIO STUFF NEEDED TO BE COMMENTED OUT
+
+            // AUDIO LOGIC
+            if (enemy.CompareTag("EliteEnemy"))
             {
+                // Elite enemy: always play metal sound, regardless of attack type
                 AudioManager.Instance.Play("Player_Punching_Metal");
             }
             else
             {
-                AudioManager.Instance.Play("Player_Punch");
-            }*/
+                // Basic enemy: check if it was a heavy or light attack
+                if (_isCurrentAttackHeavy)
+                {
+                    AudioManager.Instance.Play("Player_Heavy_Punch");
+                }
+                else
+                {
+                    AudioManager.Instance.Play("Player_Punch");
+                }
+            }
 
             StartCoroutine(HitStopRoutine(0.07f, enemyAnim));
         }

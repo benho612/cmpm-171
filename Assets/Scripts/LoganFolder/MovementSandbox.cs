@@ -166,6 +166,9 @@ public class MovementSandBox : MonoBehaviour
 
         // Otherwise, handle standard movement
         HandleMovement();
+
+        // AUDIO: Evaluate and play/stop the movement audio loops
+        HandleMovementAudio();
     }
 
     private void HandleMovement()
@@ -266,4 +269,36 @@ public class MovementSandBox : MonoBehaviour
         _velocity.y += gravity * gravityMultiplier * Time.deltaTime;
         _controller.Move(_velocity * Time.deltaTime);
     }
+
+    private void HandleMovementAudio()
+    {
+        // Determines the player's current state
+        bool isMovingInput = _moveInput.magnitude > 0.1f;
+        bool isSprintingInput = dashAction != null && dashAction.action.IsPressed();
+
+        // Checks if the player is actually allowed to walk right now
+        bool canMove = !_isDashing && (_combat == null || (!_combat.IsAttacking && !_combat.IsDodging && !_combat.IsBlocking && !_combat.IsStunned));
+
+        // Plays the correct loop based on the state (Walking/Running)
+        if (isMovingInput && canMove)
+        {
+            if (isSprintingInput)
+            {
+                AudioManager.Instance.PlayLoop("Player_Running");
+                AudioManager.Instance.Stop("Player_Walking");
+            }
+            else
+            {
+                AudioManager.Instance.PlayLoop("Player_Walking");
+                AudioManager.Instance.Stop("Player_Running");
+            }
+        }
+        else
+        {
+            // If we are standing still, stunned, or dashing, silence the footsteps!
+            AudioManager.Instance.Stop("Player_Walking");
+            AudioManager.Instance.Stop("Player_Running");
+        }
+    }
+
 }
