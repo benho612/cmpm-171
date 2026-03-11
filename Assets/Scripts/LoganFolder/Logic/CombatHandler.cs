@@ -87,7 +87,7 @@ public class CombatHandler : MonoBehaviour{
         if(attackStarted){
             _playerAnimator.PlayAttack(animationToPlay);
 
-            AudioManager.Instance.Play("Swoosh");
+            //AudioManager.Instance.Play("Swoosh");     NEW AUDIO STUFF NEEDED TO BE COMMENTED OUT
 
             if (IsFinisher(moveID)){
             _activeElement = (ElementType)System.Enum.Parse(typeof(ElementType), parts[1]);
@@ -194,14 +194,14 @@ public class CombatHandler : MonoBehaviour{
 
             // We need to add tags to the enemies for this to work.
             // Will probably be easier to do it only for the basic enemies in which case we just swap these around.
-            if (enemy.CompareTag("ArmorEnemy"))
+            /*if (enemy.CompareTag("ArmorEnemy"))     NEW AUDIO STUFF NEEDED TO BE COMMENTED OUT
             {
                 AudioManager.Instance.Play("Player_Punching_Metal");
             }
             else
             {
                 AudioManager.Instance.Play("Player_Punch");
-            }
+            }*/
 
             StartCoroutine(HitStopRoutine(0.07f, enemyAnim));
         }

@@ -130,6 +130,7 @@ public class CombatSandBox : MonoBehaviour
 
         if (!_isAttacking) return;
         _canCancel = true;
+        Debug.Log("Attack Impact Check");
         _magnetizeRoutine = StartCoroutine(MagnetizeToTarget());
         _activeAttackRoutine = StartCoroutine(AttackRoutine(_duration, _size, _color, _damage));
 
@@ -170,7 +171,7 @@ public class CombatSandBox : MonoBehaviour
         _dodgeCoroutine = StartCoroutine(StationaryDodgeRoutine(isHigh));
     }
 
-    private void RotateToInputDirection()
+    /*private void RotateToInputDirection()
     {
         Vector2 input = Vector2.zero;
         if (moveAction != null)
@@ -190,7 +191,7 @@ public class CombatSandBox : MonoBehaviour
             Vector3 targetDir = (camForward * input.y + camRight * input.x).normalized;
             transform.rotation = Quaternion.LookRotation(targetDir);
         }
-    }
+    }*/
 
     private IEnumerator AttackRoutine(float duration, Vector3 size, Color color, float damage)
     {
@@ -360,6 +361,7 @@ public class CombatSandBox : MonoBehaviour
 
         float elapsed = 0f;
         float duration = 0.1f;
+        Debug.DrawRay(transform.position, intendedDir * 5, Color.green, 1f);
         while (elapsed < duration)
         {//magnetize over duration
             float t = elapsed / duration; //tracking where the rotation is

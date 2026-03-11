@@ -247,7 +247,7 @@ public class MovementSandBox : MonoBehaviour
     private void HandleDash()
     {
         _controller.Move(_dashDirection * dashSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.LookRotation(_dashDirection);
+        //transform.rotation = Quaternion.LookRotation(_dashDirection);
 
         _dashTimer -= Time.deltaTime;
         if (_dashTimer <= 0)
