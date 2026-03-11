@@ -1404,7 +1404,7 @@ GameObject:
   - component: {fileID: 56516796}
   m_Layer: 0
   m_Name: EliteEnemy
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8507,7 +8507,7 @@ GameObject:
   - component: {fileID: 379437937}
   m_Layer: 0
   m_Name: EliteEnemy (8)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10676,7 +10676,7 @@ GameObject:
   - component: {fileID: 464610755}
   m_Layer: 0
   m_Name: EliteEnemy (7)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11065,7 +11065,7 @@ GameObject:
   - component: {fileID: 492127287}
   m_Layer: 0
   m_Name: BasicEnemy (6)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18093,7 +18093,7 @@ GameObject:
   - component: {fileID: 791204096}
   m_Layer: 0
   m_Name: BasicEnemy (10)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19184,7 +19184,7 @@ GameObject:
   - component: {fileID: 854567921}
   m_Layer: 0
   m_Name: EliteEnemy (6)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20513,7 +20513,7 @@ GameObject:
   - component: {fileID: 909546236}
   m_Layer: 0
   m_Name: EliteEnemy (1)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22524,7 +22524,7 @@ GameObject:
   - component: {fileID: 991789988}
   m_Layer: 0
   m_Name: EliteEnemy (2)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23282,7 +23282,7 @@ GameObject:
   - component: {fileID: 1066061444}
   m_Layer: 0
   m_Name: BasicEnemy
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23613,7 +23613,7 @@ GameObject:
   - component: {fileID: 1087983541}
   m_Layer: 0
   m_Name: BasicEnemy (14)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24372,7 +24372,7 @@ GameObject:
   - component: {fileID: 1128434636}
   m_Layer: 0
   m_Name: EliteEnemy (3)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24766,6 +24766,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 362233261922440916, guid: a80936f3e0ebc564689c598da1fcbeaa, type: 3}
   m_PrefabInstance: {fileID: 1155706587}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1157518736
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -18.614082
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00000066114944
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 267.75247
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2557817019330917410, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4335806581347976832, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1fb07bf34a5261649950e6255ea7844c, type: 3}
 --- !u!1001 &1164954104
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26083,7 +26140,7 @@ GameObject:
   - component: {fileID: 1204887923}
   m_Layer: 0
   m_Name: EliteEnemy (10)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28128,7 +28185,7 @@ GameObject:
   - component: {fileID: 1296670959}
   m_Layer: 0
   m_Name: EliteEnemy (9)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30650,7 +30707,7 @@ GameObject:
   - component: {fileID: 1433619320}
   m_Layer: 0
   m_Name: BasicEnemy (4)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31020,7 +31077,7 @@ GameObject:
   - component: {fileID: 1457627329}
   m_Layer: 0
   m_Name: EliteEnemy (5)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31499,7 +31556,7 @@ GameObject:
   - component: {fileID: 1471417065}
   m_Layer: 0
   m_Name: BasicEnemy (13)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31612,7 +31669,7 @@ GameObject:
   - component: {fileID: 1477096821}
   m_Layer: 0
   m_Name: EliteEnemy (11)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31779,7 +31836,7 @@ GameObject:
   - component: {fileID: 1486710135}
   m_Layer: 0
   m_Name: BasicEnemy (12)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33668,7 +33725,7 @@ GameObject:
   - component: {fileID: 1591722031}
   m_Layer: 0
   m_Name: EliteEnemy (4)
-  m_TagString: Untagged
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33699,7 +33756,7 @@ GameObject:
   - component: {fileID: 1600920564}
   m_Layer: 0
   m_Name: BasicEnemy (3)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -35152,7 +35209,7 @@ GameObject:
   - component: {fileID: 1661160992}
   m_Layer: 0
   m_Name: BasicEnemy (9)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37033,7 +37090,7 @@ GameObject:
   - component: {fileID: 1756336349}
   m_Layer: 0
   m_Name: BasicEnemy (2)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39106,7 +39163,7 @@ GameObject:
   - component: {fileID: 1845404832}
   m_Layer: 0
   m_Name: BasicEnemy (5)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40175,7 +40232,7 @@ GameObject:
   - component: {fileID: 1886194443}
   m_Layer: 0
   m_Name: BasicEnemy (1)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40772,7 +40829,7 @@ GameObject:
   - component: {fileID: 1913210769}
   m_Layer: 0
   m_Name: BasicEnemy (8)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42040,7 +42097,7 @@ GameObject:
   - component: {fileID: 2028146940}
   m_Layer: 0
   m_Name: BasicEnemy (11)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42145,7 +42202,7 @@ GameObject:
   - component: {fileID: 2033084262}
   m_Layer: 0
   m_Name: BasicEnemy (7)
-  m_TagString: Untagged
+  m_TagString: BasicEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44586,3 +44643,4 @@ SceneRoots:
   - {fileID: 128991833}
   - {fileID: 1432800052}
   - {fileID: 768318303}
+  - {fileID: 1157518736}

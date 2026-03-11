@@ -47,7 +47,7 @@ MonoBehaviour:
   sounds:
   - name: Swoosh
     clip: {fileID: 8300000, guid: ddfc555bcd417da44aafd9005bb2eece, type: 3}
-    volume: 1
+    volume: 0.1
     pitch: 1
     source: {fileID: 0}
   - name: Player_Punch
@@ -57,7 +57,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Player_Punching_Metal
     clip: {fileID: 8300000, guid: 8fbe8f25cf32a8b43861b94b610c40c9, type: 3}
-    volume: 1
+    volume: 0.25
     pitch: 1
     source: {fileID: 0}
   - name: Player_Heavy_Punch
@@ -67,16 +67,66 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Basic_Enemy_Hit
     clip: {fileID: 8300000, guid: f9526255769096e4db0d96b0f8e1c95c, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     source: {fileID: 0}
   - name: Elite_Enemy_Hit
     clip: {fileID: 8300000, guid: 4c3a00c75982aaf41ba0bd6da0c04ddd, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     source: {fileID: 0}
   - name: Player_Hit
-    clip: {fileID: 8300000, guid: bc0ab37b42f56ed43ba2572aaacd73ee, type: 3}
+    clip: {fileID: 8300000, guid: 963725ec26042c744a655aa830b68723, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Player_Hit_1
+    clip: {fileID: 8300000, guid: b99f58440e16d1f4d98d362d4593b1ed, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Player_Walking
+    clip: {fileID: 8300000, guid: 75702482e84d1854cbbe7a6ab8d92980, type: 3}
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+  - name: Player_Running
+    clip: {fileID: 8300000, guid: 52100f8c849abce4093ec51c77bfacfc, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Player_Death
+    clip: {fileID: 8300000, guid: 030c7887cc6d55e4894d5befd2c2942f, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Player_Blocking_Punch
+    clip: {fileID: 8300000, guid: 1ee7795cf48e3834fa02a205763339b4, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Player_Blocking_Sword
+    clip: {fileID: 8300000, guid: 46bc8192ac2267b419d758cd1883cafd, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Basic_Enemy_Death
+    clip: {fileID: 8300000, guid: bba75deea799021488e71270694d65c7, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Basic_Enemy_Aggro
+    clip: {fileID: 8300000, guid: d6ab47611d31ff540bab2e49985eda9f, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Elite_Enemy_Aggro
+    clip: {fileID: 8300000, guid: e7092eaa7503c90458ef5fbbb93470eb, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Elite_Enemy_Death
+    clip: {fileID: 8300000, guid: 4e682cee6c2400946b453bd53d0ba2dc, type: 3}
     volume: 1
     pitch: 1
     source: {fileID: 0}
