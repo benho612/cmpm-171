@@ -17,10 +17,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scripts/LoganFolder/TestLevel1.unity
     guid: 67ae91903ac9a3e4388ff6167b381777
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UI/Pause Screen.unity
     guid: 3966dd71d00516d45b4707b60bfc2279
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UI/Settings Screen.unity
     guid: 794a5aab84a8e854abe7fa42e87989a0
   - enabled: 0
