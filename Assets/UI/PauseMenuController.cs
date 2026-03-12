@@ -27,8 +27,15 @@ public class PauseMenuController : MonoBehaviour
 
     public void Restart()
     {
+        Time.timeScale = 1f;
+
+        // Destroy persistent singletons so the next scene load behaves like a fresh load
+        if (GameManager.Instance != null) Destroy(GameManager.Instance.gameObject);
+        if (AudioManager.Instance != null) Destroy(AudioManager.Instance.gameObject);
+        // clear known static refs as well
+        EnemyCombatManager.Instance = null;
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        Resume();
     }
 
     void OnEnable()
@@ -153,6 +160,4 @@ public class PauseMenuController : MonoBehaviour
         var rows = keyBindingsTabPanel.GetComponentsInChildren<RebindActionUI>(true);
         foreach (var row in rows) row.RefreshUI();
     }
-
-
 }
