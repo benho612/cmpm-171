@@ -16278,7 +16278,7 @@ PrefabInstance:
     - target: {fileID: 676004896352760185, guid: bbb87e5b7cd2ec7428b2aabaee5fc27a, type: 3}
       propertyPath: pauseAction
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1491746265}
     - target: {fileID: 676004896352760185, guid: bbb87e5b7cd2ec7428b2aabaee5fc27a, type: 3}
       propertyPath: settingsPanel
       value: 
@@ -34343,6 +34343,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7405610520517793287, guid: 7140519a7120cd443ae42dfabb79148d, type: 3}
   m_PrefabInstance: {fileID: 1488684365}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1491746265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: UI/Pause
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 86ccc094-52f1-4a23-9fc5-ebd15d76f21b
 --- !u!1001 &1496375726
 PrefabInstance:
   m_ObjectHideFlags: 0
