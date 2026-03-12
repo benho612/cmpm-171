@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -23,6 +24,12 @@ public class PauseMenuController : MonoBehaviour
 
     private bool _isPaused;
     private bool _inSettings;
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Resume();
+    }
 
     void OnEnable()
     {
@@ -101,8 +108,14 @@ public class PauseMenuController : MonoBehaviour
         if (pausePanel) pausePanel.SetActive(false);
         if (settingsPanel) settingsPanel.SetActive(true);
 
-        ShowGeneralTab();
-        SelectFirst(settingsFirstSelected);
+        //ShowGeneralTab();
+        //SelectFirst(settingsFirstSelected);
+    }
+
+    public void CloseSettings()
+    {
+        pausePanel.SetActive(true);
+        settingsPanel.SetActive(false);
     }
 
     // Tab Button Methods
@@ -140,4 +153,6 @@ public class PauseMenuController : MonoBehaviour
         var rows = keyBindingsTabPanel.GetComponentsInChildren<RebindActionUI>(true);
         foreach (var row in rows) row.RefreshUI();
     }
+
+
 }
