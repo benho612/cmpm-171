@@ -552,9 +552,9 @@ MonoBehaviour:
   chargeStopDistance: 2
   awarenessRange: 20
   engagementRange: 15
-  lightAttackDamage: 10
-  heavyAttackDamage: 25
-  chargeAttackDamage: 20
+  lightAttackDamage: 5
+  heavyAttackDamage: 15
+  chargeAttackDamage: 10
   stunDuration: 2
   attackCooldown: 1.5
   maxHitStunDuration: 5
