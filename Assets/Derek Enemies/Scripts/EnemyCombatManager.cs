@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// </summary>
 public class EnemyCombatManager : MonoBehaviour
 {
-    public static EnemyCombatManager Instance { get; private set; }
+    public static EnemyCombatManager Instance { get; set; }
 
     [Header("Combat Settings")]
     [SerializeField] private float engageChance = 0.5f;

@@ -1,194 +1,259 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Spawns enemies at designated spawn points.
-/// Supports both basic and elite enemy types for modular level design.
+/// Manages chamber-based enemy spawning. Each chamber has its own spawn points,
+/// a trigger to activate it, and an exit wall that is destroyed when all enemies are dead.
 /// </summary>
-public class EnemySpawner : MonoBehaviour
+public class ChamberSpawner : MonoBehaviour
 {
+    [System.Serializable]
+    public class Chamber
+    {
+        [Header("Spawn Point Containers")]
+        [Tooltip("Parent GameObject containing basic enemy spawn points for this chamber")]
+        public Transform basicSpawnContainer;
+
+        [Tooltip("Parent GameObject containing elite enemy spawn points for this chamber")]
+        public Transform eliteSpawnContainer;
+
+        [Header("Chamber References")]
+        [Tooltip("The trigger collider the player walks through to start this chamber")]
+        public GameObject trigger;
+
+        [Tooltip("The exit wall that gets destroyed when all enemies in this chamber are dead (leave empty for last chamber)")]
+        public GameObject exitWall;
+
+        // Runtime state
+        [HideInInspector] public bool hasBeenTriggered;
+        [HideInInspector] public bool isCleared;
+        [HideInInspector] public List<BaseEnemy> spawnedEnemies = new List<BaseEnemy>();
+    }
+
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject basicEnemyPrefab;
     [SerializeField] private GameObject eliteEnemyPrefab;
 
-    [Header("Spawn Point Containers")]
-    [Tooltip("Parent GameObject containing all basic enemy spawn points as children")]
-    [SerializeField] private Transform basicEnemySpawnContainer;
+    [Header("Chambers")]
+    [SerializeField] private Chamber[] chambers;
 
-    [Tooltip("Parent GameObject containing all elite enemy spawn points as children")]
-    [SerializeField] private Transform eliteEnemySpawnContainer;
+    [Header("Settings")]
+    [Tooltip("How often (in seconds) to check if all enemies in the active chamber are dead")]
+    [SerializeField] private float clearCheckInterval = 0.5f;
 
-    [Header("Spawn Settings")]
-    [SerializeField] private bool spawnOnStart = true;
-    [SerializeField] private float spawnDelay = 0f;
+    [Tooltip("Delay before destroying the exit wall after all enemies are killed")]
+    [SerializeField] private float wallDestroyDelay = 1f;
 
-    // Track spawned enemies
-    private List<BaseEnemy> spawnedEnemies = new List<BaseEnemy>();
+    private int activeChamberIndex = -1;
 
     private void Start()
     {
-        //Debug.Log("check1");
-        if (spawnOnStart)
+        // Set up triggers for each chamber
+        for (int i = 0; i < chambers.Length; i++)
         {
-            //Debug.Log("check2");
-            if (spawnDelay > 0)
+            if (chambers[i].trigger != null)
             {
-                Invoke(nameof(SpawnAllEnemies), spawnDelay);
+                ChamberTrigger triggerScript = chambers[i].trigger.GetComponent<ChamberTrigger>();
+                if (triggerScript == null)
+                {
+                    triggerScript = chambers[i].trigger.AddComponent<ChamberTrigger>();
+                }
+                triggerScript.Initialize(this, i);
             }
             else
             {
-                SpawnAllEnemies();
+                Debug.LogWarning($"ChamberSpawner: Chamber {i} has no trigger assigned!");
             }
         }
     }
 
     /// <summary>
-    /// Spawns all enemies at their designated spawn points
+    /// Called by ChamberTrigger when the player enters a chamber's trigger zone.
     /// </summary>
-    public void SpawnAllEnemies()
+    public void OnChamberTriggered(int chamberIndex)
     {
-        SpawnBasicEnemies();
-        SpawnEliteEnemies();
+        if (chamberIndex < 0 || chamberIndex >= chambers.Length) return;
+
+        Chamber chamber = chambers[chamberIndex];
+
+        // Only trigger once
+        if (chamber.hasBeenTriggered) return;
+
+        chamber.hasBeenTriggered = true;
+        activeChamberIndex = chamberIndex;
+
+        Debug.Log($"ChamberSpawner: Chamber {chamberIndex} triggered! Spawning enemies...");
+
+        SpawnChamberEnemies(chamber);
+
+        // Start monitoring for chamber clear
+        StartCoroutine(MonitorChamberClear(chamberIndex));
     }
 
     /// <summary>
-    /// Spawns basic enemies at all child transforms of the basic spawn container
+    /// Spawns all enemies for a given chamber.
     /// </summary>
-    public void SpawnBasicEnemies()
+    private void SpawnChamberEnemies(Chamber chamber)
     {
-        if (basicEnemyPrefab == null)
+        int basicCount = 0;
+        int eliteCount = 0;
+
+        // Spawn basic enemies
+        if (basicEnemyPrefab != null && chamber.basicSpawnContainer != null)
         {
-            if (basicEnemySpawnContainer != null && basicEnemySpawnContainer.childCount > 0)
+            foreach (Transform spawnPoint in chamber.basicSpawnContainer)
             {
-                Debug.LogWarning("EnemySpawner: Basic enemy prefab not assigned but spawn points exist!");
+                BaseEnemy enemy = SpawnEnemy(basicEnemyPrefab, spawnPoint);
+                if (enemy != null)
+                {
+                    chamber.spawnedEnemies.Add(enemy);
+                    basicCount++;
+                }
             }
-            return;
         }
 
-        if (basicEnemySpawnContainer == null)
+        // Spawn elite enemies
+        if (eliteEnemyPrefab != null && chamber.eliteSpawnContainer != null)
         {
-            Debug.LogWarning("EnemySpawner: Basic enemy spawn container not assigned!");
-            return;
-        }
-
-        int spawnCount = 0;
-        foreach (Transform spawnPoint in basicEnemySpawnContainer)
-        {
-            SpawnEnemy(basicEnemyPrefab, spawnPoint);
-            spawnCount++;
-        }
-
-        Debug.Log($"EnemySpawner: Spawned {spawnCount} basic enemies");
-    }
-
-    /// <summary>
-    /// Spawns elite enemies at all child transforms of the elite spawn container
-    /// </summary>
-    public void SpawnEliteEnemies()
-    {
-        if (eliteEnemyPrefab == null)
-        {
-            if (eliteEnemySpawnContainer != null && eliteEnemySpawnContainer.childCount > 0)
+            foreach (Transform spawnPoint in chamber.eliteSpawnContainer)
             {
-                Debug.LogWarning("EnemySpawner: Elite enemy prefab not assigned but spawn points exist!");
+                BaseEnemy enemy = SpawnEnemy(eliteEnemyPrefab, spawnPoint);
+                if (enemy != null)
+                {
+                    chamber.spawnedEnemies.Add(enemy);
+                    eliteCount++;
+                }
             }
-            return;
         }
 
-        if (eliteEnemySpawnContainer == null)
-        {
-            return; // No elite container assigned, skip silently (for Level 1)
-        }
-
-        int spawnCount = 0;
-        foreach (Transform spawnPoint in eliteEnemySpawnContainer)
-        {
-            SpawnEnemy(eliteEnemyPrefab, spawnPoint);
-            spawnCount++;
-        }
-
-        Debug.Log($"EnemySpawner: Spawned {spawnCount} elite enemies");
+        Debug.Log($"ChamberSpawner: Spawned {basicCount} basic and {eliteCount} elite enemies");
     }
 
     /// <summary>
-    /// Spawns a single enemy at the specified spawn point
+    /// Spawns a single enemy at the specified spawn point.
     /// </summary>
     private BaseEnemy SpawnEnemy(GameObject prefab, Transform spawnPoint)
     {
         GameObject enemyObj = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
-
         BaseEnemy enemy = enemyObj.GetComponent<BaseEnemy>();
-        if (enemy != null)
+
+        if (enemy == null)
         {
-            spawnedEnemies.Add(enemy);
+            Debug.LogWarning($"ChamberSpawner: Prefab {prefab.name} has no BaseEnemy component!");
         }
 
         return enemy;
     }
 
     /// <summary>
-    /// Returns the number of enemies still alive
+    /// Coroutine that periodically checks if all enemies in a chamber are dead.
+    /// When cleared, destroys the exit wall.
     /// </summary>
-    public int GetAliveEnemyCount()
+    private IEnumerator MonitorChamberClear(int chamberIndex)
     {
-        spawnedEnemies.RemoveAll(e => e == null || e.IsDead());
-        return spawnedEnemies.Count;
-    }
+        Chamber chamber = chambers[chamberIndex];
 
-    /// <summary>
-    /// Returns true if all spawned enemies are dead
-    /// </summary>
-    public bool AreAllEnemiesDead()
-    {
-        return GetAliveEnemyCount() == 0;
-    }
-
-    /// <summary>
-    /// Clears all spawned enemies (kills and removes them)
-    /// </summary>
-    public void ClearAllEnemies()
-    {
-        foreach (var enemy in spawnedEnemies)
+        // Wait until all enemies are dead
+        while (true)
         {
-            if (enemy != null && !enemy.IsDead())
+            yield return new WaitForSeconds(clearCheckInterval);
+
+            // Remove null/dead enemies from the list
+            chamber.spawnedEnemies.RemoveAll(e => e == null || e.IsDead());
+
+            if (chamber.spawnedEnemies.Count == 0)
             {
-                Destroy(enemy.gameObject);
+                break;
             }
         }
-        spawnedEnemies.Clear();
+
+        // Chamber cleared!
+        chamber.isCleared = true;
+        Debug.Log($"ChamberSpawner: Chamber {chamberIndex} CLEARED!");
+
+        // Destroy exit wall after delay (if one exists)
+        if (chamber.exitWall != null)
+        {
+            if (wallDestroyDelay > 0f)
+            {
+                yield return new WaitForSeconds(wallDestroyDelay);
+            }
+
+            Debug.Log($"ChamberSpawner: Destroying exit wall for chamber {chamberIndex}");
+            Destroy(chamber.exitWall);
+        }
     }
 
     /// <summary>
-    /// Respawns all enemies (clears existing and spawns new)
+    /// Returns the number of alive enemies in a specific chamber.
     /// </summary>
-    public void RespawnAllEnemies()
+    public int GetAliveEnemyCount(int chamberIndex)
     {
-        ClearAllEnemies();
-        SpawnAllEnemies();
+        if (chamberIndex < 0 || chamberIndex >= chambers.Length) return 0;
+
+        Chamber chamber = chambers[chamberIndex];
+        chamber.spawnedEnemies.RemoveAll(e => e == null || e.IsDead());
+        return chamber.spawnedEnemies.Count;
     }
+
+    /// <summary>
+    /// Returns true if a specific chamber has been cleared.
+    /// </summary>
+    public bool IsChamberCleared(int chamberIndex)
+    {
+        if (chamberIndex < 0 || chamberIndex >= chambers.Length) return false;
+        return chambers[chamberIndex].isCleared;
+    }
+
+    /// <summary>
+    /// Returns the currently active chamber index (-1 if none).
+    /// </summary>
+    public int GetActiveChamberIndex() => activeChamberIndex;
 
     // Visualize spawn points in editor
     private void OnDrawGizmosSelected()
     {
-        // Draw basic enemy spawn points in blue
-        if (basicEnemySpawnContainer != null)
-        {
-            Gizmos.color = Color.blue;
-            foreach (Transform spawnPoint in basicEnemySpawnContainer)
-            {
-                Gizmos.DrawWireSphere(spawnPoint.position, 0.5f);
-                Gizmos.DrawLine(spawnPoint.position, spawnPoint.position + spawnPoint.forward);
-            }
-        }
+        if (chambers == null) return;
 
-        // Draw elite enemy spawn points in red
-        if (eliteEnemySpawnContainer != null)
+        for (int i = 0; i < chambers.Length; i++)
         {
-            Gizmos.color = Color.red;
-            foreach (Transform spawnPoint in eliteEnemySpawnContainer)
+            Chamber chamber = chambers[i];
+
+            // Draw basic enemy spawn points in blue
+            if (chamber.basicSpawnContainer != null)
             {
-                Gizmos.DrawWireSphere(spawnPoint.position, 0.75f);
-                Gizmos.DrawLine(spawnPoint.position, spawnPoint.position + spawnPoint.forward);
+                Gizmos.color = Color.blue;
+                foreach (Transform spawnPoint in chamber.basicSpawnContainer)
+                {
+                    Gizmos.DrawWireSphere(spawnPoint.position, 0.5f);
+                    Gizmos.DrawLine(spawnPoint.position, spawnPoint.position + spawnPoint.forward);
+                }
+            }
+
+            // Draw elite enemy spawn points in red
+            if (chamber.eliteSpawnContainer != null)
+            {
+                Gizmos.color = Color.red;
+                foreach (Transform spawnPoint in chamber.eliteSpawnContainer)
+                {
+                    Gizmos.DrawWireSphere(spawnPoint.position, 0.75f);
+                    Gizmos.DrawLine(spawnPoint.position, spawnPoint.position + spawnPoint.forward);
+                }
+            }
+
+            // Draw trigger in green
+            if (chamber.trigger != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireCube(chamber.trigger.transform.position, chamber.trigger.transform.localScale);
+            }
+
+            // Draw exit wall in yellow
+            if (chamber.exitWall != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireCube(chamber.exitWall.transform.position, chamber.exitWall.transform.localScale);
             }
         }
     }

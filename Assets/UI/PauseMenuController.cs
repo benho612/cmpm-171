@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -23,6 +24,19 @@ public class PauseMenuController : MonoBehaviour
 
     private bool _isPaused;
     private bool _inSettings;
+
+    public void Restart()
+    {
+        Time.timeScale = 1f;
+
+        // Destroy persistent singletons so the next scene load behaves like a fresh load
+        if (GameManager.Instance != null) Destroy(GameManager.Instance.gameObject);
+        if (AudioManager.Instance != null) Destroy(AudioManager.Instance.gameObject);
+        // clear known static refs as well
+        EnemyCombatManager.Instance = null;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
     void OnEnable()
     {
@@ -101,8 +115,14 @@ public class PauseMenuController : MonoBehaviour
         if (pausePanel) pausePanel.SetActive(false);
         if (settingsPanel) settingsPanel.SetActive(true);
 
-        ShowGeneralTab();
-        SelectFirst(settingsFirstSelected);
+        //ShowGeneralTab();
+        //SelectFirst(settingsFirstSelected);
+    }
+
+    public void CloseSettings()
+    {
+        pausePanel.SetActive(true);
+        settingsPanel.SetActive(false);
     }
 
     // Tab Button Methods

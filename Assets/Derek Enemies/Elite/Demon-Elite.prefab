@@ -580,15 +580,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 34.93
+      value: -106.84057
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5058331
+      value: 0.10767
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.58
+      value: 42.63105
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -625,6 +625,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
       propertyPath: m_Name
       value: Demon-Elite
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d0dc6a2f4a7d3964385033d892c842f6, type: 3}
+      propertyPath: m_TagString
+      value: EliteEnemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

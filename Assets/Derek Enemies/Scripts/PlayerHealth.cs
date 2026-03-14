@@ -239,8 +239,11 @@ public class PlayerHealth : MonoBehaviour
         // AUDIO: Play the death sound
         AudioManager.Instance.Play("Player_Death");
 
-        //OnPlayerDeath?.Invoke();
-        // TODO: Add death logic (respawn, game over screen, etc.)
+        // Destroy persistent singletons so scene loads fresh
+        if (GameManager.Instance != null) Destroy(GameManager.Instance.gameObject);
+        if (AudioManager.Instance != null) Destroy(AudioManager.Instance.gameObject);
+        EnemyCombatManager.Instance = null;
+
         Time.timeScale = 1f;
         //temp reset scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
