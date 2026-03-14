@@ -36,6 +36,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private CombatSandBox _combatSandBox;
     [SerializeField] private AnimationBridge _animationBridge;
     [SerializeField] private MovementSandBox _movement;
+    [SerializeField] public PauseMenuController uiScript;
 
     // Events for UI or other systems to subscribe to
     public event Action<float, float> OnHealthChanged; // currentHealth, maxHealth
@@ -239,13 +240,18 @@ public class PlayerHealth : MonoBehaviour
         // AUDIO: Play the death sound
         AudioManager.Instance.Play("Player_Death");
 
+        if (uiScript != null) 
+        {
+            uiScript.onDeath();
+        }
         // Destroy persistent singletons so scene loads fresh
-        if (GameManager.Instance != null) Destroy(GameManager.Instance.gameObject);
+        /*if (GameManager.Instance != null) Destroy(GameManager.Instance.gameObject);
         if (AudioManager.Instance != null) Destroy(AudioManager.Instance.gameObject);
         EnemyCombatManager.Instance = null;
 
         Time.timeScale = 1f;
         //temp reset scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        */
     }
 }

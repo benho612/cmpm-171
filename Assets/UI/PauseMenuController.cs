@@ -10,6 +10,7 @@ public class PauseMenuController : MonoBehaviour
 
     [Header("Panels")]
     public GameObject pausePanel;
+    public GameObject deathScreen;
     public GameObject settingsPanel;       // Replaces the old keyBindingsPanel
     public GameObject generalTabPanel;     // Inside Settings
     public GameObject keyBindingsTabPanel; // Inside Settings
@@ -24,6 +25,18 @@ public class PauseMenuController : MonoBehaviour
 
     private bool _isPaused;
     private bool _inSettings;
+
+    public void onDeath()
+    {
+        Debug.Log("trigger worked");
+        _isPaused = true;
+
+        deathScreen.SetActive(true);
+
+        if (pauseTimeScale) Time.timeScale = 0f;
+        ApplyCursorState(true);
+        SelectFirst(pauseFirstSelected);
+    }
 
     public void Restart()
     {
@@ -66,6 +79,18 @@ public class PauseMenuController : MonoBehaviour
 
         if (_isPaused) Resume();
         else Pause();
+    }
+
+    public void Quit() 
+    {
+        Time.timeScale = 1f;
+
+        // Destroy persistent singletons so the next scene load behaves like a fresh load
+        if (GameManager.Instance != null) Destroy(GameManager.Instance.gameObject);
+        if (AudioManager.Instance != null) Destroy(AudioManager.Instance.gameObject);
+        // clear known static refs as well
+        EnemyCombatManager.Instance = null;
+        SceneManager.LoadScene("Main Menu");
     }
 
     public void Pause()
