@@ -202,19 +202,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1307391}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1307393}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1307391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,10 +253,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 512192608}
-  bindingDisplayNameText: {fileID: 457609681}
-  overlay: {fileID: 2083921219}
-  bindingIndex: 5
+  actionReference: {fileID: 1050252245}
+  bindingIndex: 4
+  actionNameText: {fileID: 280938796}
+  bindingText: {fileID: 457609681}
+  rebindButton: {fileID: 1307390}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &4716877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2171,7 +2161,7 @@ GameObject:
   - component: {fileID: 69739404}
   - component: {fileID: 69739403}
   m_Layer: 5
-  m_Name: Setting (6)
+  m_Name: D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7403,7 +7393,7 @@ GameObject:
   - component: {fileID: 269517395}
   - component: {fileID: 269517394}
   m_Layer: 5
-  m_Name: Setting (7)
+  m_Name: Light Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8362,6 +8352,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 284978459}
   m_CullTransparentMesh: 1
+--- !u!114 &292298086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/Move
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: 250a9cf3-7307-4f00-bf3e-5907c3c76a5c
 --- !u!1001 &300621966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11632,7 +11636,7 @@ GameObject:
   - component: {fileID: 397714490}
   - component: {fileID: 397714489}
   m_Layer: 5
-  m_Name: Setting (5)
+  m_Name: A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13605,7 +13609,7 @@ GameObject:
   - component: {fileID: 455332903}
   - component: {fileID: 455332902}
   m_Layer: 5
-  m_Name: Setting (4)
+  m_Name: S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14729,20 +14733,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7108431418830170136, guid: e873531ef7ff81846bb9bc6c44f83aed, type: 3}
   m_PrefabInstance: {fileID: 511317160}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &512192608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
 --- !u!1001 &512825501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14869,7 +14859,7 @@ GameObject:
   - component: {fileID: 513490767}
   - component: {fileID: 513490766}
   m_Layer: 5
-  m_Name: Setting (1)
+  m_Name: Language
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15522,19 +15512,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 540784335}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 540784337}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &540784335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15585,10 +15563,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1730289634}
-  bindingDisplayNameText: {fileID: 373427777}
-  overlay: {fileID: 2083921219}
+  actionReference: {fileID: 771181708}
   bindingIndex: 0
+  actionNameText: {fileID: 368738300}
+  bindingText: {fileID: 373427777}
+  rebindButton: {fileID: 540784334}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &548137475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15709,7 +15689,7 @@ GameObject:
   - component: {fileID: 555325344}
   - component: {fileID: 555325343}
   m_Layer: 5
-  m_Name: Setting (2)
+  m_Name: Color Mode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17868,19 +17848,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 603589261}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 603589263}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &603589261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17931,10 +17899,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 650058107}
-  bindingDisplayNameText: {fileID: 1586125379}
-  overlay: {fileID: 2083921219}
+  actionReference: {fileID: 2044344475}
   bindingIndex: 0
+  actionNameText: {fileID: 1698280610}
+  bindingText: {fileID: 1586125379}
+  rebindButton: {fileID: 603589260}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &603859890
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19325,20 +19295,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3218621239399248873, guid: a8a88672087b8864f9276c4537b48bf9, type: 3}
   m_PrefabInstance: {fileID: 641468094}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &650058107
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Player/Sprint
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_ActionId: 641cd816-40e6-41b4-8c3d-04687c349290
 --- !u!1 &650611216
 GameObject:
   m_ObjectHideFlags: 0
@@ -23049,6 +23005,20 @@ Transform:
   - {fileID: 64215990}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &771181708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/Defend
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: c1933745-e36f-45f2-a182-abdb1ccb39f3
 --- !u!1001 &776424118
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25301,19 +25271,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 877957567}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 877957569}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &877957567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25364,10 +25322,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1498199601}
-  bindingDisplayNameText: {fileID: 734986797}
-  overlay: {fileID: 2083921219}
-  bindingIndex: 4
+  actionReference: {fileID: 1349965486}
+  bindingIndex: 3
+  actionNameText: {fileID: 1388706183}
+  bindingText: {fileID: 734986797}
+  rebindButton: {fileID: 877957566}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &879838139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26924,20 +26884,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2593791109173705674, guid: 14fecc2e00953cf4db4c710dcbd61915, type: 3}
   m_PrefabInstance: {fileID: 916163476}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &931600834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/HeavyAttack
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: 5ee32b2b-29fb-4d50-a78e-06e35331855c
 --- !u!1001 &933699951
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28699,7 +28645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5408433340520640854, guid: cfc08c4dc97a7be4ab0982d324d793ff, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5440336199528687864, guid: cfc08c4dc97a7be4ab0982d324d793ff, type: 3}
       propertyPath: m_AnchorMax.y
@@ -29600,19 +29546,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1041182912}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1041182914}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1041182912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29663,10 +29597,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1396873688}
-  bindingDisplayNameText: {fileID: 1305664985}
-  overlay: {fileID: 2083921219}
+  actionReference: {fileID: 1961535194}
   bindingIndex: 0
+  actionNameText: {fileID: 1305664985}
+  bindingText: {fileID: 372969322}
+  rebindButton: {fileID: 1041182911}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &1043472275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29807,6 +29743,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7435049256966090371, guid: 232c1dfd4bea30747986dd307247017d, type: 3}
   m_PrefabInstance: {fileID: 1048498504}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1050252245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/Move
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: 250a9cf3-7307-4f00-bf3e-5907c3c76a5c
 --- !u!1001 &1052628118
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30393,20 +30343,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46431e2fe42b8864bbd3b7f7cf9ffe31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementSandBox
---- !u!114 &1076743647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/LightAttack
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: 37050f6d-b99b-4f33-97bf-2335d4024e2e
 --- !u!1001 &1077237002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31248,7 +31184,7 @@ GameObject:
   - component: {fileID: 1099354104}
   - component: {fileID: 1099354103}
   m_Layer: 5
-  m_Name: Setting (10)
+  m_Name: Sprint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33753,19 +33689,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1186299440}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1186299442}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1186299440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33816,10 +33740,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 2020049400}
-  bindingDisplayNameText: {fileID: 377639262}
-  overlay: {fileID: 2083921219}
-  bindingIndex: 2
+  actionReference: {fileID: 292298086}
+  bindingIndex: 1
+  actionNameText: {fileID: 1295723412}
+  bindingText: {fileID: 377639262}
+  rebindButton: {fileID: 1186299439}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &1192111752
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34982,7 +34908,7 @@ GameObject:
   - component: {fileID: 1220308190}
   - component: {fileID: 1220308189}
   m_Layer: 5
-  m_Name: Setting (3)
+  m_Name: W
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38077,6 +38003,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7108431418830170136, guid: e873531ef7ff81846bb9bc6c44f83aed, type: 3}
   m_PrefabInstance: {fileID: 1346110658}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1349965486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/Move
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: 250a9cf3-7307-4f00-bf3e-5907c3c76a5c
 --- !u!1001 &1350193397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39262,20 +39202,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1396873688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Dash
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: e2c27f86-a7f1-4df1-99e9-d1a8c253ac2e
 --- !u!1001 &1398366784
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39659,19 +39585,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1408829176}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1408829178}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1408829176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39722,10 +39636,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1076743647}
-  bindingDisplayNameText: {fileID: 1388002512}
-  overlay: {fileID: 2083921219}
+  actionReference: {fileID: 1977344904}
   bindingIndex: 0
+  actionNameText: {fileID: 1821345348}
+  bindingText: {fileID: 1388002512}
+  rebindButton: {fileID: 1408829175}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &1409098562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40124,19 +40040,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1416659710}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1416659712}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1416659710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40187,10 +40091,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1443556819}
-  bindingDisplayNameText: {fileID: 1144595123}
-  overlay: {fileID: 2083921219}
-  bindingIndex: 3
+  actionReference: {fileID: 1471807774}
+  bindingIndex: 2
+  actionNameText: {fileID: 688144419}
+  bindingText: {fileID: 1144595123}
+  rebindButton: {fileID: 1416659709}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &1417335825
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41040,20 +40946,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1275286720794514086, guid: 44cd42c3efe82e046b2e37ddb899bd88, type: 3}
   m_PrefabInstance: {fileID: 1770793814}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1443556819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
 --- !u!1001 &1443638977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42036,6 +41928,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1231215837}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1471807774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/Move
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: 250a9cf3-7307-4f00-bf3e-5907c3c76a5c
 --- !u!1001 &1475515779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42566,7 +42472,7 @@ GameObject:
   - component: {fileID: 1488950435}
   - component: {fileID: 1488950434}
   m_Layer: 5
-  m_Name: Setting (11)
+  m_Name: Defend
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42758,20 +42664,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30310d01a7544f6479cb557ada095457, type: 3}
---- !u!114 &1498199601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
 --- !u!1001 &1506357811
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46041,7 +45933,7 @@ GameObject:
   - component: {fileID: 1630903096}
   - component: {fileID: 1630903095}
   m_Layer: 5
-  m_Name: Setting (9)
+  m_Name: Dash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46567,6 +46459,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7788151091221908313, guid: 1ec2f59354a26b542aad21588618fe0d, type: 3}
   m_PrefabInstance: {fileID: 1647985696}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1650413667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/HeavyAttack
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: 5ee32b2b-29fb-4d50-a78e-06e35331855c
 --- !u!1001 &1652816687
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -48610,20 +48516,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2593791109173705674, guid: 14fecc2e00953cf4db4c710dcbd61915, type: 3}
   m_PrefabInstance: {fileID: 1730177260}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1730289634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Defend
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: c1933745-e36f-45f2-a182-abdb1ccb39f3
 --- !u!1001 &1741056567
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54227,6 +54119,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3750354392894662814, guid: 6c626876453d9e54586741142c142d50, type: 3}
   m_PrefabInstance: {fileID: 1960828713}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1961535194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/Dash
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: e2c27f86-a7f1-4df1-99e9-d1a8c253ac2e
 --- !u!1001 &1965385485
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54550,6 +54456,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1977344904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Gameplay/LightAttack
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
+  m_ActionId: 37050f6d-b99b-4f33-97bf-2335d4024e2e
 --- !u!1001 &1989732867
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54624,20 +54544,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8566562010762888771, guid: d6048a1a34c4f4a4797d3eb9c4bbf3af, type: 3}
   m_PrefabInstance: {fileID: 1989732867}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2020049400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
 --- !u!1001 &2020584913
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55349,6 +55255,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7788151091221908313, guid: 1ec2f59354a26b542aad21588618fe0d, type: 3}
   m_PrefabInstance: {fileID: 2042125819}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2044344475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Player/Sprint
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_ActionId: 641cd816-40e6-41b4-8c3d-04687c349290
 --- !u!1001 &2049271226
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56626,19 +56546,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2099223442}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2099223444}
-        m_TargetAssemblyTypeName: RemapAction, Assembly-CSharp
-        m_MethodName: StartRebinding
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2099223442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56689,10 +56597,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 931600834}
-  bindingDisplayNameText: {fileID: 978509474}
-  overlay: {fileID: 2083921219}
+  actionReference: {fileID: 1650413667}
   bindingIndex: 0
+  actionNameText: {fileID: 865180429}
+  bindingText: {fileID: 978509474}
+  rebindButton: {fileID: 2099223441}
+  listeningOverlay: {fileID: 2083921219}
 --- !u!1001 &2099792427
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57267,7 +57177,7 @@ GameObject:
   - component: {fileID: 2117098106}
   - component: {fileID: 2117098105}
   m_Layer: 5
-  m_Name: Setting (8)
+  m_Name: Heavy Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

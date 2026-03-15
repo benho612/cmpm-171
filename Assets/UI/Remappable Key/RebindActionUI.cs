@@ -1,49 +1,82 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.UI;
 
-public class RemapAction : MonoBehaviour
+public class RebindActionUI : MonoBehaviour
 {
-    [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private TMP_Text bindingDisplayNameText;
-    [SerializeField] private GameObject overlay;
-    
-    // The index of the binding. For WASD: 
-    // 0 is the Composite, 1 is Up, 2 is Down, 3 is Left, 4 is Right.
-    [SerializeField] private int bindingIndex; 
+    [Header("References")]
+    [SerializeField] private InputActionReference actionReference;
+    [SerializeField] private int bindingIndex;
+    [SerializeField] private TextMeshProUGUI actionNameText; // This text is now preserved
+    [SerializeField] private TextMeshProUGUI bindingText;
+    [SerializeField] private Button rebindButton;
 
-    private InputActionRebindingExtensions.RebindingOperation _rebindOperation;
+    [Header("UX Overlay")]
+    [SerializeField] private GameObject listeningOverlay;
 
-    void Start() => UpdateUI();
+    private InputActionRebindingExtensions.RebindingOperation _rebindOp;
 
-    public void StartRebinding()
+    private void OnEnable()
     {
-        moveAction.action.actionMap.Disable();
+        if (rebindButton != null)
+            rebindButton.onClick.AddListener(StartRebind);
 
-        if (overlay != null) overlay.SetActive(true);
+        RefreshUI();
+    }
 
-        _rebindOperation = moveAction.action.PerformInteractiveRebinding()
-            // This is the crucial line for WASD/Composite bindings:
-            .WithTargetBinding(bindingIndex) 
-            .WithControlsExcluding("Mouse")
+    private void OnDisable()
+    {
+        if (rebindButton != null)
+            rebindButton.onClick.RemoveListener(StartRebind);
+
+        Cleanup();
+    }
+
+    public void RefreshUI()
+    {
+        if (actionReference == null || actionReference.action == null) return;
+
+        var action = actionReference.action;
+
+        // We are no longer setting actionNameText.text.
+        // This allows you to keep the custom labels you wrote in the Inspector.
+
+        if (bindingText != null)
+        {
+            bindingText.text = action.GetBindingDisplayString(bindingIndex);
+        }
+    }
+
+    public void StartRebind()
+    {
+        var action = actionReference.action;
+        action.Disable();
+
+        if (listeningOverlay != null) listeningOverlay.SetActive(true);
+
+        _rebindOp = action.PerformInteractiveRebinding(bindingIndex)
+            .WithControlsExcluding("<Mouse>/position")
+            .WithControlsExcluding("<Mouse>/delta")
             .OnMatchWaitForAnother(0.1f)
-            .OnComplete(operation => FinishRebinding())
+            .OnComplete(op => FinishRebind())
             .Start();
     }
 
-    private void FinishRebinding()
+    private void FinishRebind()
     {
-        _rebindOperation.Dispose();
-        
-        if (overlay != null) overlay.SetActive(false);
-        
-        moveAction.action.actionMap.Enable(); 
-        UpdateUI();
+        Cleanup();
+        RefreshUI();
     }
 
-    private void UpdateUI()
+    private void Cleanup()
     {
-        // GetDisplayString can take an index to show only that specific key
-        bindingDisplayNameText.text = moveAction.action.GetBindingDisplayString(bindingIndex);
+        _rebindOp?.Dispose();
+        _rebindOp = null;
+
+        if (listeningOverlay != null) listeningOverlay.SetActive(false);
+
+        if (actionReference != null)
+            actionReference.action.Enable();
     }
 }
