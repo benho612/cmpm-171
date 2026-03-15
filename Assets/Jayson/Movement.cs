@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
 
     // Internal Variables
     private CharacterController _controller;
-    private PlayerControls _input;
+    public static PlayerControls _input;
     private Transform _cameraTransform;
     private Combat _combat; 
     
@@ -42,7 +42,7 @@ public class Movement : MonoBehaviour
         _combat = GetComponent<Combat>(); 
         _cameraTransform = Camera.main.transform;
         
-        _input = new PlayerControls();
+        if (_input == null) _input = new PlayerControls();
         
         _input.Gameplay.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
         _input.Gameplay.Move.canceled += ctx => _moveInput = Vector2.zero;

@@ -150,20 +150,6 @@ public class PauseMenuController : MonoBehaviour
         settingsPanel.SetActive(false);
     }
 
-    // Tab Button Methods
-    public void ShowGeneralTab()
-    {
-        if (generalTabPanel) generalTabPanel.SetActive(true);
-        if (keyBindingsTabPanel) keyBindingsTabPanel.SetActive(false);
-    }
-
-    public void ShowKeyBindingsTab()
-    {
-        if (generalTabPanel) generalTabPanel.SetActive(false);
-        if (keyBindingsTabPanel) keyBindingsTabPanel.SetActive(true);
-
-        RefreshAllRebindRows();
-    }
 
     private void ApplyCursorState(bool paused)
     {
@@ -177,12 +163,5 @@ public class PauseMenuController : MonoBehaviour
         if (first == null || EventSystem.current == null) return;
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(first);
-    }
-
-    private void RefreshAllRebindRows()
-    {
-        if (!keyBindingsTabPanel) return;
-        var rows = keyBindingsTabPanel.GetComponentsInChildren<RebindActionUI>(true);
-        foreach (var row in rows) row.RefreshUI();
     }
 }
