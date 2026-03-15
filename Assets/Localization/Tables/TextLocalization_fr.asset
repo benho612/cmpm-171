@@ -79,7 +79,35 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 7852584951808
-    m_Localized: "\xC9lan/Courir"
+    m_Localized: "\xC9lan"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2596382398083072
+    m_Localized: Courir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2597142150115328
+    m_Localized: Langue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2596704965226496
+    m_Localized: Combos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2595475358871552
+    m_Localized: Recommencer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2599055037952000
+    m_Localized: Appuyez sur une touche
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2602306739236864
+    m_Localized: TU ES MORT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2603121247907840
+    m_Localized: Sortie
     m_Metadata:
       m_Items: []
   references:

@@ -51,19 +51,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 4470948323328
-    m_Localized: Move Forward
+    m_Localized: Move Forwards
     m_Metadata:
       m_Items: []
   - m_Id: 4644051443712
-    m_Localized: Move Left
+    m_Localized: Strafe Left
     m_Metadata:
       m_Items: []
   - m_Id: 4789996445696
-    m_Localized: Move Right
+    m_Localized: Strafe Right
     m_Metadata:
       m_Items: []
   - m_Id: 4857403105280
-    m_Localized: Move Back
+    m_Localized: Move Backwards
     m_Metadata:
       m_Items: []
   - m_Id: 4933508751360
@@ -79,7 +79,35 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 7852584951808
-    m_Localized: Dash/Run
+    m_Localized: Dash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2595475358871552
+    m_Localized: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2596382398083072
+    m_Localized: Run
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2596704965226496
+    m_Localized: Combos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2597142150115328
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2599055037952000
+    m_Localized: Select New Key...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2602306739236864
+    m_Localized: YOU DIED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2603121247907840
+    m_Localized: Exit
     m_Metadata:
       m_Items: []
   references:

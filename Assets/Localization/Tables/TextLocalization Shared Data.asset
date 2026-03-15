@@ -35,6 +35,10 @@ MonoBehaviour:
     m_Key: Pause_Continue
     m_Metadata:
       m_Items: []
+  - m_Id: 2595475358871552
+    m_Key: Pause_Restart
+    m_Metadata:
+      m_Items: []
   - m_Id: 4269353295872
     m_Key: Pause_General
     m_Metadata:
@@ -47,16 +51,20 @@ MonoBehaviour:
     m_Key: Pause_HighContrastMode
     m_Metadata:
       m_Items: []
+  - m_Id: 2596704965226496
+    m_Key: Pause_Combos
+    m_Metadata:
+      m_Items: []
   - m_Id: 4470948323328
     m_Key: KeyBinds_MoveForward
     m_Metadata:
       m_Items: []
   - m_Id: 4644051443712
-    m_Key: KeyBinds_MoveLeft
+    m_Key: KeyBinds_StrafeLeft
     m_Metadata:
       m_Items: []
   - m_Id: 4789996445696
-    m_Key: KeyBinds_MoveRight
+    m_Key: KeyBinds_StrafeRight
     m_Metadata:
       m_Items: []
   - m_Id: 4857403105280
@@ -76,7 +84,27 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 7852584951808
-    m_Key: KeyBinds_Dash/Run
+    m_Key: KeyBinds_Dash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2596382398083072
+    m_Key: KeyBinds_Run
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2597142150115328
+    m_Key: Settings_Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2599055037952000
+    m_Key: Settings_SelectNewKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2603121247907840
+    m_Key: Settings_Exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2602306739236864
+    m_Key: Death_YouDied
     m_Metadata:
       m_Items: []
   m_Metadata:
