@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Localization.Settings;
+using UnityEngine.SceneManagement;
 
 public class LocaleSelector : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class LocaleSelector : MonoBehaviour
         yield return LocalizationSettings.InitializationOperation;
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeID];
         active = false;
+        SceneManager.LoadScene("Main Menu");
     }
 
 }

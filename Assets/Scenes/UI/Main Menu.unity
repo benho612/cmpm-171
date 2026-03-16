@@ -257,7 +257,7 @@ RectTransform:
   - {fileID: 313582885}
   - {fileID: 60931864}
   - {fileID: 1926435846}
-  m_Father: {fileID: 1096836119}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -561,10 +561,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1730543340}
-  bindingDisplayNameText: {fileID: 851837849}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 3
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &104639083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -683,17 +685,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 105271196}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1096836119}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 959.9999, y: 540}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &105271198
 MonoBehaviour:
@@ -708,7 +710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
   menuText: {fileID: 138972297}
-  settingsPanel: {fileID: 19786621}
+  settingsPanel: {fileID: 986687369}
   loading: {fileID: 830739509}
 --- !u!1 &118447809
 GameObject:
@@ -1169,20 +1171,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.00012207031, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &190106041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
 --- !u!1 &205015976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,10 +1529,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1802125043}
-  bindingDisplayNameText: {fileID: 1895064199}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 2
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &326691100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1639,20 +1629,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 326691097}
   m_CullTransparentMesh: 1
---- !u!114 &338953213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Dash
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: e2c27f86-a7f1-4df1-99e9-d1a8c253ac2e
 --- !u!1 &338981248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1754,6 +1730,7 @@ GameObject:
   - component: {fileID: 403780154}
   - component: {fileID: 403780156}
   - component: {fileID: 403780155}
+  - component: {fileID: 403780157}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1880,6 +1857,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403780153}
   m_CullTransparentMesh: 1
+--- !u!114 &403780157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403780153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:0c059a2e5041f33499d333575d47d09b
+    m_TableEntryReference:
+      m_KeyId: 3370723663872
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 403780155}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &425865999
 GameObject:
   m_ObjectHideFlags: 0
@@ -2420,10 +2437,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1218672460}
-  bindingDisplayNameText: {fileID: 1622354719}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 0
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &637633392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2785,10 +2804,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 338953213}
-  bindingDisplayNameText: {fileID: 125005641}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 0
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &767794738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3302,10 +3323,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 2090142747}
-  bindingDisplayNameText: {fileID: 100101685}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 0
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &880060999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3589,10 +3612,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1070274757}
-  bindingDisplayNameText: {fileID: 907959580}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 4
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &910184905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3835,6 +3860,7 @@ GameObject:
   - component: {fileID: 921087285}
   - component: {fileID: 921087287}
   - component: {fileID: 921087286}
+  - component: {fileID: 921087288}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3961,6 +3987,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 921087284}
   m_CullTransparentMesh: 1
+--- !u!114 &921087288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921087284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:0c059a2e5041f33499d333575d47d09b
+    m_TableEntryReference:
+      m_KeyId: 3395222593536
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 921087286}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
+--- !u!1 &986687369 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1898104386342800554, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+  m_PrefabInstance: {fileID: 1070437022}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1039199091
 GameObject:
   m_ObjectHideFlags: 0
@@ -4038,20 +4109,115 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1039199091}
   m_CullTransparentMesh: 1
---- !u!114 &1070274757
-MonoBehaviour:
+--- !u!1001 &1070437022
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3107.7295
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 914.4048
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575265641532443527, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898104386342800554, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_Name
+      value: SettingsScreen (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819396781206221573, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 105271198}
+    - target: {fileID: 7819396781206221573, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CloseSettings
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819396781206221573, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MainMenu, Assembly-CSharp
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
 --- !u!1 &1084565716
 GameObject:
   m_ObjectHideFlags: 0
@@ -4421,9 +4587,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2105485682}
-  - {fileID: 105271197}
   - {fileID: 138972298}
-  - {fileID: 19786627}
   - {fileID: 830739510}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45.663}
@@ -4443,6 +4607,7 @@ GameObject:
   - component: {fileID: 1129219979}
   - component: {fileID: 1129219981}
   - component: {fileID: 1129219980}
+  - component: {fileID: 1129219982}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -4569,6 +4734,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1129219978}
   m_CullTransparentMesh: 1
+--- !u!114 &1129219982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129219978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:0c059a2e5041f33499d333575d47d09b
+    m_TableEntryReference:
+      m_KeyId: 3473723187200
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1129219980}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1148229835
 GameObject:
   m_ObjectHideFlags: 0
@@ -4785,20 +4990,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1218672460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Player/Sprint
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_ActionId: 641cd816-40e6-41b4-8c3d-04687c349290
 --- !u!1 &1272494399
 GameObject:
   m_ObjectHideFlags: 0
@@ -5142,10 +5333,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1486802161}
-  bindingDisplayNameText: {fileID: 1084565718}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 0
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &1360174097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5377,34 +5570,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1479969751}
   m_CullTransparentMesh: 1
---- !u!114 &1486802161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/LightAttack
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: 37050f6d-b99b-4f33-97bf-2335d4024e2e
---- !u!114 &1563373576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Defend
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: c1933745-e36f-45f2-a182-abdb1ccb39f3
 --- !u!1 &1567076372
 GameObject:
   m_ObjectHideFlags: 0
@@ -5608,10 +5773,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 190106041}
-  bindingDisplayNameText: {fileID: 621483530}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 5
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &1614548046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6011,20 +6178,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1643032278}
   m_CullTransparentMesh: 1
---- !u!114 &1730543340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
 --- !u!1 &1764228544
 GameObject:
   m_ObjectHideFlags: 0
@@ -6036,6 +6189,7 @@ GameObject:
   - component: {fileID: 1764228545}
   - component: {fileID: 1764228547}
   - component: {fileID: 1764228546}
+  - component: {fileID: 1764228548}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -6162,20 +6316,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1764228544}
   m_CullTransparentMesh: 1
---- !u!114 &1802125043
+--- !u!114 &1764228548
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1764228544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/Move
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 7dead05c54ca85b4681351aafd8bd03a, type: 3}
-  m_ActionId: 9d8fcbff-87d1-43ef-857e-931c84d5bd72
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:0c059a2e5041f33499d333575d47d09b
+    m_TableEntryReference:
+      m_KeyId: 17855766528
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1764228546}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1830158617
 GameObject:
   m_ObjectHideFlags: 0
@@ -6365,10 +6545,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a809ec4df3c36e46b14fa5893f3f8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemapAction
-  moveAction: {fileID: 1563373576}
-  bindingDisplayNameText: {fileID: 1830158619}
-  overlay: {fileID: 1926435845}
+  actionReference: {fileID: 0}
   bindingIndex: 0
+  actionNameText: {fileID: 0}
+  bindingText: {fileID: 0}
+  rebindButton: {fileID: 0}
+  listeningOverlay: {fileID: 0}
 --- !u!114 &1836412969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8041,20 +8223,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2089110715}
   m_CullTransparentMesh: 1
---- !u!114 &2090142747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Gameplay/HeavyAttack
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 91432e7e7db91eb48b5c75bd31275d10, type: 3}
-  m_ActionId: 5ee32b2b-29fb-4d50-a78e-06e35331855c
 --- !u!1 &2090835858
 GameObject:
   m_ObjectHideFlags: 0
@@ -8366,3 +8534,6 @@ SceneRoots:
   - {fileID: 548120695}
   - {fileID: 1197148619}
   - {fileID: 1096836119}
+  - {fileID: 19786627}
+  - {fileID: 1070437022}
+  - {fileID: 105271197}
