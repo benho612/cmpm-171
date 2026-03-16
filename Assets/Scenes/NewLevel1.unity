@@ -5489,9 +5489,9 @@ MonoBehaviour:
   m_fontSize: 220
   m_fontSizeBase: 220
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 150
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -8600,9 +8600,9 @@ MonoBehaviour:
   m_fontSize: 220
   m_fontSizeBase: 220
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 150
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -51714,9 +51714,9 @@ MonoBehaviour:
   m_fontSize: 220
   m_fontSizeBase: 220
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 150
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -52159,6 +52159,18 @@ PrefabInstance:
       propertyPath: actionReference
       value: 
       objectReference: {fileID: 1471807774}
+    - target: {fileID: 4516469609885746707, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516469609885746707, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516469609885746707, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4906594488335157406, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
       propertyPath: actionReference
       value: 

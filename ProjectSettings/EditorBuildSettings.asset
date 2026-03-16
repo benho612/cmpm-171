@@ -9,14 +9,17 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/Scenes/LocalizationPrompt.unity
+    guid: 1f9faab7b64d57c45991ef3e520ee424
+  - enabled: 1
     path: Assets/Scenes/UI/Main Menu.unity
     guid: efef6ba55ce3d444aa3652efc9fec62e
-  - enabled: 0
-    path: Assets/Scenes/UI/Main Menu 1.unity
-    guid: f45ce2b2c8012e54eb2d132d3dadca3f
   - enabled: 1
     path: Assets/Scenes/NewLevel1.unity
     guid: 5bdab8271263633479580fb285620533
+  - enabled: 0
+    path: Assets/Scenes/UI/Main Menu 1.unity
+    guid: f45ce2b2c8012e54eb2d132d3dadca3f
   - enabled: 0
     path: Assets/Scripts/LoganFolder/TestLevel1.unity
     guid: 67ae91903ac9a3e4388ff6167b381777
