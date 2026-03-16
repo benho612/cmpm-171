@@ -19782,6 +19782,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7077965226283009496, guid: 1229093864d56b54db7aa1d47824596e, type: 3}
   m_PrefabInstance: {fileID: 727350054}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &729392677 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3693424278143070984, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+  m_PrefabInstance: {fileID: 660974958272989903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &732496682
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51883,6 +51894,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1275286720794514086, guid: 44cd42c3efe82e046b2e37ddb899bd88, type: 3}
   m_PrefabInstance: {fileID: 1092441659}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2129511201 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4842826568337696824, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+  m_PrefabInstance: {fileID: 660974958272989903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &2133466633
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52055,6 +52077,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 591416127881746027, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_text
+      value: Sprint
+      objectReference: {fileID: 0}
     - target: {fileID: 1507295756051034142, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
       propertyPath: actionReference
       value: 
@@ -52171,6 +52197,10 @@ PrefabInstance:
       propertyPath: m_enableAutoSizing
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4842826568337696824, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_text
+      value: Dash
+      objectReference: {fileID: 0}
     - target: {fileID: 4906594488335157406, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
       propertyPath: actionReference
       value: 
@@ -52183,10 +52213,22 @@ PrefabInstance:
       propertyPath: actionReference
       value: 
       objectReference: {fileID: 1977344904}
+    - target: {fileID: 6541768081149427154, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: m_text
+      value: Defend
+      objectReference: {fileID: 0}
     - target: {fileID: 7819396781206221573, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 654838568}
+    - target: {fileID: 9158767606659877521, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: bindingText
+      value: 
+      objectReference: {fileID: 729392677}
+    - target: {fileID: 9158767606659877521, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
+      propertyPath: actionNameText
+      value: 
+      objectReference: {fileID: 2129511201}
     - target: {fileID: 9158767606659877521, guid: 7edeabab37d1326409738a4b171acffa, type: 3}
       propertyPath: actionReference
       value: 
