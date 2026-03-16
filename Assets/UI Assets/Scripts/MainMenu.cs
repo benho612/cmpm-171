@@ -37,6 +37,11 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("NewLevel1");
     }
 
+    public void goto_credits() 
+    {
+        SceneManager.LoadScene("Credits");
+    }
+
     public void quit_game()
     {
         Application.Quit();
